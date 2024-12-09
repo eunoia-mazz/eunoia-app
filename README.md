@@ -46,18 +46,6 @@ cd backend
 pip install -r requirements.txt
 ```
 
-#### Configure Environment Variables
-
-Create a `.env` file in the backend directory and add your configuration values (e.g., database URL, API keys).
-
-Example:
-
-```
-DATABASE_URL=postgresql://user:password@localhost/eunoia_db
-GEMINI_API_KEY=your-gemini-api-key
-HUGGINGFACE_API_KEY=your-huggingface-api-key
-```
-
 ### 3. Set up Frontend (React)
 
 #### Install dependencies
@@ -71,22 +59,6 @@ npm install
 
 ```bash
 npm start
-```
-
-### 4. Set up Database (PostgreSQL)
-
-Make sure PostgreSQL is installed and running on your local machine. Create the necessary database and run migrations:
-
-```bash
-psql -U postgres
-CREATE DATABASE eunoia_db;
-```
-
-Run the migrations for your database schema:
-
-```bash
-cd backend
-flask db upgrade
 ```
 
 ### 5. Run the Application
