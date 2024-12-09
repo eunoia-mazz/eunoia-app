@@ -1,5 +1,110 @@
-# Eunoia
-Eunoia is an AI-powered mental health web application, designed to offer personalized emotional support, mental well-being tools, and religious therapy. The platform integrates advanced features such as AI-driven sentiment analysis, journaling, mood tracking, habit-building tools, and crisis management resources. Additionally, the app will provide real-time chatbot assistance, peer support forums, relaxing soundscapes, stress-relief games, and gamified elements to motivate users in their mental health journey.
-The application will be built as a Progressive Web App (PWA), ensuring cross-platform accessibility with offline functionality for key features. Multilingual support is integrated to accommodate a diverse user base, and future scalability will allow the inclusion of spiritual support from other religious texts, catering to broader audiences. Users will also have the option to connect with certified therapists for professional mental health support.
-The methodology includes a combination of AI-driven personalization, spiritual guidance based on user sentiment, habit-tracking for mental well-being improvement, and community-building tools. Expected outcomes include improved user emotional regulation, enhanced spiritual comfort, better mental health habits, and an accessible, scalable platform offering personalized mental health care for Muslims and other potential audiences.
-This solution addresses the lack of culturally and spiritually relevant mental health tools by blending modern technology with faith-based emotional support, ultimately promoting holistic mental well-being.
+# Eunoia: AI-Powered Mental Health Web Application
+
+Eunoia is an AI-powered mental health web application designed to offer personalized emotional support, mental well-being tools, and religious therapy. This platform integrates advanced features such as AI-driven sentiment analysis, journaling, mood tracking, habit-building tools, and crisis management resources. It also offers real-time chatbot assistance, peer support forums, relaxing soundscapes, stress-relief games, and gamified elements to motivate users in their mental health journey.
+
+## Features
+
+- **Mental Health Tracking**: Daily journaling, sentiment analysis, and mood tracking.
+- **Personalized Religious Support**: Quranic ayaat and religious text recommendations based on emotional state.
+- **AI-Powered Chatbot Assistance**: Real-time emotional support using sentiment analysis.
+- **Therapist Connection**: Access to certified therapists for online video sessions.
+- **Crisis Management**: Emergency contact features, crisis hotline information, and automated alerts.
+- **Multi-Language Support**: Full accessibility for diverse communities through language localization.
+- **Gamification and Habit-Building**: Interactive games and progress tracking to achieve mental health goals.
+- **Offline Functionality**: Key features like journaling will work offline, while others will require internet access.
+- **Scalable Spiritual Guidance**: Future expansion to include religious texts like the Bible, Torah, and Gita.
+- **Advanced AI Diagnosis**: Self-assessment quizzes for insights, without diagnosing serious mental health conditions.
+- **Personalized Emotional Support**: AI-driven sentiment analysis for tailored recommendations and chatbot interactions.
+- **Community Engagement**: Peer support forums for anonymous sharing and emotional support.
+
+## Tech Stack
+
+- **Frontend**: React.js
+- **Backend**: Flask
+- **Database**: PostgreSQL
+- **APIs**:
+  - **Gemini API** for sentiment analysis
+  - **Hugging Face Transformers** for NLP and AI-driven features
+
+## Installation
+
+To run the application locally, follow these steps:
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/your-username/eunoia-app.git
+cd eunoia-app
+```
+
+### 2. Set up Backend (Flask)
+
+#### Install dependencies
+
+```bash
+cd backend
+pip install -r requirements.txt
+```
+
+#### Configure Environment Variables
+
+Create a `.env` file in the backend directory and add your configuration values (e.g., database URL, API keys).
+
+Example:
+
+```
+DATABASE_URL=postgresql://user:password@localhost/eunoia_db
+GEMINI_API_KEY=your-gemini-api-key
+HUGGINGFACE_API_KEY=your-huggingface-api-key
+```
+
+### 3. Set up Frontend (React)
+
+#### Install dependencies
+
+```bash
+cd frontend
+npm install
+```
+
+#### Start the frontend development server
+
+```bash
+npm start
+```
+
+### 4. Set up Database (PostgreSQL)
+
+Make sure PostgreSQL is installed and running on your local machine. Create the necessary database and run migrations:
+
+```bash
+psql -U postgres
+CREATE DATABASE eunoia_db;
+```
+
+Run the migrations for your database schema:
+
+```bash
+cd backend
+flask db upgrade
+```
+
+### 5. Run the Application
+
+Once the backend and frontend are set up and running, you can access the app by navigating to `http://localhost:3000` for the frontend and `http://localhost:5000` for the backend.
+
+---
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## Future Plans
+
+- **Religious Texts Expansion**: Include spiritual guidance based on the Bible, Torah, Gita, and other religious texts.
+- **Advanced AI Features**: Enhance emotional support with more advanced AI-driven insights.
+- **Mobile App**: Launch a native mobile application for both iOS and Android.
+- **Global Outreach**: Further language localization and accessibility improvements.
+
