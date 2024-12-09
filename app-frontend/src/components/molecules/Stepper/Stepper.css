@@ -1,0 +1,61 @@
+.stepper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.stepper::before {
+  content: "";
+  position: absolute;
+  width: 2px; /* Thin line width */
+  height: 100%; /* Full height of the stepper */
+  background-color: #ccc;
+  z-index: 0;
+}
+.testimonial {
+  margin: 20px 0;
+  font-size: 18px;
+  color: #333;
+  text-align: center;
+}
+
+.stepper-controls button {
+  padding: 10px 20px;
+  margin: 0 5px;
+}
+
+.step {
+  width: 20px;
+  height: 20px;
+  background-color: #ccc;
+  border-radius: 50%;
+  z-index: 1; /* Ensure the points are on top of the line */
+  margin: 50px 0; /* Spacing between steps */
+  transition: all 0.3s ease;
+}
+
+.step.active {
+  background-color: #007bff;
+  width: 30px;
+  height: 30px;
+}
+
+button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+button:not(:disabled):hover {
+  background-color: #0056b3;
+}
