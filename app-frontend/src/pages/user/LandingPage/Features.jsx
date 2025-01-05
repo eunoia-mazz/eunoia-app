@@ -60,19 +60,21 @@ export default function Features() {
         A mental health app designed to nurture, uplift, and guide you toward
         well-being
       </p>
-      <div className="w-5/6 flex justify-center items-center">
-        <div className="w-full max-w-4xl flex flex-wrap justify-between">
+      <div className="w-5/6 flex justify-center items-center ">
+        <div className="w-full max-w-6xl flex flex-wrap justify-evenly">
           {featureData.map((feature, index) => (
             <div
               key={index}
-              className="flex w-full md:w-1/2 space-x-5 lg:space-x-8"
+              className="flex w-full md:w-5/12 space-x-5 lg:space-x-8"
             >
               {feature.icon}
               <div>
-                <h3 className="text-base sm:text-lg font-semibold text-[#2C3E50]">
+                <h3 className="sm:text-lg font-semibold text-[#2C3E50]">
                   {feature.title}
                 </h3>
-                <p className="mt-1 text-[#333333]">{feature.description}</p>
+                <p className="mt-1 font-normal text-base text-[#333333]">
+                  {feature.description}
+                </p>
               </div>
             </div>
           ))}

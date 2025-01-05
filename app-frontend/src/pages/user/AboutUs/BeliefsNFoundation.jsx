@@ -6,7 +6,7 @@ import motto from "../../../assets/Images/motto.jpg";
 
 function BeliefsNFoundation() {
   return (
-    <div className="flex flex-col sm:flex-row flex-wrap items-center sm:items-center justify-center gap-3 sm:gap-0 sm:justify-evenly my-10">
+    <div className="flex flex-col sm:flex-row  flex-wrap items-center sm:items-center justify-center gap-3 sm:gap-0 sm:justify-evenly my-10">
       <div className="w-full text-center ">
         <p className="font-bold text-3xl text-blue-500">
           Our Foundational Business

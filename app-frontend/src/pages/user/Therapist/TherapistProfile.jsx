@@ -106,13 +106,13 @@ export default function TherapistProfile() {
           </div>
           <div className="flex gap-3 flex-col items-center md:items-start">
             <div className="text-left md:text-left">
-              <h1 className="text-xl md:text-2xl text-header font-semibold">
+              <h1 className="text-xl md:text-2xl t font-semibold">
                 {therapist?.name}
               </h1>
-              <p className="text-gray-600 mt-1 md:whitespace-nowrap text-header">
+              <p className="text-gray-600 mt-1 md:whitespace-nowrap font-normal text-base">
                 {therapist?.description}
               </p>
-              <div className="flex flex-wrap justify-center md:justify-start items-center space-x-2 md:space-x-4 text-header text-sm mt-2">
+              <div className="flex flex-wrap justify-center md:justify-start items-center space-x-2 md:space-x-4 text-sm mt-2">
                 <span>Mental Therapist</span>
                 <span className="flex items-center gap-2">
                   <MapPinIcon className="h-4 w-4 inline-block" /> New York, USA
@@ -215,7 +215,7 @@ export default function TherapistProfile() {
                   >
                     Harvard University
                   </a>
-                  <p className=" text-sm text-stone-500">
+                  <p className=" text-sm font-normal  text-stone-500">
                     Specialized in mental health therapy, cognitive behavioral
                     techniques, and mindfulness practices.
                   </p>
@@ -241,7 +241,7 @@ export default function TherapistProfile() {
                   >
                     Stanford University
                   </a>
-                  <p className=" text-sm text-stone-500">
+                  <p className=" text-sm text-stone-500 font-normal ">
                     Focused on stress management, family counseling, and trauma
                     recovery.
                   </p>
@@ -271,7 +271,7 @@ export default function TherapistProfile() {
                   >
                     Community Mental Health Center
                   </a>
-                  <p className="text-gray-600 text-sm ">
+                  <p className="text-gray-600 text-sm font-normal ">
                     Assisted patients with trauma recovery and facilitated group
                     therapy sessions for emotional well-being.
                   </p>
@@ -297,7 +297,7 @@ export default function TherapistProfile() {
                   >
                     Mindful Wellness Clinic
                   </a>
-                  <p className="text-sm text-stone-500">
+                  <p className="text-sm text-stone-500 font-normal ">
                     Conduct individual therapy sessions for anxiety, depression,
                     and stress management using evidence-based practices.
                   </p>
@@ -327,7 +327,7 @@ export default function TherapistProfile() {
                   >
                     National Therapy Association
                   </a>
-                  <p className="text-gray-600 text-sm ">
+                  <p className="text-gray-600 text-sm font-normal ">
                     Recognized for outstanding contributions to the mental
                     health field.
                   </p>
@@ -353,7 +353,7 @@ export default function TherapistProfile() {
                   >
                     Community Health Organization
                   </a>
-                  <p className="text-gray-600 text-sm ">
+                  <p className="text-gray-600 text-sm font-normal ">
                     Awarded for dedication to improving patient well-being and
                     outcomes.
                   </p>
@@ -369,33 +369,35 @@ export default function TherapistProfile() {
                   <CalendarIcon className="h-6 w-6 text-[#42ABD1]" />
                   <span className="text-gray-700 text-sm font-semibold">
                     Therapisting Experience:
-                    <span className="block">0-2 Years</span>
+                    <span className="block font-normal ">0-2 Years</span>
                   </span>
                 </li>
                 <li className="flex items-start gap-3 space-x-2">
                   <ClockIcon className="h-6 w-6 text-[#42ABD1]" />
                   <span className="text-gray-700 text-sm font-semibold">
-                    Age: <span className="block">28-33 Years</span>
+                    Age: <span className="block font-normal ">28-33 Years</span>
                   </span>
                 </li>
                 <li className="flex items-start gap-3 space-x-2">
                   <UserIcon className="h-6 w-6 text-[#42ABD1]" />
                   <span className="text-gray-700 text-sm font-semibold">
-                    Gender: <span className="block">Female</span>
+                    Gender: <span className="block font-normal ">Female</span>
                   </span>
                 </li>
                 <li className="flex items-start gap-3 space-x-2">
                   <GlobeAltIcon className="h-6 w-6 text-[#42ABD1]" />
                   <span className="text-gray-700 text-sm font-semibold">
                     Language:
-                    <span className="block">English, German, Spanish</span>
+                    <span className="block font-normal ">
+                      English, German, Spanish
+                    </span>
                   </span>
                 </li>
                 <li className="flex items-start gap-3 space-x-2">
                   <AcademicCapIcon className="h-6 w-6 text-[#42ABD1]" />
                   <span className="text-gray-700 text-sm font-semibold">
                     Education Level:
-                    <span className="block">Master Degree</span>
+                    <span className="block font-normal ">Master Degree</span>
                   </span>
                 </li>
               </ul>
@@ -445,12 +447,12 @@ export default function TherapistProfile() {
               <h2 className="font-semibold text-black mb-6  text-lg">
                 Cancellation Policy
               </h2>
-              <p className="text-sm text-[#666666]">
+              <p className="text-sm text-[#666666] font-normal ">
                 You're allowed to cancel for free within
                 <strong> 5 days</strong> of your booking date.
               </p>
             </div>
-            <div className="lg:max-w-sm w-96 text-header text-lg font-semibold">
+            <div className="lg:max-w-sm w-96  text-lg font-semibold">
               <p className="text-left">25 Reviews </p>
             </div>
 
@@ -487,7 +489,7 @@ export default function TherapistProfile() {
                   />
                   <div className="w-full flex items-center justify-between">
                     <div className="flex flex-col">
-                      <p className="text-header font-semibold">{review.name}</p>
+                      <p className=" font-semibold">{review.name}</p>
                       <div className="flex text-yellow-400">
                         {Array.from({ length: review.rating }).map((_, idx) => (
                           <svg
@@ -503,12 +505,10 @@ export default function TherapistProfile() {
                         ))}
                       </div>
                     </div>
-                    <p className="text-header text-xs font-semibold">
-                      {review.date}
-                    </p>
+                    <p className=" text-xs font-semibold">{review.date}</p>
                   </div>
                 </div>
-                <p className="text-gray-700 text-xs  tracking-wide leading-5">
+                <p className="text-gray-700 text-xs font-normal   tracking-wide leading-5">
                   {review.text}
                 </p>
                 <a href=" " className="text-secondary text-xs">
