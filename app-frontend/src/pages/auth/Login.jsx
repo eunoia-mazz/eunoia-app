@@ -27,13 +27,13 @@ const Login = () => {
       <div className="bg-white/30 backdrop-blur-xl p-8 rounded-[2rem] shadow-xl w-[500px]">
         <div className="flex w-full mb-5">
           <button
-            className="flex-1 py-3 px-6 rounded-full transition-all duration-200 bg-blue-700 text-white"
+            className="flex-1 py-3 px-6 rounded-full transition-all duration-200 bg-inherit text-white hover:bg-transparent"
           >
             Sign In
           </button>
           <button
-            onClick={() => navigate("/auth/signup")}
-            className="flex-1 py-3 px-6 rounded-full transition-all duration-200 text-white hover:bg-white/20"
+            onClick={() => navigate("/signup")}
+            className="flex-1 py-3 px-6 rounded-full transition-all duration-200 bg-blue-700 text-white hover:bg-white/20"
           >
             Sign Up
           </button>
@@ -104,7 +104,7 @@ const Login = () => {
                   />
                   <span className="text-sm text-gray-600">Remember me</span>
                 </label>
-                <a href="#" className="text-sm text-blue-600 hover:underline">
+                <a href="./reset-password" className="text-sm text-blue-600 hover:underline">
                   Forgot Password
                 </a>
               </div>

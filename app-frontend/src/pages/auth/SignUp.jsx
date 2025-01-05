@@ -33,13 +33,13 @@ function SignUp() {
         <div className="bg-white/30 backdrop-blur-xl p-8 rounded-[2rem] shadow-xl w-[500px]">
           <div className="flex w-full mb-5">
             <button 
-              onClick={() => navigate('/auth/login')}
-              className="flex-1 py-3 px-6 rounded-full transition-all duration-200 text-white hover:bg-white/20"
+              onClick={() => navigate('/login')}
+              className="flex-1 py-3 px-6 rounded-full transition-all duration-200 bg-blue-700 text-white hover:bg-white/20"
             >
               Sign In
             </button>
             <button 
-              className="flex-1 py-3 px-6 rounded-full bg-blue-700 text-white transition-all duration-200"
+              className="flex-1 py-3 px-6 rounded-full bg-inherit hover:bg-transparent text-white transition-all duration-200"
             >
               Sign Up
             </button>
@@ -127,7 +127,7 @@ function SignUp() {
 
           <p className="text-center mt-4 text-sm text-gray-600">
             Already have an account?{" "}
-            <a href="./auth/login" className="text-blue-600 hover:underline">Sign In</a>
+            <a href="./login" className="text-blue-600 hover:underline">Sign In</a>
           </p>
 
           <div className="mt-4 text-center text-gray-500">Or</div>

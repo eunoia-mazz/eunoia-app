@@ -19,7 +19,7 @@ import TherapistProfile from "./pages/user/Therapist/TherapistProfile";
 
 function App() {
   const location = useLocation();
-  const noHeaderFooterPaths = ["/chatbot", "/auth/login", "/auth/signup"];
+  const noHeaderFooterPaths = ["/chatbot", "/login", "/signup", "/reset-password"];
   const showNavbar = !noHeaderFooterPaths.includes(location.pathname);
 
   return (
@@ -32,8 +32,8 @@ function App() {
         <Route path="/about" element={<AboutUs />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
-        <Route path="/auth/login" element={<Login />} />
-        <Route path="/auth/signup" element={<SignUp />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<SignUp />} />
         <Route path="/journal" element={<Journal />} />
         <Route path="/articles" element={<Articles />} />
         {/* <Route path="/forum" element={<Forum />} /> */}
