@@ -40,8 +40,8 @@ def load_text(txt_path):
     with open(txt_path, 'r', encoding='utf-8') as file:
         return file.read().strip().splitlines()
 
-quran_path = "C:/Users/IT USER/Desktop/Eunoia_FYP/quran.txt"  
-bible_path = "C:/Users/IT USER/Desktop/Eunoia_FYP/bible.txt"  
+quran_path = "./app-backend/quran.txt"  
+bible_path = "./app-backend/bible.txt"  
 quran_ayat = load_text(quran_path)
 bible_verses = load_text(bible_path)
 
