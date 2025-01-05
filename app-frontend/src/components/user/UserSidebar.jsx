@@ -11,6 +11,7 @@ import {
   Bell,
   LogOut,
   Home,
+  MessageSquare,
 } from "lucide-react";
 import { cn } from "@/lib/utils"; // Assuming cn is a utility function you've created
 import { Button } from "@/components/ui/button";
@@ -31,8 +32,9 @@ const navItems = [
   { title: "Dashboard", href: "/dashboard", icon: BarChart },
   { title: "Activities", href: "/dashboard/activities", icon: Activity },
   { title: "Calendar", href: "/dashboard/calendar", icon: Calendar },
-  // { title: "Journal", href: "/dashboard/journal", icon: BookOpen },
-  { title: "Achievements", href: "/dashboard/achievements", icon: Award },
+  { title: "Journal", href: "/dashboard/journal", icon: BookOpen },
+  { title: "Forums", href: "/dashboard/forums", icon: MessageSquare },
+  // { title: "Achievements", href: "/dashboard/achievements", icon: Award },
   { title: "Profile", href: "/dashboard/profile", icon: User },
   { title: "Settings", href: "/dashboard/settings", icon: Settings },
 ];
@@ -73,23 +75,7 @@ export default function UserSidebar() {
           ))}
         </SidebarMenu>
       </SidebarContent>
-      {/* <SidebarFooter className="p-4 space-y-4">
-        <div className="flex items-center space-x-4 bg-muted p-4 rounded-lg">
-          <Avatar>
-            <AvatarImage src="/avatar.png" alt="User" />
-            <AvatarFallback>JD</AvatarFallback>
-          </Avatar>
-          <div>
-            <p className="text-sm font-medium">Ammar Nadeem</p>
-            <p className="text-xs text-muted-foreground">ammar26@gmail.com</p>
-          </div>
-        </div>
-        <div className="flex items-center justify-between">
-          <Button variant="outline" size="icon">
-            <LogOut className="h-4 w-4" />
-          </Button>
-        </div>
-      </SidebarFooter> */}
+
       <SidebarFooter className="p-4">
         <Button variant="outline" className="w-full">
           Logout

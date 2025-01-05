@@ -21,13 +21,13 @@ export default function Settings() {
         <title>Settings | Admin Dashboard</title>
         <meta
           name="description"
-          content="Manage therapists on the MindfulMe platform"
+          content="Manage therapists on the Eunoia platform"
         />
       </Helmet>
       <DashboardShell>
         <DashboardHeader
           heading="Settings"
-          text="Manage system-wide settings for the MindfulMe platform."
+          text="Manage system-wide settings for the Eunoia platform."
         />
         <Tabs defaultValue="general" className="space-y-4">
           <TabsList>

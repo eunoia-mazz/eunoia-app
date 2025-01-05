@@ -51,7 +51,7 @@ export default function Activities() {
         <title>Activities | Admin Dashboard</title>
         <meta
           name="description"
-          content="Manage activities on the MindfulMe platform"
+          content="Manage activities on the Eunoia platform"
         />
       </Helmet>
       <DashboardShell>

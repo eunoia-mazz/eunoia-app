@@ -8,9 +8,9 @@ import AboutUs from "./pages/user/AboutUs/AboutUs";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import ResetPassword from "./pages/auth/ResetPassword";
 import Login_SignUp from "./pages/auth/Login_SignUp";
-import Journal from "./pages/user/Journal/Journal";
+import Journal from "./pages/userDashboard/Journal";
 import Articles from "./pages/user/Articles/Articles";
-import Forum from "./pages/user/Forum/Forum";
+import Forum from "./pages/userDashboard/Forums";
 import ForumDetail from "./pages/user/Forum/ForumDetail";
 import Therapists from "./pages/user/Therapist/Therapists";
 import TherapistProfile from "./pages/user/Therapist/TherapistProfile";
@@ -49,7 +49,6 @@ function App() {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/chatbot" element={<Chatbot />} />
-        <Route path="/forums" element={<Forum />} />
         <Route path="/about" element={<AboutUs />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
@@ -78,6 +77,8 @@ function App() {
         <Route path="/dashboard/calendar" element={<Calendar />} />
         <Route path="/dashboard/profile" element={<Profile />} />
         <Route path="/dashboard/settings" element={<UserSettings />} />
+        <Route path="/dashboard/journal" element={<Journal />} />
+        <Route path="/dashboard/forums" element={<Forum />} />
         {/*  */}
 
         {/* Legal Agreements */}

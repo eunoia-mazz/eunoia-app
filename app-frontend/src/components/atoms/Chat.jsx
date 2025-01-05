@@ -38,8 +38,8 @@ function Chat({ title, removeChat }) {
       className="bg-blue-900 hover:bg-blue-700 text-white rounded-md w-11/12 py-1 px-2 flex mt-1 justify-between cursor-pointer"
       onClick={loadChat}
     >
-      <div className="flex items-center line-clamp-1 overflow-hidden whitespace-nowrap overflow-ellipsis">
-        <p>{title}</p>
+      <div className="flex items-center  line-clamp-1 overflow-hidden whitespace-nowrap overflow-ellipsis">
+        <p className="font-normal text-base">{title}</p>
       </div>
       <Dropdown table={[{ option: "Delete", action: deleteChat }]} />
     </div>

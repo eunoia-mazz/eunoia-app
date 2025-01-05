@@ -2,10 +2,18 @@ import DashboardShell from "@/components/user/DashboardShell";
 import DashboardHeader from "@/components/user/DashboardHeader";
 import AssignedActivities from "@/components/user/AssignedActivities";
 import CompletedActivities from "@/components/user/CompletedActivities";
+import { Helmet } from "react-helmet";
 
 export function Activities() {
   return (
     <DashboardShell>
+      <Helmet>
+        <title>Activites | Dashboard</title>
+        <meta
+          name="description"
+          content="Manage therapists on the Eunoia platform"
+        />
+      </Helmet>
       <DashboardHeader
         heading="Activities"
         text="Manage your assigned and completed activities."

@@ -21,7 +21,7 @@ export default function AdminDashboard() {
         <title>Admin Dashboard | Eunoia</title>
         <meta
           name="description"
-          content="Admin dashboard for MindfulMe mental health platform"
+          content="Admin dashboard for Eunoia mental health platform"
         />
       </Helmet>
       <DashboardShell>

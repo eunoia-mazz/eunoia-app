@@ -33,7 +33,7 @@ export default function Modules() {
         <title>Modules | Admin Dashboard</title>
         <meta
           name="description"
-          content="Manage modules and features on the MindfulMe platform"
+          content="Manage modules and features on the Eunoia platform"
         />
       </Helmet>
       <DashboardShell>

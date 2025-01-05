@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import Badge from "@mui/material/Badge";
 import { styled } from "@mui/material/styles";
@@ -7,22 +7,26 @@ import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 import SearchIcon from "@mui/icons-material/Search";
 import Boy from "../../assets/Images/depression.png";
-
+import CustomDropdown from "./DropDown";
 function Navbar() {
+  const nav = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
-
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
 
-  const StyledBadge = styled(Badge)(({ theme }) => ({
-    "& .MuiBadge-badge": {
-      right: -3,
-      top: 13,
-      border: `2px solid ${theme.palette.background.paper}`,
-      padding: "0 4px",
-    },
-  }));
+  const goTo = (route) => {
+    nav(route);
+  };
+
+  // const StyledBadge = styled(Badge)(({ theme }) => ({
+  //   "& .MuiBadge-badge": {
+  //     right: -3,
+  //     top: 13,
+  //     border: `2px solid ${theme.palette.background.paper}`,
+  //     padding: "0 4px",
+  //   },
+  // }));
 
   return (
     <nav className="sticky top-0 bg-[#1B5F7C] max-w-full min-w-full text-white h-16 flex justify-between items-center z-50 p-4">
@@ -70,7 +74,7 @@ function Navbar() {
       </div>
 
       {/* Navigation Links for Desktop */}
-      <div className="hidden lg:flex flex-row items-center w-2/3 justify-between">
+      <div className="hidden lg:flex flex-row items-center w-1/2 justify-between">
         <NavLink
           className="navLink no-underline text-white font-semibold text-xl"
           style={({ isActive }) => ({
@@ -96,26 +100,9 @@ function Navbar() {
           })}
           to="/therapist"
         >
-          Therapist
+          Therapists
         </NavLink>
-        <NavLink
-          className="navLink no-underline text-white font-semibold text-xl"
-          style={({ isActive }) => ({
-            borderBottom: isActive ? "1px solid white" : "",
-          })}
-          to="/chatbot"
-        >
-          Chatbot
-        </NavLink>
-        <NavLink
-          className="navLink no-underline text-white font-semibold text-xl"
-          style={({ isActive }) => ({
-            borderBottom: isActive ? "1px solid white" : "",
-          })}
-          to="/forums"
-        >
-          Forums
-        </NavLink>
+
         <NavLink
           className="navLink no-underline text-white font-semibold text-xl"
           style={({ isActive }) => ({
@@ -125,25 +112,20 @@ function Navbar() {
         >
           Articles
         </NavLink>
-        <NavLink
-          className="navLink no-underline text-white font-semibold text-xl"
-          style={({ isActive }) => ({
-            borderBottom: isActive ? "1px solid white" : "",
-          })}
-          to="/journal"
-        >
-          Journal
-        </NavLink>
 
         {/* {!isLogin && ( */}
-        <NavLink
-          to="/login"
-          className="navLink no-underline text-xl lg:text-2xl"
+        <div
+          // onClick={toggleDropDown}
+          className="text-xl lg:text-2xl"
         >
-          <div className="rounded-full bg-[#073143] border p-1 w-12 h-12">
-            <img src={Boy} alt="" className="rounded-full w-full h-full" />
-          </div>
-        </NavLink>
+          <CustomDropdown
+            table={[
+              { option: "SignUp / Login", action: () => goTo("/login") },
+              { option: "User Dashboard", action: () => goTo("/dashboard") },
+              { option: "Admin Dashboard", action: () => goTo("/admin") },
+            ]}
+          />
+        </div>
         {/* )} */}
       </div>
 
@@ -181,28 +163,9 @@ function Navbar() {
           to="/therapist"
           onClick={toggleMenu}
         >
-          Therapist
+          Therapists
         </NavLink>
-        <NavLink
-          className="navLink no-underline text-white font-semibold text-lg py-2 w-full text-center border-b border-gray-600"
-          style={({ isActive }) => ({
-            borderBottom: isActive ? "1px solid white" : "",
-          })}
-          to="/chatbot"
-          onClick={toggleMenu}
-        >
-          Chatbot
-        </NavLink>
-        <NavLink
-          className="navLink no-underline text-white font-semibold text-lg py-2 w-full text-center border-b border-gray-600"
-          style={({ isActive }) => ({
-            borderBottom: isActive ? "1px solid white" : "",
-          })}
-          to="/forums"
-          onClick={toggleMenu}
-        >
-          Forums
-        </NavLink>
+
         <NavLink
           className="navLink no-underline text-white font-semibold text-xl"
           style={({ isActive }) => ({
@@ -214,26 +177,18 @@ function Navbar() {
         </NavLink>
 
         {/* Mobile Menu Icons */}
-
-        <NavLink
-          className="navLink no-underline text-white font-semibold text-xl"
-          style={({ isActive }) => ({
-            borderBottom: isActive ? "1px solid white" : "",
-          })}
-          to="/journal"
-        >
-          Journal
-        </NavLink>
-        {/* {!isLogin && ( */}
-        <NavLink
-          to="/login"
+        <div
           className="navLink no-underline flex justify-center text-xl py-2 w-full text-center border-b border-gray-600"
           onClick={toggleMenu}
         >
-          <div className="rounded-full bg-[#1B5F7C] p-1 w-12 h-12">
-            <img src={Boy} alt="" className="rounded-full w-full h-full" />
-          </div>
-        </NavLink>
+          <CustomDropdown
+            table={[
+              { option: "SignUp / Login", action: () => goTo("/login") },
+              { option: "User Dashboard", action: () => goTo("/dashboard") },
+              { option: "Admin Dashboard", action: () => goTo("/admin") },
+            ]}
+          />
+        </div>
         {/* )} */}
       </div>
     </nav>

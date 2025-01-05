@@ -103,7 +103,7 @@ export default function Therapists() {
         <title>Therapists | Eunoia</title>
         <meta
           name="description"
-          content="Manage therapists on the MindfulMe platform"
+          content="Manage therapists on the Eunoia platform"
         />
       </Helmet>
       <div className="p-6 md:p-12 flex flex-col lg:flex-row gap-8 lg:gap-16">

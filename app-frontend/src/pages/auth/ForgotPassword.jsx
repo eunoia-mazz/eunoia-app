@@ -18,7 +18,7 @@ const ForgotPassword = () => {
         <title>Forgot Password | Eunoia</title>
         <meta
           name="description"
-          content="Manage therapists on the MindfulMe platform"
+          content="Manage therapists on the Eunoia platform"
         />
       </Helmet>
       <div className="min-h-screen bg-[url('/src/assets/Images/herobg6.webp')] bg-no-repeat object-contain flex justify-center items-center">
