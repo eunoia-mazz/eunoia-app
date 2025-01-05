@@ -47,14 +47,14 @@ const ForumDetail = () => {
         <h2 className="text-3xl font-bold text-gray-800">
           {forumQuestion.title}
         </h2>
-        <p className="text-sm text-gray-500 mt-2">
+        <p className="text-sm text-gray-500 mt-2 font-normal">
           Posted by{" "}
           <span className="font-medium text-gray-700">
             {forumQuestion.user}
           </span>{" "}
           on {forumQuestion.date}
         </p>
-        <p className="mt-6 text-lg text-gray-700 leading-relaxed">
+        <p className="mt-6 text-lg font-normal text-gray-700 leading-relaxed">
           {forumQuestion.text}
         </p>
       </div>
@@ -75,7 +75,9 @@ const ForumDetail = () => {
                 <span className="font-medium text-gray-700">{reply.user}</span>{" "}
                 on {reply.date}
               </p>
-              <p className="mt-2 text-gray-800">{reply.text}</p>
+              <p className="mt-2 text-gray-800 font-normal text-base">
+                {reply.text}
+              </p>
             </div>
           ))}
         </div>

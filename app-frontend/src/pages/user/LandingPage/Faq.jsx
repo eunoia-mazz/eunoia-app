@@ -44,9 +44,11 @@ export default function Faq() {
         <p className="w-full text-5xl font-extrabold leading-snug">
           Got <span className="text-blue-500">Questions?</span>
           <br />
-          We've Got <span className="text-green-500">Answers</span>
+          We've Got <span className="text-green-500 ">Answers</span>
         </p>
-        <p className="">We’re here to help you find the answers you need.</p>
+        <p className="font-normal">
+          We’re here to help you find the answers you need.
+        </p>
       </div>
       <div className="w-2/4 flex flex-col flex-wrap md:flex-row justify-center rounded-xl py-10 items-center">
         {faqData.map((item, index) => (

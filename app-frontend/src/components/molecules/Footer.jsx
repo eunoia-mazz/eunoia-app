@@ -54,7 +54,7 @@ function Footer() {
     size = "40px";
   }
   return (
-    <div className="flex max-w-screen xs:max-sm:flex-col flex-wrap h-auto bg-[#1B5F7C]">
+    <div className="flex max-w-screen xs:max-sm:flex-col flex-wrap h-auto bg-[#1B5F7C] ">
       {/* Left */}
       <div className="flex sm:w-4/12  xs-max:sm:w-full h-3/4  sm:py-5 py-2  flex-wrap content-center space-y-3.5 pl-9">
         <p className="w-full text-gray-100  text-xl font-semibold">Follow Us</p>
@@ -96,13 +96,13 @@ function Footer() {
           <p className="text-xl text-white font-semibold w-full">Donations</p>
         </div>
         <div className="xs:text-sm md:text-base">
-          <p className="text-white w-full ">
+          <p className="text-white w-full font-normal text-base">
             <br />
             Donations are very much appreciated. Please consider donating to
             keep the website development going.
           </p>
           <br />
-          <p className="text-gray-400 w-full">
+          <p className="text-gray-400 w-full font-normal text-base">
             Download App for Android and IOS mobile phone
           </p>
         </div>
@@ -111,9 +111,6 @@ function Footer() {
       <div className="my-1 w-full flex justify-center items-center">
         <p className="text-gray-400 xs:text-xs md:text-base ">
           Copyright © 2024 All rights reserved
-          <NavLink to="/" activeClassName="active-link">
-            Link Text
-          </NavLink>
         </p>
       </div>
     </div>

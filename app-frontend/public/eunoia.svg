@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <!-- Solid Background Circle -->
+  <circle cx="60" cy="60" r="55" fill="#4B72FF" />
+
+  <!-- Bold Letter 'E' -->
+  <text x="50%" y="65%" font-size="60" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-weight="bold">E</text>
+
+  <!-- Thin Outer Circle for Emphasis -->
+  <circle cx="60" cy="60" r="52" fill="none" stroke="white" stroke-width="4" />
+</svg>

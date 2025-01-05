@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import TherapistCard from "../../../components/molecules/TherapistCard.jsx";
+import { Helmet } from "react-helmet";
 const therapists = [
   {
     id: 1,
@@ -97,23 +98,32 @@ const therapists = [
 
 export default function Therapists() {
   return (
-    <div className="p-6 md:p-12 flex flex-col lg:flex-row gap-8 lg:gap-16">
-      <div className="w-full lg:w-1/5 flex flex-col gap-4">
-        <div className="px-4">
-          <h1 className="text-lg md:text-xl font-bold mt-2">Filters Here</h1>
+    <>
+      <Helmet>
+        <title>Therapists | Eunoia</title>
+        <meta
+          name="description"
+          content="Manage therapists on the MindfulMe platform"
+        />
+      </Helmet>
+      <div className="p-6 md:p-12 flex flex-col lg:flex-row gap-8 lg:gap-16">
+        <div className="w-full lg:w-1/5 flex flex-col gap-4">
+          <div className="px-4">
+            <h1 className="text-lg md:text-xl font-bold mt-2">Filters Here</h1>
+          </div>
+          <button className="w-full mt-2 bg-[#40A8CD] hover:bg-[#40A8CD] py-2 rounded-md text-white">
+            Apply
+          </button>
         </div>
-        <button className="w-full mt-2 bg-[#40A8CD] hover:bg-[#40A8CD] py-2 rounded-md text-white">
-          Apply
-        </button>
-      </div>
 
-      <div className="w-full lg:w-4/5">
-        <div className="mt-4">
-          {therapists.map((tutor, index) => (
-            <TherapistCard key={index} tutor={tutor} />
-          ))}
+        <div className="w-full lg:w-4/5">
+          <div className="mt-4">
+            {therapists.map((tutor, index) => (
+              <TherapistCard key={index} tutor={tutor} />
+            ))}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

@@ -15,7 +15,7 @@ const TherapistCard = ({ tutor }) => {
   };
 
   return (
-    <div className="mt-12 mx-auto bg-white rounded-lg shadow-lg overflow-hidden p-4 md:p-6">
+    <div className="mt-12 mx-auto bg-white  rounded-lg shadow-lg overflow-hidden p-4 md:p-6">
       <div className="p-4 md:p-6">
         <div className="flex flex-col md:flex-row">
           <div className="md:w-1/4 mb-4 md:mb-0 flex flex-col gap-3 items-start justify-start">
@@ -48,7 +48,7 @@ const TherapistCard = ({ tutor }) => {
             <p className="text-[#40A8CD] font-semibold text-lg">
               {tutor.title}
             </p>
-            <p className="text-header">
+            <p className="font-normal text-base">
               {tutor.description}{" "}
               {/* <a href={`/find-a-tutor/${tutor.id}`} className="text-blue-500">
                 See Full Profile
@@ -73,14 +73,14 @@ const TherapistCard = ({ tutor }) => {
               </p>
               <div className="flex justify-start items-center mt-8">
                 <Clock className="text-green-500 mr-2" />
-                <p className="text-gray">
+                <p className="text-gray font-normal text-base">
                   {" "}
                   {tutor.hoursTutored} hours tutoring
                 </p>
               </div>
               <div className="flex justify-start items-center mt-2">
                 <MessageSquare className="w-4 h-4 text-green-500 mr-2" />
-                <p className="text-gray">
+                <p className="text-gray font-normal text-base">
                   Respond time:
                   <span className="font-bold">{tutor.responseTime}</span>
                 </p>
@@ -95,11 +95,11 @@ const TherapistCard = ({ tutor }) => {
         </div>
         {/* Review Section */}
         <div className="bg-gray-50 rounded-md mt-8">
-          <blockquote className="text-header font-semibold">
+          <blockquote className="font-semibold text-base">
             <span className="text-4xl font-serif text-[#A3D154]">&#8220;</span>
             {tutor.review.quote}
           </blockquote>
-          <p className="mt-2 ml-5 text-header">
+          <p className="mt-2 ml-5 font-normal text-base ">
             {isExpanded || words.length <= wordLimit
               ? tutor.review.details
               : `${words.slice(0, wordLimit).join(" ")}...`}

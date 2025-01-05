@@ -6,6 +6,7 @@ import { styled } from "@mui/material/styles";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 import SearchIcon from "@mui/icons-material/Search";
+import Boy from "../../assets/Images/depression.png";
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -136,10 +137,12 @@ function Navbar() {
 
         {/* {!isLogin && ( */}
         <NavLink
-          to="/reset-password"
+          to="/login"
           className="navLink no-underline text-xl lg:text-2xl"
         >
-          <AccountBoxIcon />
+          <div className="rounded-full bg-[#073143] border p-1 w-12 h-12">
+            <img src={Boy} alt="" className="rounded-full w-full h-full" />
+          </div>
         </NavLink>
         {/* )} */}
       </div>
@@ -223,11 +226,13 @@ function Navbar() {
         </NavLink>
         {/* {!isLogin && ( */}
         <NavLink
-          to="/reset-password"
-          className="navLink no-underline text-xl py-2 w-full text-center border-b border-gray-600"
+          to="/login"
+          className="navLink no-underline flex justify-center text-xl py-2 w-full text-center border-b border-gray-600"
           onClick={toggleMenu}
         >
-          <AccountBoxIcon />
+          <div className="rounded-full bg-[#1B5F7C] p-1 w-12 h-12">
+            <img src={Boy} alt="" className="rounded-full w-full h-full" />
+          </div>
         </NavLink>
         {/* )} */}
       </div>

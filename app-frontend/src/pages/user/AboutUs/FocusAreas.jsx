@@ -55,7 +55,9 @@ function FocusAreas() {
                 <h3 className="text-lg font-semibold text-blue-600">
                   {item.title}
                 </h3>
-                <p className="text-sm text-gray-500 mt-2">{item.description}</p>
+                <p className="text-sm text-gray-500 mt-2 font-normal">
+                  {item.description}
+                </p>
               </CCardText>
             </CCardBody>
           </CCard>

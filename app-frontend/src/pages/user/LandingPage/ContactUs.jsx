@@ -36,23 +36,23 @@ function ContactUs() {
     <div className="w-full bg-gray-300 flex justify-center items-center py-10">
       <div className="w-[80%] flex flex-col  md:flex-row justify-center rounded-xl bg-white py-10 items-center">
         <div className="md:w-1/2 flex justify-start items-center">
-          <div className="h-[80%] md:w-[80%]   text-white rounded-xl bg-gradient-to-b from-blue-950 via-blue-900 to-blue-950 md:relative md:-left-8 p-5 flex flex-col gap-4">
+          <div className="h-[80%] md:w-[80%]  text-white rounded-xl bg-gradient-to-b from-blue-950 via-blue-900 to-blue-950 md:relative md:-left-8 p-5 flex flex-col gap-4">
             <div className="font-semibold text-2xl">Contact Us</div>
             <div className="flex gap-2">
               <EmailIcon />
-              <p>eunoia@gmail.com</p>
+              <p className="font-normal text-base">eunoia@gmail.com</p>
             </div>
             <div className="flex gap-2">
               <WhatsAppIcon />
-              <p>0322-8696218</p>
+              <p className="font-normal text-base">0322-8696218</p>
             </div>
             <div className="flex gap-2">
               <LocalPhoneIcon />
-              <p>0322-8696218</p>
+              <p className="font-normal text-base">0322-8696218</p>
             </div>
             <div className="flex gap-2">
               <PlaceIcon />
-              <p>Jeddah, Saudia Arabia</p>
+              <p className="font-normal text-base">Jeddah, Saudia Arabia</p>
             </div>
             <div className="flex gap-2">
               <SocialIcon url="https://youtube.com/" fgColor="white" />

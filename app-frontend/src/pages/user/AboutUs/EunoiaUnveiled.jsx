@@ -8,7 +8,7 @@ function EunoiaUnveiled() {
           <p className="text-blue-500 font-semibold md:font-bold text-2xl md:text-4xl">
             Eunoia Unveiled
           </p>
-          <p className="text-gray-500 mb-4 text-lg text-justify">
+          <p className="text-gray-500 mb-4 text-lg text-justify font-normal">
             At Eunoia, we believe in fostering mental well-being through
             connection, care, and innovation. Our platform is designed to
             provide a safe, stigma-free space where individuals can explore,
