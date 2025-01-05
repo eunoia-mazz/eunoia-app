@@ -8,7 +8,8 @@ import LandingPage from "./pages/user/LandingPage/LandingPage";
 import AboutUs from "./pages/user/AboutUs/AboutUs";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import ResetPassword from "./pages/auth/ResetPassword";
-import Login_SignUp from "./pages/auth/Login_SignUp";
+import Login from "./pages/auth/Login";
+import SignUp from "./pages/auth/SignUp";
 import Journal from "./pages/user/Journal/Journal";
 import Articles from "./pages/user/Articles/Articles";
 import Forum from "./pages/user/Forum/Forum";
@@ -18,7 +19,9 @@ import TherapistProfile from "./pages/user/Therapist/TherapistProfile";
 
 function App() {
   const location = useLocation();
-  const showNavbar = location.pathname !== "/chatbot";
+  const noHeaderFooterPaths = ["/chatbot", "/auth/login", "/auth/signup"];
+  const showNavbar = !noHeaderFooterPaths.includes(location.pathname);
+
   return (
     <div className="">
       {showNavbar && <Navbar />}
@@ -29,7 +32,8 @@ function App() {
         <Route path="/about" element={<AboutUs />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
-        <Route path="/auth" element={<Login_SignUp />} />
+        <Route path="/auth/login" element={<Login />} />
+        <Route path="/auth/signup" element={<SignUp />} />
         <Route path="/journal" element={<Journal />} />
         <Route path="/articles" element={<Articles />} />
         {/* <Route path="/forum" element={<Forum />} /> */}

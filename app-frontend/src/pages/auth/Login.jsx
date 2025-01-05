@@ -1,7 +1,13 @@
 import React from "react";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
-function Login() {
+import { FaGoogle, FaFacebook, FaLinkedin, FaGithub } from "react-icons/fa";
+import { Mail, Lock } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+
+const Login = () => {
+  const navigate = useNavigate();
+
   const validationSchema = Yup.object({
     email: Yup.string()
       .email("Invalid email address")
@@ -9,111 +15,133 @@ function Login() {
     password: Yup.string()
       .min(6, "Password must be at least 6 characters")
       .required("Password is required"),
-    confirmPassword: Yup.string()
-      .oneOf([Yup.ref("password"), null], "Passwords must match")
-      .required("Confirm Password is required"),
   });
-  return (
-    <div className="min-h-screen flex justify-center items-center w-full ">
-      <div className="flex justify-center items-center w-11/12">
-        <div
-          style={{
-            background: "rgba( 255, 255, 255, 0.35 )",
-            "box-shadow": "0 8px 32px 0 rgba( 31, 38, 135, 0.37 )",
-            "backdrop-filter": "blur( 10px )",
-            "-webkit-backdrop-filter": "blur( 13px )",
-            "border-radius": "10px",
-            border: "1px solid rgba( 255, 255, 255, 0.18 )",
-          }}
-          className="border  border-white/18 rounded-[10px] p-6 max-w-md w-2/3 "
-        >
-          <h2 className="text-2xl font-bold text-center text-blue-500 mb-6">
-            Reset Password
-          </h2>
 
-          <Formik
-            initialValues={{ email: "", password: "", confirmPassword: "" }}
-            validationSchema={validationSchema}
-            onSubmit={(values) => {
-              console.log("Form submitted with values:", values);
-            }}
+  const handleSubmit = (values) => {
+    console.log("Login successful:", values);
+    navigate("/dashboard"); // Redirect after login
+  };
+
+  return (
+    <div className="bg-[url('/src/assets/Images/bg-login.png')] bg-cover bg-center min-h-screen flex items-center justify-center">
+      <div className="bg-white/30 backdrop-blur-xl p-8 rounded-[2rem] shadow-xl w-[500px]">
+        <div className="flex w-full mb-5">
+          <button
+            className="flex-1 py-3 px-6 rounded-full transition-all duration-200 bg-blue-700 text-white"
           >
-            <Form>
-              <div className="mb-4">
-                <label
-                  htmlFor="email"
-                  className="block font-semibold text-sm text-blue-500 mb-2"
-                >
-                  Email Address
-                </label>
+            Sign In
+          </button>
+          <button
+            onClick={() => navigate("/auth/signup")}
+            className="flex-1 py-3 px-6 rounded-full transition-all duration-200 text-white hover:bg-white/20"
+          >
+            Sign Up
+          </button>
+        </div>
+
+        <h1 className="text-2xl font-semibold text-center mb-2 text-white">
+          WELCOME BACK!
+        </h1>
+        <h6 className="text-sm font-semibold text-center mb-8 text-white">
+          AI Powered Mental Health Support Platform
+        </h6>
+
+        <Formik
+          initialValues={{ email: "", password: "" }}
+          validationSchema={validationSchema}
+          onSubmit={handleSubmit}
+        >
+          {({ errors, touched }) => (
+            <Form className="space-y-5">
+              <div className="relative">
+                <div className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400">
+                  <Mail className="w-5 h-5" />
+                </div>
                 <Field
                   type="email"
-                  id="email"
                   name="email"
-                  className="w-full px-4 py-2 rounded-md bg-white bg-opacity-70 text-black border border-gray-300 focus:outline-none focus:border-blue-500"
-                  placeholder="Enter your email"
+                  placeholder="Email Address"
+                  className={`w-full pl-14 pr-6 py-3 rounded-full border-none bg-white shadow-md focus:outline-none focus:ring-2 ${
+                    errors.email && touched.email
+                      ? "focus:ring-red-500"
+                      : "focus:ring-blue-300"
+                  }`}
                 />
                 <ErrorMessage
                   name="email"
-                  component="div"
-                  className="text-red-500 text-xs mt-1"
+                  component="p"
+                  className="text-red-500 text-sm mt-1"
                 />
               </div>
 
-              <div className="mb-4">
-                <label
-                  htmlFor="password"
-                  className="block font-semibold text-sm text-blue-500 mb-2"
-                >
-                  New Password
-                </label>
+              <div className="relative">
+                <div className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400">
+                  <Lock className="w-5 h-5" />
+                </div>
                 <Field
                   type="password"
-                  id="password"
                   name="password"
-                  className="w-full px-4 py-2 rounded-md bg-white bg-opacity-70 text-black border border-gray-300 focus:outline-none focus:border-blue-500"
-                  placeholder="Enter new password"
+                  placeholder="Password"
+                  className={`w-full pl-14 pr-6 py-3 rounded-full border-none bg-white shadow-md focus:outline-none focus:ring-2 ${
+                    errors.password && touched.password
+                      ? "focus:ring-red-500"
+                      : "focus:ring-blue-300"
+                  }`}
                 />
                 <ErrorMessage
                   name="password"
-                  component="div"
-                  className="text-red-500 text-xs mt-1"
+                  component="p"
+                  className="text-red-500 text-sm mt-1"
                 />
               </div>
 
-              <div className="mb-4">
-                <label
-                  htmlFor="confirmPassword"
-                  className="block font-semibold text-sm text-blue-500 mb-2"
-                >
-                  Confirm Password
+              <div className="flex items-center justify-between px-2">
+                <label className="flex items-center space-x-2">
+                  <Field
+                    type="checkbox"
+                    name="rememberMe"
+                    className="w-4 h-4 rounded border-gray-300"
+                  />
+                  <span className="text-sm text-gray-600">Remember me</span>
                 </label>
-                <Field
-                  type="password"
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  className="w-full px-4 py-2 rounded-md bg-white bg-opacity-70 text-black border border-gray-300 focus:outline-none focus:border-blue-500"
-                  placeholder="Confirm your password"
-                />
-                <ErrorMessage
-                  name="confirmPassword"
-                  component="div"
-                  className="text-red-500 text-xs mt-1"
-                />
+                <a href="#" className="text-sm text-blue-600 hover:underline">
+                  Forgot Password
+                </a>
               </div>
 
               <button
                 type="submit"
-                className="w-full py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none"
+                className="w-full py-3 bg-blue-600 text-white text-lg font-medium rounded-full hover:bg-blue-700 transition-colors shadow-lg"
               >
-                Submit
+                Sign In
               </button>
             </Form>
-          </Formik>
+          )}
+        </Formik>
+
+        <div className="mt-6 text-center text-gray-500">Or</div>
+
+        <div className="mt-6 grid grid-cols-2 gap-4">
+          <button className="flex items-center justify-center space-x-2 py-2 px-4 border border-gray-300 rounded-full hover:bg-gray-50">
+            <FaGoogle className="text-red-500" />
+            <span>Google</span>
+          </button>
+          <button className="flex items-center justify-center space-x-2 py-2 px-4 border border-gray-300 rounded-full hover:bg-gray-50">
+            <FaFacebook className="text-blue-600" />
+            <span>Facebook</span>
+          </button>
+          <button className="flex items-center justify-center space-x-2 py-2 px-4 border border-gray-300 rounded-full hover:bg-gray-50">
+            <FaLinkedin className="text-blue-700" />
+            <span>LinkedIn</span>
+          </button>
+          <button className="flex items-center justify-center space-x-2 py-2 px-4 border border-gray-300 rounded-full hover:bg-gray-50">
+            <FaGithub className="text-gray-900" />
+            <span>GitHub</span>
+          </button>
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default Login;
