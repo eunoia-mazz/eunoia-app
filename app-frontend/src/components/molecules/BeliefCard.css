@@ -146,6 +146,7 @@
   text-align: center;
   position: relative;
   border-radius: 10px;
+  cursor: pointer;
   margin-left: 30px;
   width: 220px;
   height: 300px;

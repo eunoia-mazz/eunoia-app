@@ -74,8 +74,7 @@ const TherapistCard = ({ tutor }) => {
               <div className="flex justify-start items-center mt-8">
                 <Clock className="text-green-500 mr-2" />
                 <p className="text-gray font-normal text-base">
-                  {" "}
-                  {tutor.hoursTutored} hours tutoring
+                  {tutor.hoursTutored || 4} sessions conducted
                 </p>
               </div>
               <div className="flex justify-start items-center mt-2">

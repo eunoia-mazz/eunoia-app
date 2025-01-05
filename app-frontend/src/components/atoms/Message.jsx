@@ -9,8 +9,8 @@ function Message({ content }) {
       {content.role === "bot" && (
         <div className="w-[10px] bg-[#2785ad] rounded-l-lg"></div>
       )}
-      <div className="p-3 flex-1">
-        <p>{content.content}</p>
+      <div className="px-2 py-1 flex-1 flex items-center">
+        <p className="font-normal text-base">{content.content}</p>
       </div>
       {content.role !== "bot" && (
         <div className="w-[10px] bg-[#2785ad] rounded-r-lg"></div>

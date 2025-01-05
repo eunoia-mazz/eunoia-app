@@ -5,10 +5,18 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 // import { Switch } from "@/components/ui/switch";
 import { Switch } from "@mui/material";
+import { Helmet } from "react-helmet";
 
 export function Settings() {
   return (
     <DashboardShell>
+      <Helmet>
+        <title>Settings | Dashboard</title>
+        <meta
+          name="description"
+          content="Manage therapists on the Eunoia platform"
+        />
+      </Helmet>
       <DashboardHeader
         heading="Settings"
         text="Manage your account settings and preferences."

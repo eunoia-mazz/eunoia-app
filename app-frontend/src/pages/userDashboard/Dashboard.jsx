@@ -9,10 +9,18 @@ import EarnedBadges from "@/components/user/EarnedBadges";
 import QuickJournalEntry from "@/components/user/QuickJournalEntry";
 import GoalsTracker from "@/components/user/GoalsTracker";
 import WellnessQuote from "@/components/user/WellnessQuote";
+import { Helmet } from "react-helmet";
 
 export default function Dashboard() {
   return (
     <DashboardShell>
+      <Helmet>
+        <title>User Dashboard</title>
+        <meta
+          name="description"
+          content="Manage therapists on the Eunoia platform"
+        />
+      </Helmet>
       <DashboardHeader
         heading="Welcome back, John"
         text="Here's your wellness journey at a glance."

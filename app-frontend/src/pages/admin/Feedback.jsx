@@ -44,7 +44,7 @@ export default function Feedback() {
         <title>Feedback | Admin Dashboard</title>
         <meta
           name="description"
-          content="Manage user feedback and reviews on the MindfulMe platform"
+          content="Manage user feedback and reviews on the Eunoia platform"
         />
       </Helmet>
       <DashboardShell>

@@ -44,7 +44,7 @@ export function Therapist() {
         <title>Therapists | Admin Dashboard</title>
         <meta
           name="description"
-          content="Manage therapists on the MindfulMe platform"
+          content="Manage therapists on the Eunoia platform"
         />
       </Helmet>
       <DashboardShell>

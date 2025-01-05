@@ -10,6 +10,15 @@ import {
 
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
+const therapistsSpecs = {
+  specializations: [
+    "Cognitive Behavioral Therapy (CBT)",
+    "Stress Management",
+    "Anxiety Counseling",
+    "Relationship Therapy",
+  ],
+  ageGroups: ["Children", "Teenagers", "Adults", "Elderly"],
+};
 const reviews = {
   reviews: [
     {
@@ -307,7 +316,7 @@ export default function TherapistProfile() {
 
             <h3 className="text-3xl font-semibold mb-4 mt-8">Awards</h3>
 
-            <div className="px-6 py-8 bg-white border border-stone-100 rounded-lg shadow-md min-w-96">
+            <div className="px-6 py-8 bg-white border border-stone-100 rounded-lg shadow-md min-w-96 w-full">
               <div className="flex items-start mb-10">
                 <div className="w-8 h-8 bg-blue-100 text-[#42ABD1] rounded-full flex items-center justify-center mr-4">
                   M
@@ -405,41 +414,35 @@ export default function TherapistProfile() {
 
             <div className="lg:max-w-sm w-96 px-6 py-4 bg-white rounded-lg shadow-md">
               <h2 className="font-semibold text-gray-900 mb-3  text-lg">
-                Teaching Grades
+                Client Age Groups
               </h2>
               <div className="flex flex-wrap gap-3">
-                <span className="px-4 py-1.5 text-xs font-semibold bg-[#F1F2F4] text-black rounded-full">
-                  Elementary
-                </span>
-                <span className="px-4 py-1.5 text-xs font-semibold bg-[#F1F2F4] text-black rounded-full">
-                  Middle School
-                </span>
-                <span className="px-4 py-1.5 text-xs font-semibold bg-[#F1F2F4] text-black rounded-full">
-                  High School
-                </span>
-                <span className="px-4 py-1.5 text-xs font-semibold bg-[#F1F2F4] text-black rounded-full">
-                  Vocational Training
-                </span>
+                {therapistsSpecs.ageGroups.map((specialization, index) => (
+                  <span
+                    key={index}
+                    className="px-4 py-1.5 text-xs font-semibold bg-[#F1F2F4] text-black rounded-full"
+                  >
+                    {specialization}
+                  </span>
+                ))}
               </div>
             </div>
 
             <div className="lg:max-w-sm w-96 p-6 bg-white rounded-lg shadow-md">
               <h2 className="font-semibold text-gray-900 mb-3  text-lg">
-                Subjects
+                Specializations
               </h2>
               <div className="flex flex-wrap gap-3">
-                <span className="px-4 py-1.5 text-xs font-semibold bg-[#F1F2F4] text-black  rounded-full">
-                  English Speaking
-                </span>
-                <span className="px-4 py-1.5 text-xs font-semibold bg-[#F1F2F4] text-black  rounded-full">
-                  English Listening
-                </span>
-                <span className="px-4 py-1.5 text-xs font-semibold bg-[#F1F2F4] text-black  rounded-full">
-                  English Writing
-                </span>
-                <span className="px-4 py-1.5 text-xs font-semibold bg-[#F1F2F4] text-black  rounded-full">
-                  Vocabulary
-                </span>
+                {therapistsSpecs.specializations.map(
+                  (specialization, index) => (
+                    <span
+                      key={index}
+                      className="px-4 py-1.5 text-xs font-semibold bg-[#F1F2F4] text-black rounded-full"
+                    >
+                      {specialization}
+                    </span>
+                  )
+                )}
               </div>
             </div>
 

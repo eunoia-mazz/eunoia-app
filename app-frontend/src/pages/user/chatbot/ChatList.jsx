@@ -5,8 +5,48 @@ import Chat from "../../../components/atoms/Chat";
 import { NavLink } from "react-router-dom";
 import axios from "axios";
 import useStore from "../../../useStore";
+// const chatTitles = [
+//   "Low Mood",
+//   "Anxiety",
+//   "Stress",
+//   "Overwhelm",
+//   "Loneliness",
+//   "Negative Thoughts",
+//   "Self-Doubt",
+//   "Sadness",
+//   "Grief",
+//   "Social Pressure",
+//   "Burnout",
+//   "Mood Swings",
+//   "Sleep Issues",
+//   "Relationship Anxiety",
+//   "Emotional Overload",
+//   "Self-Care",
+//   "Guilt",
+//   "Fear of Future",
+//   "Imposter Syndrome",
+//   "Pressure",
+// ];
+
 function ChatList() {
   const setCurrentChatId = useStore((state) => state.setCurrentChatId);
+  const [chatTitles, setChatTitles] = useState([
+    {
+      title: "Anxiety",
+      messages: [
+        { sender: "User", message: "I'm feeling anxious" },
+        { sender: "Chatbot", message: "How can I help?" },
+      ],
+    },
+    {
+      title: "Stress",
+      messages: [
+        { sender: "User", message: "I have a lot of stress at work" },
+        { sender: "Chatbot", message: "Let's take it step by step" },
+      ],
+    },
+    // Add more chats here
+  ]);
   const setCurrentChat = useStore((state) => state.setCurrentChat);
   const currentChatId = useStore((state) => state.currentChatId);
   const [chat_ids, setChat_ids] = useState([]);
@@ -63,8 +103,18 @@ function ChatList() {
 
       <div className="w-full flex flex-row h-[90vh] justify-center items-start flex-wrap overflow-hidden overflow-y-auto scrollbar-thin scrollbar-thumb-[#ebebeb] scrollbar-track-[#ffffff]">
         <div className="w-full flex flex-wrap justify-center items-center py-3 pl-2 gap-3">
-          {chat_ids.map((chat, id) => (
+          {/* For API */}
+          {/* {chat_ids.map((chat, id) => (
             <Chat key={id} title={chat} removeChat={removeChat} />
+          ))} */}
+          {/* Dummy */}
+          {chatTitles.map((chat, id) => (
+            <Chat
+              key={id}
+              title={chat.title}
+              messages={chat.messages}
+              removeChat={removeChat}
+            />
           ))}
         </div>
       </div>

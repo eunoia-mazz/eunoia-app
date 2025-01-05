@@ -19,7 +19,7 @@ function Login_SignUp() {
         <title>Authentication | Eunoia</title>
         <meta
           name="description"
-          content="Manage therapists on the MindfulMe platform"
+          content="Manage therapists on the Eunoia platform"
         />
       </Helmet>
       <div className="w-full flex justify-center items-center bg-[url('/src/assets/Images/authbg3.png')] object-cover">

@@ -13,7 +13,7 @@ function AboutUs() {
         <title>About Us | Eunoia</title>
         <meta
           name="description"
-          content="Manage therapists on the MindfulMe platform"
+          content="Manage therapists on the Eunoia platform"
         />
       </Helmet>
       <div className="bg-gray-50">

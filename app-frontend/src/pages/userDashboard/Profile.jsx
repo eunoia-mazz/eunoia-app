@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Helmet } from "react-helmet";
 
 export const metadata = {
   title: "Profile | Mental Health Support",
@@ -29,6 +30,13 @@ export default function Profile() {
 
   return (
     <DashboardShell>
+      <Helmet>
+        <title>Profile | Dashboard</title>
+        <meta
+          name="description"
+          content="Manage therapists on the Eunoia platform"
+        />
+      </Helmet>
       <DashboardHeader
         heading="Profile"
         text="Manage your personal information and preferences."

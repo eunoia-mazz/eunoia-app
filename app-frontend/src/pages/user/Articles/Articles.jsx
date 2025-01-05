@@ -103,7 +103,7 @@ function Articles() {
         <title>Articles | Eunoia</title>
         <meta
           name="description"
-          content="Manage therapists on the MindfulMe platform"
+          content="Manage therapists on the Eunoia platform"
         />
       </Helmet>
       <div className="p-5 bg-blue-50 min-h-screen">
