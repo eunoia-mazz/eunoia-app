@@ -87,7 +87,7 @@ npm start
 
 ### 4. Access the Application
 Once both servers are running, you can access the application at:
-- Frontend: `http://localhost:3000`
+- Frontend: `http://localhost:5173`
 - Backend: `http://localhost:5000`
 
 ---
