@@ -16,6 +16,7 @@ export default function Profile() {
   const [name, setName] = useState("John Doe");
   const [email, setEmail] = useState("john@example.com");
   const [phone, setPhone] = useState("+1 (555) 123-4567");
+  const [religion, setReligion] = useState("Islam");
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -71,6 +72,14 @@ export default function Profile() {
                 type="tel"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="religion">Religion</Label>
+              <Input
+                id="religion"
+                value={religion}
+                onChange={(e) => setReligion(e.target.value)}
               />
             </div>
             <Button type="submit">Save Changes</Button>

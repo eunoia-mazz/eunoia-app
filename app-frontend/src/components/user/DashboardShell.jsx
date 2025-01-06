@@ -9,7 +9,7 @@ import {
 export default function DashboardShell({ children }) {
   return (
     <SidebarProvider>
-      <div className="flex min-h-screen w-full">
+      <div className="flex min-h-screen w-full bg-blue-50">
         <UserSidebar />
         <SidebarInset>
           <div className="flex flex-col flex-1">

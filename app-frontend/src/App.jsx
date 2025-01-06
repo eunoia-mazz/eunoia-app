@@ -38,7 +38,9 @@ function App() {
   const location = useLocation();
   const showNavbar =
     location.pathname !== "/chatbot" &&
-    location.pathname !== "/reset-password" &&
+    location.pathname !== "/signup" &&
+    location.pathname !== "/login" &&
+    location.pathname !== "/forgot-password" &&
     location.pathname !== "/forgot-password" &&
     !/\/dashboard(\/.*)?$/.test(location.pathname) &&
     !/\/admin(\/.*)?$/.test(location.pathname);
@@ -94,3 +96,5 @@ function App() {
 }
 
 export default App;
+
+

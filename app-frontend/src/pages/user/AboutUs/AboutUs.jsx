@@ -3,7 +3,7 @@ import Header from "./Header";
 import FocusAreas from "./FocusAreas";
 import EunoiaUnveiled from "./EunoiaUnveiled";
 import BeliefsNFoundation from "./BeliefsNFoundation";
-import TrustedBy from "./TrustedBy";
+// import TrustedBy from "./TrustedBy";
 import { Helmet } from "react-helmet";
 
 function AboutUs() {
@@ -21,7 +21,7 @@ function AboutUs() {
         <EunoiaUnveiled />
         <FocusAreas />
         <BeliefsNFoundation />
-        <TrustedBy />
+        {/* <TrustedBy /> */}
       </div>
     </>
   );

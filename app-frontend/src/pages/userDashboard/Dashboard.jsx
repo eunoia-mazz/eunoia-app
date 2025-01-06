@@ -22,7 +22,7 @@ export default function Dashboard() {
         />
       </Helmet>
       <DashboardHeader
-        heading="Welcome back, John"
+        heading="Welcome back, Aina"
         text="Here's your wellness journey at a glance."
       >
         <WellnessQuote />

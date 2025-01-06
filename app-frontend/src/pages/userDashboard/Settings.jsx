@@ -38,7 +38,11 @@ export function Settings() {
             <Label htmlFor="push-notifications">Push Notifications</Label>
             <Switch id="push-notifications" />
           </div>
-        </CardContent>
+          <div className="flex items-center justify-between">
+            <CardTitle>Location</CardTitle>
+            <Switch id="location" />
+          </div>
+          </CardContent>
       </Card>
     </DashboardShell>
   );

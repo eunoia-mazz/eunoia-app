@@ -17,7 +17,7 @@ export default function CalendarPage() {
         heading="Calendar"
         text="View and manage your appointments and activities."
       />
-      <div className="p-4 bg-white rounded-lg shadow">
+      <div className="flex justify-center p-4 bg-white rounded-lg shadow ">
         <Calendar />
       </div>
     </DashboardShell>

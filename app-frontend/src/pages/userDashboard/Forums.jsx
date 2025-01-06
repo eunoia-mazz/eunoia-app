@@ -61,7 +61,7 @@ const Forum = () => {
         />
       </Helmet>
       <DashboardHeader
-        heading="Join The Conversation"
+        heading="Heal Together"
         text="Share your thoughts, support others, and grow together."
       />
       <Card>

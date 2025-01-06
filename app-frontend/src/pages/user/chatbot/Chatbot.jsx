@@ -1,5 +1,5 @@
 import React from "react";
-import Background from "../../../assets/Images/chatbot-bg.jpg";
+import Background from "../../../assets/Images/bg-login.png";
 import ChatList from "./ChatList";
 import CurrentChat from "./CurrentChat";
 import { Helmet } from "react-helmet";

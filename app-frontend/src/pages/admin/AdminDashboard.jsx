@@ -27,7 +27,7 @@ export default function AdminDashboard() {
       <DashboardShell>
         <DashboardHeader
           heading="Admin Dashboard"
-          text="Welcome back, Admin. Here's an overview of Eunoia's performance."
+          text="Welcome back, Manahil. Here's an overview of Eunoia's performance."
         ></DashboardHeader>
         <div className="flex flex-wrap gap-6">
           <div className="flex-grow md:basis-[50%] lg:basis-[42.14%]">

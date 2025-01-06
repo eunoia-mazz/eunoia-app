@@ -44,7 +44,7 @@ function ContactUs() {
             </div>
             <div className="flex gap-2">
               <WhatsAppIcon />
-              <p className="font-normal text-base">0322-8696218</p>
+              <p className="font-normal text-base">0306-5187343</p>
             </div>
             <div className="flex gap-2">
               <LocalPhoneIcon />
@@ -52,33 +52,33 @@ function ContactUs() {
             </div>
             <div className="flex gap-2">
               <PlaceIcon />
-              <p className="font-normal text-base">Jeddah, Saudia Arabia</p>
+              <p className="font-normal text-base">Lahore, Pakistan</p>
             </div>
-            <div className="flex gap-2">
-              <SocialIcon url="https://youtube.com/" fgColor="white" />
-              <SocialIcon
+            <div className="flex gap-2 justify-center">
+            <SocialIcon
+                url="https://linkedin.com/company/eunoia-app"
+                fgColor="white"
+              />
+              <SocialIcon url="https://instagram.com/eunoia_mazz" fgColor="white" />
+              {/* <SocialIcon
                 url="https://twitter.com/in/jaketrent"
                 fgColor="white"
-              />
+              /> */}
               <SocialIcon
-                url="https://facebook.com/in/jaketrent"
+                url="https://facebook.com/p/eunoia-mental-health-support-platform-61568029558660/"
                 fgColor="white"
               />
-              <SocialIcon
+              {/* <SocialIcon
                 url="https://upwork.com/in/jaketrent"
                 fgColor="white"
-              />
-              <SocialIcon
-                url="https://linkedin.com/in/jaketrent"
-                fgColor="white"
-              />
+              /> */}
             </div>
           </div>
         </div>
         <div className="md:w-1/2">
           <div className="md:w-[80%] flex flex-col gap-2">
             <p className="text-center max-md:pt-5 font-semibold text-3xl text-blue-900">
-              Healing begins with reching out
+              Healing begins with reaching out
             </p>
             <p className="text-center">
               We're here to listen, guide, and support.

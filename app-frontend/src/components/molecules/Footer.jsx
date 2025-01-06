@@ -60,27 +60,27 @@ function Footer() {
         <p className="w-full text-gray-100  text-xl font-semibold">Follow Us</p>
         <div className="w-full flex flex-row  flex-wrap justify-start  xs:gap-y-5 xs:space-x-2 sm:space-x-4 ">
           <SocialIcon
-            url="https://youtube.com/in/jaketrent"
+            url="https://instagram.com/eunoia_mazz"
             fgColor="white"
             style={{ width: size, height: size }}
           />
-          <SocialIcon
+          {/* <SocialIcon
             url="https://twitter.com/in/jaketrent"
             fgColor="white"
             style={{ width: size, height: size }}
-          />
+          /> */}
           <SocialIcon
-            url="https://facebook.com/in/jaketrent"
+            url="https://facebook.com/p/eunoia-mental-health-support-platform-61568029558660/"
             fgColor="white"
             style={{ width: size, height: size }}
           />
-          <SocialIcon
+          {/* <SocialIcon
             url="https://upwork.com/in/jaketrent"
             fgColor="white"
             style={{ width: size, height: size }}
-          />
+          /> */}
           <SocialIcon
-            url="https://linkedin.com/in/jaketrent"
+            url="https://linkedin.com/company/eunoia-app"
             fgColor="white"
             style={{ width: size, height: size }}
           />
@@ -93,18 +93,18 @@ function Footer() {
       {/* Right */}
       <div className="flex w-6/12 xs:max-sm:w-full  pl-3 sm:py-5 h-3/4 flex-wrap content-center space-y-1 xs:max-sm:pl-9">
         <div>
-          <p className="text-xl text-white font-semibold w-full">Donations</p>
+          <p className="text-xl text-white font-semibold w-full">What We Offer</p>
         </div>
         <div className="xs:text-sm md:text-base">
           <p className="text-white w-full font-normal text-base">
             <br />
-            Donations are very much appreciated. Please consider donating to
-            keep the website development going.
+            Embrace the journey to emotional well-being with personalized support, growth tools, and 
+            spiritual guidance tailored to your needs.
           </p>
           <br />
-          <p className="text-gray-400 w-full font-normal text-base">
+          {/* <p className="text-gray-400 w-full font-normal text-base">
             Download App for Android and IOS mobile phone
-          </p>
+          </p> */}
         </div>
       </div>
       <hr className="text-white w-3/4 mx-auto" />

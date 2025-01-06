@@ -6,6 +6,7 @@ import { Helmet } from "react-helmet";
 
 export function Activities() {
   return (
+    <div className="p-5 bg-blue-50 min-h-screen">
     <DashboardShell>
       <Helmet>
         <title>Activites | Dashboard</title>
@@ -23,5 +24,6 @@ export function Activities() {
         <CompletedActivities className="md:col-span-1" />
       </div>
     </DashboardShell>
+    </div>
   );
 }

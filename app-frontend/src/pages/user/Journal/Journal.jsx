@@ -59,6 +59,7 @@ function Journal() {
   ];
 
   return (
+    <div className="p-5 bg-blue-50 min-h-screen">
     <DashboardShell>
       <Helmet>
         <title>Journal | Dashboard</title>
@@ -122,6 +123,7 @@ function Journal() {
         </div>
       </Card>
     </DashboardShell>
+    </div>
   );
 }
 
