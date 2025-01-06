@@ -1,0 +1,73 @@
+# Byte-compiled files
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environment
+venv/
+env/
+*.env
+*.env.*
+
+# Python cache and logs
+*.log
+*.pot
+*.pyc
+*.pyo
+*.pyd
+
+# Flask cache and logs
+instance/
+*.sqlite3
+*.db
+
+# Static and media files (optional, depending on your setup)
+staticfiles/
+media/
+
+# Pytest cache
+.pytest_cache/
+
+# IDEs and editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*.swn
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Coverage reports
+htmlcov/
+.coverage
+*.cover
+
+# Deployment files
+*.pid
+*.sock
+
+# Pylint and mypy
+pylint.log
+mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+
+# Other build and distribution files
+build/
+dist/
+*.egg-info/
+.eggs/
+*.egg
+
+# Wheel files
+*.whl
+
+# Jupyter Notebooks checkpoints
+.ipynb_checkpoints/
+
+# Gunicorn logs (if used)
+gunicorn-error.log
+gunicorn-access.log
