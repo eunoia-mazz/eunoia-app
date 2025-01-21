@@ -1289,6 +1289,50 @@ def list_forum_messages():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
+@app.route('/get_forum/<int:forum_id>', methods=['GET'])
+def get_forum(forum_id):
+    try:
+        forum = db.session.query(Forum).filter_by(id=forum_id).first()
+        if not forum:
+            return jsonify({"error": "Forum not found"}), 404
+        
+        # Retrieve the user who created the forum
+        user = db.session.query(User).filter_by(id=forum.created_by).first()
+        if not user:
+            return jsonify({"error": "User not found"}), 404
+
+        # Retrieve members of the forum
+        memberships = db.session.query(ForumMembership).filter_by(forum_id=forum_id).all()
+        members = []
+        for membership in memberships:
+            member = db.session.query(User).filter_by(id=membership.user_id).first()
+            if member:
+                members.append({
+                    "user_id": member.id,
+                    "first_name": member.first_name,
+                    "last_name": member.last_name
+                })
+        
+        forum_details = {
+            "id": forum.id,
+            "created_by": {
+                "user_id": user.id,
+                "first_name": user.first_name,
+                "last_name": user.last_name
+            },
+            "created_at": forum.created_at.isoformat(),
+            "category": forum.category,
+            "title": forum.title,
+            "members": members
+        }
+
+        return jsonify(forum_details), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
     
 
 
