@@ -49,7 +49,7 @@ function AdSidebar(props) {
         <SidebarMenu>
           {navItems.map((item) => (
             <SidebarMenuItem key={item.href}>
-              <SidebarMenuButton asChild>
+              <SidebarMenuButton>
                 <Link
                   to={item.href}
                   className={`no-underline flex items-center space-x-3 rounded-lg px-3 py-2 transition-all hover:bg-accent ${

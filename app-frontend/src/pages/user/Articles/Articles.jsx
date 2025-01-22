@@ -1,5 +1,17 @@
 import React, { useState } from "react";
-import image from "../../../assets/Images/hero.webp";
+import mindfullNess from "../../../assets/Images/mindfullNess.jpeg";
+import Anxiety from "../../../assets/Images/Anxiety.jpeg";
+import BenefitsOfJ from "../../../assets/Images/benefitsOfJ.jpeg";
+import exForMH from "../../../assets/Images/exForMH.png";
+import goodSleep from "../../../assets/Images/goodSleep.jpeg";
+import gratitude from "../../../assets/Images/gratitude.jpeg";
+import motivation from "../../../assets/Images/motivation.jpeg";
+import selfCare from "../../../assets/Images/selfCare.png";
+import resilience from "../../../assets/Images/resilience.webp";
+import stressAtWP from "../../../assets/Images/stressAtWP.jpg";
+import negThink from "../../../assets/Images/negThink.jpeg";
+import understandingDep from "../../../assets/Images/understandingDep.jpeg";
+
 import { Helmet } from "react-helmet";
 const articles = [
   {
@@ -7,84 +19,84 @@ const articles = [
     title: "The Power of Mindfulness",
     description:
       "Mindfulness can significantly reduce stress and improve overall mental well-being. Learn how to integrate mindfulness practices into your daily routine.",
-    imageUrl: image,
+    imageUrl: mindfullNess,
   },
   {
     id: 2,
     title: "How to Manage Anxiety",
     description:
       "Anxiety can be overwhelming, but there are many strategies to help manage it. Read about techniques that can reduce anxiety and improve your mental health.",
-    imageUrl: image,
+    imageUrl: Anxiety,
   },
   {
     id: 3,
     title: "The Benefits of Daily Journaling",
     description:
       "Journaling is not just about writing down your thoughts. It can improve emotional clarity, help with stress management, and boost mental health.",
-    imageUrl: image,
+    imageUrl: BenefitsOfJ,
   },
   {
     id: 4,
     title: "Understanding Depression",
     description:
       "Depression can affect anyone. Explore the signs, symptoms, and treatments for depression to understand it better and how to support loved ones.",
-    imageUrl: image,
+    imageUrl: understandingDep,
   },
   {
     id: 5,
     title: "The Importance of Self-Care",
     description:
       "Self-care isn't selfish. It's an essential practice for maintaining mental and physical health. Discover effective self-care techniques that promote balance in life.",
-    imageUrl: image,
+    imageUrl: selfCare,
   },
   {
     id: 6,
     title: "Building Resilience in Tough Times",
     description:
       "Resilience is the ability to bounce back from adversity. Learn how to build mental and emotional resilience that will help you face life's challenges with strength.",
-    imageUrl: image,
+    imageUrl: resilience,
   },
   {
     id: 7,
     title: "Overcoming Negative Thinking",
     description:
       "Negative thinking can affect mental health and happiness. Discover strategies for overcoming negative thought patterns and cultivating a more positive mindset.",
-    imageUrl: image,
+    imageUrl: negThink,
   },
   {
     id: 8,
     title: "How to Improve Your Sleep Quality",
     description:
       "Quality sleep is vital for mental and physical health. Learn tips and techniques to improve your sleep habits and wake up feeling refreshed and energized.",
-    imageUrl: image,
+    imageUrl: goodSleep,
   },
   {
     id: 9,
     title: "The Benefits of Exercise for Mental Health",
     description:
       "Exercise isn't just for physical health; it's also great for your mental well-being. Learn how regular physical activity can reduce stress and improve mood.",
-    imageUrl: image,
+    imageUrl: exForMH,
   },
   {
     id: 10,
     title: "Managing Stress in the Workplace",
     description:
       "Work-related stress is common, but it doesn't have to take over. Find strategies for managing stress in the workplace to maintain your productivity and mental health.",
-    imageUrl: image,
+    imageUrl: stressAtWP,
   },
   {
     id: 11,
     title: "The Power of Gratitude",
     description:
       "Gratitude can have a significant impact on mental health. Discover the benefits of practicing gratitude daily and how it can improve your mindset and outlook on life.",
-    imageUrl: image,
+    imageUrl: gratitude,
   },
   {
     id: 12,
     title: "How to Stay Motivated in Challenging Times",
     description:
       "Staying motivated can be tough, especially during difficult periods. Learn tips and tricks to keep yourself motivated and on track, no matter what challenges you face.",
-    imageUrl: image,
+    imageUrl: motivation,
   },
 ];
 
@@ -128,7 +140,7 @@ function Articles() {
               <img
                 src={article.imageUrl}
                 alt={article.title}
-                className="w-full h-40 object-cover"
+                className="w-full min-h-[264px] max-h-[264px]"
               />
               <div className="flex flex-col justify-between p-4 h-full">
                 <div>

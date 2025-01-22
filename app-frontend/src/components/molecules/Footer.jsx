@@ -86,20 +86,23 @@ function Footer() {
           />
         </div>
         {/*  */}
-        <p className="w-full  text-gray-400">
+        <p className="w-full text-gray-400">
           Eunoia - Mental Health App v1.0.0
         </p>
       </div>
       {/* Right */}
       <div className="flex w-6/12 xs:max-sm:w-full  pl-3 sm:py-5 h-3/4 flex-wrap content-center space-y-1 xs:max-sm:pl-9">
         <div>
-          <p className="text-xl text-white font-semibold w-full">What We Offer</p>
+          <p className="text-xl text-white font-semibold w-full">
+            What We Offer
+          </p>
         </div>
         <div className="xs:text-sm md:text-base">
           <p className="text-white w-full font-normal text-base">
             <br />
-            Embrace the journey to emotional well-being with personalized support, growth tools, and 
-            spiritual guidance tailored to your needs.
+            Embrace the journey to emotional well-being with personalized
+            support, growth tools, and spiritual guidance tailored to your
+            needs.
           </p>
           <br />
           {/* <p className="text-gray-400 w-full font-normal text-base">
@@ -108,9 +111,13 @@ function Footer() {
         </div>
       </div>
       <hr className="text-white w-3/4 mx-auto" />
-      <div className="my-1 w-full flex justify-center items-center">
+      <div className="my-1 w-full flex justify-center items-center gap-8">
         <p className="text-gray-400 xs:text-xs md:text-base ">
           Copyright © 2024 All rights reserved
+        </p>
+        <p className="flex gap-3 text-sm text-right">
+          <NavLink to="/termsOfService">Terms Of Service</NavLink>
+          <NavLink to="/privacyPolicy">Privacy Policy</NavLink>
         </p>
       </div>
     </div>

@@ -53,14 +53,14 @@ const featureData = [
 export default function Features() {
   return (
     <div className="my-10 w-full flex flex-col items-center">
-      <p className="w-full text-5xl font-bold text-blue-500 text-center">
+      <p className="w-full text-5xl font-bold text-blue-500 text-center py-5">
         Empower Your Mind with Eunoia
       </p>
       <p className="w-full text-xl font-semibold text-center mb-5 ">
         A mental health app designed to nurture, uplift, and guide you toward
         well-being
       </p>
-      <div className="w-5/6 flex justify-center items-center ">
+      <div className="w-5/6 flex justify-center items-center">
         <div className="w-full max-w-6xl flex flex-wrap justify-evenly">
           {featureData.map((feature, index) => (
             <div

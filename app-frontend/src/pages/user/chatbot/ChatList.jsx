@@ -5,51 +5,15 @@ import Chat from "../../../components/atoms/Chat";
 import { NavLink } from "react-router-dom";
 import axios from "axios";
 import useStore from "../../../useStore";
-// const chatTitles = [
-//   "Low Mood",
-//   "Anxiety",
-//   "Stress",
-//   "Overwhelm",
-//   "Loneliness",
-//   "Negative Thoughts",
-//   "Self-Doubt",
-//   "Sadness",
-//   "Grief",
-//   "Social Pressure",
-//   "Burnout",
-//   "Mood Swings",
-//   "Sleep Issues",
-//   "Relationship Anxiety",
-//   "Emotional Overload",
-//   "Self-Care",
-//   "Guilt",
-//   "Fear of Future",
-//   "Imposter Syndrome",
-//   "Pressure",
-// ];
 
 function ChatList() {
   const setCurrentChatId = useStore((state) => state.setCurrentChatId);
-  const [chatTitles, setChatTitles] = useState([
-    {
-      title: "Anxiety",
-      messages: [
-        { sender: "User", message: "I'm feeling anxious" },
-        { sender: "Chatbot", message: "How can I help?" },
-      ],
-    },
-    {
-      title: "Stress",
-      messages: [
-        { sender: "User", message: "I have a lot of stress at work" },
-        { sender: "Chatbot", message: "Let's take it step by step" },
-      ],
-    },
-    // Add more chats here
-  ]);
+  const clientId = useStore((state) => state.clientId);
   const setCurrentChat = useStore((state) => state.setCurrentChat);
   const currentChatId = useStore((state) => state.currentChatId);
   const [chat_ids, setChat_ids] = useState([]);
+  // const [chatTitles, setChatTitle] = useState([]);
+  const [chats, setChats] = useState([]);
   function removeChat(chatId) {
     setChat_ids((prevChatIds) => prevChatIds.filter((id) => id !== chatId));
   }
@@ -58,7 +22,7 @@ function ChatList() {
     setCurrentChat([]);
     axios
       .post("http://localhost:5000/create_chat", {
-        client_id: 1,
+        user_id: clientId,
       })
       .then((data) => {
         console.log("data", data);
@@ -70,23 +34,30 @@ function ChatList() {
       });
   }
   useEffect(() => {
+    console.log("clientId clientId", clientId);
     function getAllChats() {
       axios
         .post("http://localhost:5000/get_all_chats", {
-          client_id: 1,
+          user_id: clientId,
         })
         .then((response) => {
-          const chats = response.data.chat_ids;
-          setChat_ids(chats);
+          console.log("response huh", response);
+          const chats = response.data.chats;
+          setChats(chats);
+          // const chatIds = chats.map((item) => item.chat_id);
+          // const chatTit = chats.map((item) => item.title);
+          // console.log("chatIds", chatIds);
+          // setChat_ids(chatIds);
+          // setChatTitle(chatTit);
           console.log("nope", response);
         })
         .catch((err) => {
           console.log(err);
         });
     }
-
     getAllChats();
-  }, [currentChatId, chat_ids]);
+    console.log("chat_ids", chat_ids);
+  }, [currentChatId, chats, chat_ids]);
   return (
     <div className="flex w-1/5 bg-white text-[#1B5F7C] min-h-screen flex-wrap justify-center">
       <div className="w-5/6 h-[10vh] flex justify-between items-center">
@@ -104,18 +75,23 @@ function ChatList() {
       <div className="w-full flex flex-row h-[90vh] justify-center items-start flex-wrap overflow-hidden overflow-y-auto scrollbar-thin scrollbar-thumb-[#ebebeb] scrollbar-track-[#ffffff]">
         <div className="w-full flex flex-wrap justify-center items-center py-3 pl-2 gap-3">
           {/* For API */}
-          {/* {chat_ids.map((chat, id) => (
-            <Chat key={id} title={chat} removeChat={removeChat} />
-          ))} */}
+          {/* {chat_ids &&
+            chat_ids.map((chat, id) => (
+              <Chat key={id} title={chat} removeChat={removeChat} />
+            ))} */}
+          {chats &&
+            chats.map((chat, id) => (
+              <Chat key={id} info={chat} removeChat={removeChat} />
+            ))}
           {/* Dummy */}
-          {chatTitles.map((chat, id) => (
+          {/* {chatTitles.map((chat, id) => (
             <Chat
               key={id}
               title={chat.title}
               messages={chat.messages}
               removeChat={removeChat}
             />
-          ))}
+          ))} */}
         </div>
       </div>
     </div>

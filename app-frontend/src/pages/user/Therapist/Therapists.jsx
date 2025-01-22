@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import TherapistCard from "../../../components/molecules/TherapistCard.jsx";
 import { Helmet } from "react-helmet";
+import therapist from "../../../assets/Images/therapist.png";
+import therapistW from "../../../assets/Images/therapistW.png";
 const therapists = [
   {
     id: 1,
@@ -8,7 +10,7 @@ const therapists = [
     title: "Certified Cognitive Behavioral Therapist",
     description:
       "Experienced in helping clients with anxiety, depression, and stress management.",
-    image: "https://via.placeholder.com/150",
+    image: therapist,
     rating: {
       stars: 5,
       value: 4.9,
@@ -26,12 +28,35 @@ const therapists = [
     },
   },
   {
+    id: 4,
+    name: "Emily White",
+    title: "Licensed Clinical Social Worker",
+    description:
+      "Specializes in family therapy, addiction counseling, and mental health support.",
+    image: therapistW,
+    rating: {
+      stars: 4,
+      value: 4.5,
+      count: 80,
+    },
+    isAvailable: true,
+    rate: 35,
+    hoursTherapized: 180,
+    responseTime: "30 minutes",
+    review: {
+      quote: "Emily’s approach is incredibly supportive and non-judgmental!",
+      reviewer: "David Wilson",
+      details:
+        "Emily’s sessions are interactive and full of practical tools to manage emotions. I’ve never felt so understood before!",
+    },
+  },
+  {
     id: 2,
     name: "Jane Smith",
     title: "Licensed Psychotherapist",
     description:
       "Specializes in trauma recovery, relationship counseling, and personal growth.",
-    image: "https://via.placeholder.com/150",
+    image: therapist,
     rating: {
       stars: 4,
       value: 4.7,
@@ -54,7 +79,7 @@ const therapists = [
     title: "Trauma Specialist",
     description:
       "PhD in psychology with a passion for helping individuals cope with trauma and PTSD.",
-    image: "https://via.placeholder.com/150",
+    image: therapist,
     rating: {
       stars: 5,
       value: 5.0,
@@ -69,29 +94,6 @@ const therapists = [
       reviewer: "Sarah Lee",
       details:
         "Michael has an incredible way of explaining difficult concepts and helping people understand their emotions. His support has been invaluable to me.",
-    },
-  },
-  {
-    id: 4,
-    name: "Emily White",
-    title: "Licensed Clinical Social Worker",
-    description:
-      "Specializes in family therapy, addiction counseling, and mental health support.",
-    image: "https://via.placeholder.com/150",
-    rating: {
-      stars: 4,
-      value: 4.5,
-      count: 80,
-    },
-    isAvailable: true,
-    rate: 35,
-    hoursTherapized: 180,
-    responseTime: "30 minutes",
-    review: {
-      quote: "Emily’s approach is incredibly supportive and non-judgmental!",
-      reviewer: "David Wilson",
-      details:
-        "Emily’s sessions are interactive and full of practical tools to manage emotions. I’ve never felt so understood before!",
     },
   },
 ];
@@ -118,8 +120,8 @@ export default function Therapists() {
 
         <div className="w-full lg:w-4/5">
           <div className="mt-4">
-            {therapists.map((tutor, index) => (
-              <TherapistCard key={index} tutor={tutor} />
+            {therapists.map((therapist, index) => (
+              <TherapistCard key={index} therapist={therapist} />
             ))}
           </div>
         </div>

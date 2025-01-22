@@ -37,22 +37,22 @@ export default function UserMoodDistribution({ className }) {
           <PieChart>
             <Pie
               data={data}
-              cx="50%" // Center the pie chart
-              cy="50%" // Center the pie chart vertically
-              labelLine={false} // Disable lines between slices and labels
-              outerRadius={80} // Set radius of pie slices
-              fill="#8884d8" // Default color for slices (overridden by Cell below)
-              dataKey="value" // Key used to determine the value of each slice
+              cx="50%"
+              cy="50%"
+              labelLine={false}
+              outerRadius={80}
+              fill="#8884d8"
+              dataKey="value"
             >
               {data.map((entry, index) => (
                 <Cell
                   key={`cell-${index}`}
                   fill={COLORS[index % COLORS.length]}
-                /> // Color slices
+                />
               ))}
             </Pie>
-            <Tooltip /> // Show value and name when hovered over the slices
-            <Legend /> // Show legend for each color with its label (mood)
+            <Tooltip />
+            <Legend />
           </PieChart>
         </ResponsiveContainer>
       </CardContent>

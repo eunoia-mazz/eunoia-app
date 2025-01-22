@@ -31,7 +31,6 @@ const therapists = [
   },
 ];
 
-// Button component, added here for completeness
 function Button({ children, variant = "solid", size = "md", ...props }) {
   const baseStyle = "rounded px-4 py-2 transition duration-200";
   const styles = {
@@ -59,7 +58,6 @@ function TherapistOverview({ className }) {
           <h2 className="text-xl font-bold">Therapist Overview</h2>
           <p className="text-sm text-gray-500">Manage and monitor therapists</p>
         </div>
-        {/* <Button>Add Therapist</Button> */}
       </div>
       <div className="space-y-4">
         {therapists.map((therapist) => (
@@ -68,15 +66,8 @@ function TherapistOverview({ className }) {
             className="flex items-center justify-between space-x-4"
           >
             <div className="flex items-center space-x-4">
-              <Avatar src={john}>
-                {/* <span className="text-white font-bold">
-                  {therapist.name
-                    .split(" ")
-                    .map((n) => n[0])
-                    .join("")}
-                </span> */}
-              </Avatar>
-              <div className="-space-y-3">
+              <Avatar src={john}></Avatar>
+              <div className="space-y-3">
                 <p className="font-medium">{therapist.name}</p>
                 <p className="text-xs text-gray-500 font-normal">
                   {therapist.specialization}
@@ -87,7 +78,10 @@ function TherapistOverview({ className }) {
               <span className="text-sm font-medium">
                 {therapist.patients} patients
               </span>
-              <Button variant="outline" size="sm">
+              <Button
+                size="sm"
+                className="bg-blue-500 text-white px-3 py-2 rounded-md"
+              >
                 View
               </Button>
             </div>

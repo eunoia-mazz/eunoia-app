@@ -19,8 +19,8 @@ export default {
       },
       colors: {
         "custom-blue": "rgba( 255, 255, 255, 0.1 )",
-        // background: "hsl(var(--background))",
-        // foreground: "hsl(var(--foreground))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
@@ -103,4 +103,10 @@ export default {
     },
   },
   plugins: [require("tailwind-scrollbar"), require("tailwindcss-animate")],
+  variants: {
+    extend: {
+      backgroundColor: ["hover", "focus"], // Enable hover variants for background color
+      textColor: ["hover", "focus"], // Enable hover variants for text color
+    },
+  },
 };

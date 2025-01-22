@@ -1,6 +1,5 @@
 import React from "react";
-import "@coreui/coreui/dist/css/coreui.min.css";
-import { CCard, CCardImage, CCardBody, CCardText } from "@coreui/react";
+// import "@coreui/coreui/dist/css/coreui.min.css";
 import cbt from "../../../assets/Images/cbt.jpg";
 import meditation from "../../../assets/Images/meditation.jpeg";
 import depression from "../../../assets/Images/depression.png";
@@ -9,7 +8,7 @@ function FocusAreas() {
   return (
     <div className="my-10 w-full  flex justify-center items-center flex-wrap">
       <div className="w-full text-center my-5">
-        <p className="text-3xl md:text-5xl font-bold text-blue-500">
+        <p className="text-blue-500 font-semibold md:font-bold text-2xl md:text-4xl">
           What We Care About
         </p>
         <p className="text-gray-500">Nurturing minds, fostering well-being.</p>
@@ -41,26 +40,26 @@ function FocusAreas() {
             image: cbt,
           },
         ].map((item, index) => (
-          <CCard
+          <div
             style={{ width: "18rem" }}
-            className="min-h-[370px] cursor-pointer"
+            className="min-h-[370px] cursor-pointer border p-2 rounded-md flex items-center justify-center flex-col"
           >
-            <CCardImage
+            <img
               orientation="top"
               src={item.image}
               className="object-contain h-52 w-52"
             />
-            <CCardBody>
-              <CCardText>
+            <div>
+              <div>
                 <h3 className="text-lg font-semibold text-blue-600">
                   {item.title}
                 </h3>
                 <p className="text-sm text-gray-500 mt-2 font-normal">
                   {item.description}
                 </p>
-              </CCardText>
-            </CCardBody>
-          </CCard>
+              </div>
+            </div>
+          </div>
         ))}
       </div>
     </div>

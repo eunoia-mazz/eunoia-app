@@ -6,6 +6,7 @@ import PlaceIcon from "@mui/icons-material/Place";
 import { SocialIcon } from "react-social-icons";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import axios from "axios";
 
 function ContactUs() {
   // Initial Values
@@ -28,19 +29,33 @@ function ContactUs() {
   });
   // Submit Handler
   const onSubmit = (values, { resetForm }) => {
-    console.log("Form Data", values);
-    alert("Form Submitted Successfully!");
+    console.log(values);
+    axios
+      .post("http://localhost:5000/contact_us", values, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then((res) => {
+        console.log(res);
+        alert("Form submitted successfully....");
+      })
+      .catch((err) => {
+        console.log(err);
+        alert("nah");
+      });
+
     resetForm();
   };
   return (
     <div className="w-full bg-gray-300 flex justify-center items-center py-10">
       <div className="w-[80%] flex flex-col  md:flex-row justify-center rounded-xl bg-white py-10 items-center">
-        <div className="md:w-1/2 flex justify-start items-center">
-          <div className="h-[80%] md:w-[80%]  text-white rounded-xl bg-gradient-to-b from-blue-950 via-blue-900 to-blue-950 md:relative md:-left-8 p-5 flex flex-col gap-4">
+        <div className="md:w-1/2 w-full flex justify-center md:justify-start items-center">
+          <div className="w-11/12 mx-2 h-[80%] md:w-[80%] text-white rounded-xl bg-gradient-to-b from-blue-950 via-blue-900 to-blue-950 md:relative md:-left-8 p-5 flex flex-col gap-10">
             <div className="font-semibold text-2xl">Contact Us</div>
             <div className="flex gap-2">
               <EmailIcon />
-              <p className="font-normal text-base">eunoia@gmail.com</p>
+              <p className="font-normal text-base">team.eunoia.ai@gmail.com</p>
             </div>
             <div className="flex gap-2">
               <WhatsAppIcon />
@@ -55,11 +70,14 @@ function ContactUs() {
               <p className="font-normal text-base">Lahore, Pakistan</p>
             </div>
             <div className="flex gap-2 justify-center">
-            <SocialIcon
+              <SocialIcon
                 url="https://linkedin.com/company/eunoia-app"
                 fgColor="white"
               />
-              <SocialIcon url="https://instagram.com/eunoia_mazz" fgColor="white" />
+              <SocialIcon
+                url="https://instagram.com/eunoia_mazz"
+                fgColor="white"
+              />
               {/* <SocialIcon
                 url="https://twitter.com/in/jaketrent"
                 fgColor="white"

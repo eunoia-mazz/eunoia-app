@@ -7,6 +7,9 @@ import {
   MapPinIcon,
   BanknotesIcon,
 } from "@heroicons/react/24/outline";
+import therapistM from "../../../assets/Images/therapist.png";
+import therapistW from "../../../assets/Images/therapistW.png";
+import therapistAAbout from "../../../assets/Images/therapistAbout.jpg";
 
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
@@ -56,6 +59,7 @@ const therapistData = {
     {
       id: 1,
       name: "John Doe",
+      image: therapistM,
       description: "Experienced therapist with over 10 years of practice.",
       rate: 25,
       rating: 4.5,
@@ -63,8 +67,9 @@ const therapistData = {
       membershipDuration: "3 months",
     },
     {
-      id: 2,
-      name: "Jane Smith",
+      id: 4,
+      name: "Emily White",
+      image: therapistW,
       description: "Specialized in therapy for anxiety and depression.",
       rate: 30,
       rating: 4.8,
@@ -72,8 +77,9 @@ const therapistData = {
       membershipDuration: "1 year",
     },
     {
-      id: 3,
-      name: "Alice Johnson",
+      id: 2,
+      name: "Jane Smith",
+      image: therapistM,
       description:
         "Passionate about supporting individuals through personal growth.",
       rate: 20,
@@ -82,8 +88,9 @@ const therapistData = {
       membershipDuration: "6 months",
     },
     {
-      id: 4,
-      name: "Bob Brown",
+      id: 3,
+      name: "Michael Brown",
+      image: therapistM,
       description: "Certified therapist with a focus on trauma recovery.",
       rate: 28,
       rating: 4.7,
@@ -106,9 +113,9 @@ export default function TherapistProfile() {
     <div className="bg-gray-100 min-h-screen py-8 px-4 rounded-lg overflow-auto">
       <div className="max-w-7xl mx-auto bg-white lg:p-16 p-4 rounded-lg shadow-md overflow-auto">
         <div className="flex flex-col md:flex-row gap-8 md:gap-16 items-center mt-4 ml-4">
-          <div className="w-32 h-32 md:w-48 md:h-48 bg-black">
+          <div className="w-32 h-32 md:w-48 md:h-48 ">
             <img
-              src="https://via.placeholder.com/150"
+              src={therapist.image}
               alt=""
               className="object-fill w-32 h-32 md:w-48 md:h-48"
             />
@@ -141,7 +148,7 @@ export default function TherapistProfile() {
               </div>
             </div>
             <div className="flex flex-col md:flex-row gap-3 mt-2">
-              <button className="bg-none border border-stone-300 text-white  px-6 md:px-8 py-2 rounded-md">
+              <button className="bg-none border border-stone-300 text-white bg-blue-500 hover:bg-blue-400  px-6 md:px-8 py-2 rounded-md">
                 Message
               </button>
               <button className="bg-green-500 text-white  hover:bg-green-400 px-6 md:px-10 py-3 rounded-md">
@@ -157,11 +164,7 @@ export default function TherapistProfile() {
         <div className="flex xl:flex-row flex-col gap-20 justify-between items-center">
           <div className="w-4/6 flex gap-6 flex-col justify-center items-start">
             <div>
-              <img
-                src="https://via.placeholder.com/150"
-                alt=""
-                className="w-3/5 h-3/5"
-              />
+              <img src={therapistAAbout} alt="" className="w-3/5 h-3/5" />
               <div className="py-8">
                 <p className="text-sm text-stone-400 font-normal">
                   Hello, my name is Nicole Wells, and I am a licensed therapist
@@ -521,7 +524,7 @@ export default function TherapistProfile() {
             ))}
 
             <div className="flex justify-center items-center mt-2">
-              <button className="bg-[#42ABD1] text-white px-12  rounded-md text-sm">
+              <button className="bg-[#42ABD1] text-white px-12  py-3 rounded-md text-sm">
                 View All
               </button>
             </div>

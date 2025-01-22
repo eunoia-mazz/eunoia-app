@@ -75,7 +75,10 @@ export default function Feedback() {
                     <TableCell>{feedback.rating} / 5</TableCell>
                     <TableCell>{feedback.date}</TableCell>
                     <TableCell>
-                      <Button variant="outline" size="sm">
+                      <Button
+                        size="sm"
+                        className="bg-blue-500 text-white hover:bg-blue-600"
+                      >
                         Respond
                       </Button>
                     </TableCell>

@@ -1,7 +1,9 @@
 import { Card } from "@/components/ui/card";
 import DashboardHeader from "@/components/user/DashboardHeader";
 import DashboardShell from "@/components/user/DashboardShell";
-import React, { useState } from "react";
+import useStore from "@/useStore";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 
@@ -9,36 +11,10 @@ const Forum = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [forumTitle, setForumTitle] = useState("");
   const [forumCategory, setForumCategory] = useState("Health");
+  const [forums, setForums] = useState([]);
+  const clientId = useStore((state) => state.clientId);
 
-  // Sample predefined categories
-  const categories = ["Health", "Technology", "Lifestyle", "Mental Well-being"];
-
-  const forums = [
-    {
-      id: 1,
-      title: "The Power of Mindfulness",
-      category: "Mental Well-being",
-      date: "12/12/2024",
-    },
-    {
-      id: 2,
-      title: "How to Manage Anxiety",
-      category: "Mental Well-being",
-      date: "12/11/2024",
-    },
-    {
-      id: 3,
-      title: "The Benefits of Daily Journaling",
-      category: "Lifestyle",
-      date: "12/10/2024",
-    },
-    {
-      id: 4,
-      title: "Understanding Depression",
-      category: "Health",
-      date: "12/09/2024",
-    },
-  ];
+  const categories = ["Physical Health", "Mental Health"];
 
   // Handle opening and closing the modal
   const openModal = () => setIsModalOpen(true);
@@ -50,7 +26,36 @@ const Forum = () => {
     console.log("New Forum Created:", forumTitle, forumCategory);
     closeModal();
   };
-
+  const getAllForums = () => {
+    axios
+      .get(`http://localhost:5000/list_forums`)
+      .then((res) => {
+        console.log(res.data);
+        setForums(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  const createForum = () => {
+    axios
+      .post(`http://localhost:5000/create_forum`, {
+        created_by: clientId,
+        category: forumCategory,
+        title: forumTitle,
+      })
+      .then((res) => {
+        console.log(res.data);
+        setForums((prevForums) => [...prevForums, res.data]);
+      })
+      .catch((err) => {
+        console.log("Err", err);
+      });
+    // getAllForums();
+  };
+  useEffect(() => {
+    getAllForums();
+  }, []);
   return (
     <DashboardShell>
       <Helmet>
@@ -83,17 +88,19 @@ const Forum = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {forums.map((forum) => (
               <Link
-                key={forum.id}
-                to={`/forum/${forum.id}`}
+                key={forum.forum_id}
+                to={`/dashboard/forum/${forum.forum_id}`}
                 className="no-underline"
               >
-                <div className="bg-white border-2 border-gray-300 rounded-lg p-6 shadow-md hover:shadow-lg transition-all">
-                  <h2 className="text-xl font-semibold">{forum.title}</h2>
+                <div className="bg-white border-2 min-h-[160px] border-gray-300 rounded-lg p-6 shadow-md hover:shadow-lg transition-all">
+                  <h2 className="text-2xl font-semibold line-clamp-2 overflow-hidden text-blue-600">
+                    {forum.title}
+                  </h2>
                   <p className="text-sm text-gray-500">
                     Category: {forum.category}
                   </p>
-                  <p className="text-xs text-gray-400">
-                    Posted on {forum.date}
+                  <p className="text-xs text-gray-800">
+                    Posted on {new Date(forum.created_at).toLocaleDateString()}
                   </p>
                 </div>
               </Link>
@@ -146,12 +153,13 @@ const Forum = () => {
                     <button
                       type="button"
                       onClick={closeModal}
-                      className="bg-gray-300 text-white px-4 py-2 rounded-lg hover:bg-blue-400"
+                      className=" text-white px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600"
                     >
                       Cancel
                     </button>
                     <button
                       type="submit"
+                      onClick={createForum}
                       className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all"
                     >
                       Create Forum

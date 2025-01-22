@@ -8,8 +8,10 @@ import CloseIcon from "@mui/icons-material/Close";
 import SearchIcon from "@mui/icons-material/Search";
 import Boy from "../../assets/Images/depression.png";
 import CustomDropdown from "./DropDown";
+import useStore from "@/useStore";
 function Navbar() {
   const nav = useNavigate();
+  const isAdmin = useStore((state) => state.isAdmin);
   const [isOpen, setIsOpen] = useState(false);
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -121,8 +123,14 @@ function Navbar() {
           <CustomDropdown
             table={[
               { option: "SignUp / Login", action: () => goTo("/login") },
-              { option: "User Dashboard", action: () => goTo("/dashboard") },
-              { option: "Admin Dashboard", action: () => goTo("/admin") },
+              {
+                option: "User Dashboard",
+                action: () => goTo("/dashboard"),
+              },
+              {
+                option: "Admin Dashboard",
+                action: () => goTo("/admin"),
+              },
             ]}
           />
         </div>

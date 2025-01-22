@@ -36,8 +36,9 @@ const CustomDropdown = ({ table }) => {
           onClick={toggleDropdown}
           className="inline-flex justify-center w-full p-2 text-gray-400 rounded-full bg-transparent hover:text-gray-300 focus:outline-none"
         >
-          {location.pathname == "/chatbot" && <MoreVertIcon />}
-          {location.pathname == "/" && (
+          {location.pathname == "/chatbot" ? (
+            <MoreVertIcon />
+          ) : (
             <div className="rounded-full bg-[#073143] border p-1 w-12 h-12">
               <img src={Boy} alt="" className="rounded-full w-full h-full" />
             </div>
@@ -46,7 +47,7 @@ const CustomDropdown = ({ table }) => {
       </div>
 
       {isOpen && (
-        <div className="absolute right-0 z-10 mt-2 w-40 origin-top-right bg-[#1B5F7C] text-white-300 rounded-md shadow-lg">
+        <div className="absolute right-0 z-10 mt-2 w-40 bg-[#1B5F7C] text-white-300 rounded-md shadow-lg">
           <div className="py-1">
             {table.map(({ option, action }) => (
               <button

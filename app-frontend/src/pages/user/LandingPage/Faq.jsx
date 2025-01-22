@@ -39,18 +39,18 @@ const faqData = [
 
 export default function Faq() {
   return (
-    <div className="w-full flex flex-wrap justify-evenly items-center py-10">
-      <div className="flex flex-wrap w-1/4">
+    <div className="w-full lg:flex-row text-center flex-col flex flex-wrap justify-evenly items-center py-10">
+      <div className="flex flex-wrap lg:w-1/4">
         <p className="w-full text-5xl font-extrabold leading-snug">
           Got <span className="text-blue-500">Questions?</span>
           <br />
           We've Got <span className="text-green-500 ">Answers</span>
         </p>
-        <p className="font-normal">
-          We’re here to help you find the answers you need.
+        <p className="font-normal w-full text-center">
+          We're here to help you find the answers you need.
         </p>
       </div>
-      <div className="w-2/4 flex flex-col flex-wrap md:flex-row justify-center rounded-xl py-10 items-center">
+      <div className="lg:w-1/2 lg:px-0 px-6 flex flex-col flex-wrap md:flex-row justify-center rounded-xl py-10 items-center">
         {faqData.map((item, index) => (
           <Accordion
             key={index}
@@ -64,7 +64,7 @@ export default function Faq() {
             >
               {item.question}
             </AccordionSummary>
-            <AccordionDetails className="text-gray-500">
+            <AccordionDetails className="text-gray-500 text-left">
               {item.answer}
             </AccordionDetails>
           </Accordion>

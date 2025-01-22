@@ -1,7 +1,7 @@
 import React from "react";
 import "./Stepper.css";
 import quotes from "../../../assets/Images/quotes.png";
-const TestimonialStepper = ({ activeStep, setActiveStep, testimonials }) => {
+const Stepper = ({ activeStep, setActiveStep, testimonials }) => {
   const handleNext = () => {
     setActiveStep((prev) => (prev < testimonials.length - 1 ? prev + 1 : prev));
   };
@@ -47,4 +47,4 @@ const TestimonialStepper = ({ activeStep, setActiveStep, testimonials }) => {
   );
 };
 
-export default TestimonialStepper;
+export default Stepper;

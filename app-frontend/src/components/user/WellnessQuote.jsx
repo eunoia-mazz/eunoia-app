@@ -28,12 +28,12 @@ function WellnessQuote() {
   }, []);
 
   return (
-    <Card className="bg-primary text-primary-foreground">
+    <Card className="bg-blue-500">
       <CardContent className="flex items-start space-x-4 p-6">
-        <Quote className="h-8 w-8 mt-1 flex-shrink-0" />
+        <Quote className="h-8 w-8 mt-1 flex-shrink-0 text-white" />
         <div>
-          <p className="text-lg font-medium">{quote.text}</p>
-          <p className="mt-2 text-sm opacity-90">— {quote.author}</p>
+          <p className="text-lg font-medium text-white">{quote.text}</p>
+          <p className="mt-2 text-sm opacity-90 text-white">— {quote.author}</p>
         </div>
       </CardContent>
     </Card>

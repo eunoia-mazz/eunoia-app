@@ -7,6 +7,15 @@ const activities = [
   { id: 4, name: "Mood Check-in", engagement: 92, completionRate: 88 },
   { id: 5, name: "Sleep Tracker", engagement: 70, completionRate: 62 },
 ];
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
 
 export default function ActivityEngagement({ className }) {
   return (
@@ -18,31 +27,36 @@ export default function ActivityEngagement({ className }) {
             User engagement with various activities
           </p>
         </div>
-        {/* <button className="btn">Add Activity</button> */}
       </div>
-      <div className="card-content">
-        <table className="table">
-          <thead>
-            <tr>
-              <th>Activity Name</th>
-              <th>Engagement Rate (%)</th>
-              <th>Completion Rate (%)</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
+      <div>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableCell>Activity Name</TableCell>
+              <TableCell>Engagement Rate (%)</TableCell>
+              <TableCell>Completion Rate (%)</TableCell>
+              <TableCell>Actions</TableCell>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
             {activities.map((activity) => (
-              <tr key={activity.id}>
-                <td>{activity.name}</td>
-                <td>{activity.engagement}%</td>
-                <td>{activity.completionRate}%</td>
-                <td>
-                  <button className="btn-outline btn-sm">Edit</button>
-                </td>
-              </tr>
+              <TableRow key={activity.id}>
+                <TableCell>{activity.name}</TableCell>
+                <TableCell>{activity.engagement}%</TableCell>
+                <TableCell>{activity.completionRate}%</TableCell>
+                <TableCell>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="mr-2 bg-blue-500 text-white"
+                  >
+                    Edit
+                  </Button>
+                </TableCell>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
     </div>
   );

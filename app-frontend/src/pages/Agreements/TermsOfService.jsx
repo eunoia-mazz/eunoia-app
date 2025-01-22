@@ -178,9 +178,9 @@ const TermsOfService = () => {
         </h2>
         <p className="text-gray-700 text-base font-normal mt-2">
           {" "}
-          These Terms of Service are governed by the laws of [Your
-          Country/Region]. Any disputes will be resolved according to the
-          jurisdiction of the relevant courts.
+          These Terms of Service are governed by the laws of Pakistan. Any
+          disputes will be resolved according to the jurisdiction of the
+          relevant courts.
         </p>
       </section>
 
@@ -191,8 +191,11 @@ const TermsOfService = () => {
         <p className="text-gray-700 text-base font-normal mt-2">
           {" "}
           If you have any questions or need assistance, please contact us at{" "}
-          <a href="mailto:teams.eunoia.ai@gmail.com" className="no-underline">
-            teams.eunoia.ai@gmail.com
+          <a
+            href="mailto:teams.eunoia.ai@gmail.com"
+            className="no-underline text-blue-800"
+          >
+            team.eunoia.ai@gmail.com
           </a>
         </p>
       </section>
