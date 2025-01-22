@@ -40,8 +40,8 @@ def load_text(txt_path):
     with open(txt_path, 'r', encoding='utf-8') as file:
         return file.read().strip().splitlines()
 
-quran_path = "./app-backend/quran.txt"  
-bible_path = "./app-backend/bible.txt"  
+quran_path = "/home/ammar/AmmarNadeem/University/FYP/Eunoia_Clone/eunoia-app/app-backend/quran.txt"  
+bible_path = "/home/ammar/AmmarNadeem/University/FYP/Eunoia_Clone/eunoia-app/app-backend/bible.txt"  
 quran_ayat = load_text(quran_path)
 bible_verses = load_text(bible_path)
 
@@ -299,11 +299,11 @@ users_schema = UserSchema(many=True)
 @app.route('/signup', methods=['POST'])
 def signup():
     data = request.get_json()
-    fname = data.get('firstname')
-    lname = data.get('lastname')
+    fname = data.get('firstName')
+    lname = data.get('lastName')
     email = data.get('email')
     password = data.get('password')
-    confirm_password = data.get('confirm_password')
+    confirm_password = data.get('confirmPassword')
 
     if not fname or not lname or not email or not password or not confirm_password:
         return jsonify({"error": "All fields are required"}), 400
@@ -323,11 +323,9 @@ def signup():
         lname = lname.upper()[0] + lname[1:].lower()
     except IndexError:
         lname = lname
-
     hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
     created_at = datetime.now()
     new_user = User(first_name=fname,last_name=lname, email=email, password=hashed_password, created_at=created_at)
-
     db.session.add(new_user)
     db.session.commit()
 
@@ -345,7 +343,7 @@ def login():
     user = User.query.filter_by(email=email).first()
 
     if not user or not bcrypt.check_password_hash(user.password, password):
-        return jsonify({"error": "Invalid email or password"}), 401
+        return jsonify({"error": "Incorrect email or password"}), 401
 
     return jsonify({"message": "Login successful", "user": user_schema.dump(user)}), 200
 
@@ -365,7 +363,7 @@ def create_chat():
         return jsonify({"chat_id": new_chat.id, "timestamp": new_chat.timestamp})
     
     except Exception as e:
-        db.session.rollback()
+        db.session.rollback()  
         return jsonify({"error": str(e)}), 500
 
 @app.route('/generate_response', methods=['POST'])
@@ -428,8 +426,8 @@ def get_chat():
         chat = db.session.get(Chat, chat_id)
 
 
-        if not messages:
-            return jsonify({"error": "No messages found for this chat"}), 404
+        # if not messages:
+        #     return jsonify({"error": "No messages found for this chat"}), 404
 
         return jsonify({
             "chat_id": chat.id,
@@ -452,8 +450,8 @@ def get_all_chats():
 
         chats = Chat.query.filter_by(user_id=user_id).all()
 
-        if not chats:
-            return jsonify({"error": "No chats found for this user"}), 404
+        # if not chats:
+        #     return jsonify({"error": "No chats found for this user"}), 404
 
         return jsonify({
             "chats": [{"chat_id": chat.id, "title": chat.title} for chat in chats]
@@ -487,48 +485,74 @@ def delete_chat():
     
 @app.route("/contact_us", methods=["POST", "GET"])
 def contact_us():
-    print(f"Form Data: {request.form}")
-    if request.method == "POST":
-        try:
-            name = request.form['name']
-            email = request.form['email']
-            query = request.form['query']
-            contacted_on = datetime.now()
-            # data = request.get_json().get("data", {})
-            # name = data.get("name")
-            # email = data.get("email")
-            # query = data.get("query")
-            # contacted_on = datetime.datetime.now()
+    # print(f"Form Data: {request.form}")
+    # if request.method == "POST":
+    #     try:
+    #         name = request.form['name']
+    #         email = request.form['email']
+    #         query = request.form['message']
+    #         contacted_on = datetime.now()
+    #         # data = request.get_json().get("data", {})
+    #         # name = data.get("name")
+    #         # email = data.get("email")
+    #         # query = data.get("messsage")
+    #         # contacted_on = datetime.datetime.now()
 
-            # if request.is_json:
-            #     data = request.get_json().get("data", {})
-            #     name = data.get("name")
-            #     email = data.get("email")
-            #     query = data.get("query")
-            #     contacted_on = datetime.datetime.now()
-            # else:
-            #     return jsonify({"status": "error", "error": "Invalid content type"}), 400
+    #         # if request.is_json:
+    #         #     data = request.get_json().get("data", {})
+    #         #     name = data.get("name")
+    #         #     email = data.get("email")
+    #         #     query = data.get("query")
+    #         #     contacted_on = datetime.datetime.now()
+    #         # else:
+    #         #     return jsonify({"status": "error", "error": "Invalid content type"}), 400
 
-            try:
-                name = name.upper()[0] + name[1:].lower()
-            except IndexError:
-                name = name
+    #         try:
+    #             name = name.upper()[0] + name[1:].lower()
+    #         except IndexError:
+    #             name = name
 
-            new_query = ContactUs(
-                name = name,
-                email = email,
-                query = query,
-                contacted_on = contacted_on
-            )
-            db.session.add(new_query)
-            db.session.commit()
+    #         new_query = ContactUs(
+    #             name = name,
+    #             email = email,
+    #             query = query,
+    #             contacted_on = contacted_on
+    #         )
+    #         db.session.add(new_query)
+    #         db.session.commit()
 
-            # print(new_query)
-            print(name)
-            return jsonify({"status": "success"}), 200
-        except Exception as e:
-            print(f'Error: {e}, Trace: {traceback.format_exc()}')
-            return jsonify({"status": "error", "error": str(e)}), 400
+    #         # print(new_query)
+    #         print(name)
+    #         return jsonify({"status": "success"}), 200
+    #     except Exception as e:
+    #         print(f'Error: {e}, Trace: {traceback.format_exc()}')
+    #         return jsonify({"status": "error", "error": str(e)}), 400
+    try:
+        data = request.get_json()
+
+        name = data.get("name")
+        email = data.get("email")
+        query = data.get("message")  
+        contacted_on = datetime.now()
+
+        if not name or not email or not query:
+            return jsonify({"status": "error", "error": "Missing required fields"}), 400
+
+        name = name.capitalize()
+
+        new_query = ContactUs(
+            name=name,
+            email=email,
+            query=query,
+            contacted_on=contacted_on
+        )
+        db.session.add(new_query)
+        db.session.commit()
+
+        return jsonify({"status": "success"}), 200
+    except Exception as e:
+        print(f'Error: {e}, Trace: {traceback.format_exc()}')
+        return jsonify({"status": "error", "error": str(e)}), 400
         
 @app.route("/forgot_password", methods=["POST"])
 def send_email():
@@ -565,7 +589,7 @@ def send_email():
                     <h1>Hello,</h1>
                     <p>We received a request to reset your password. If you made this request, please click the link below to reset your password:</p>
                     
-                    <p><a href="https://www.google.com/" class="button">Reset Your Password</a></p>
+                    <p><a href="http://localhost:5173/reset-password" class="button">Reset Your Password</a></p>
                     
                     <p>If you did not request a password reset, please ignore this email, and your account will remain secure.</p>
                     
@@ -610,7 +634,7 @@ def send_email():
 def reset_password():
     data = request.get_json()
     email = data.get('email')
-    new_password = data.get('new_password')
+    new_password = data.get('newPassword')
 
     if not email or not new_password:
         return jsonify({"error": "Email and new password are required"}), 400
@@ -1142,7 +1166,8 @@ def create_forum():
             "forum_id": new_forum.id,
             "title": new_forum.title,
             "category": new_forum.category,
-            "created_by": created_by
+            "created_by": created_by,
+            "created_at": datetime.now(timezone.utc)
         }), 201
 
     except Exception as e:
@@ -1184,6 +1209,50 @@ def join_forum():
         return jsonify({"error": str(e)}), 500
 
 
+
+@app.route('/get_forum/<int:forum_id>', methods=['GET'])
+def get_forum(forum_id):
+    try:
+        forum = db.session.query(Forum).filter_by(id=forum_id).first()
+        if not forum:
+            return jsonify({"error": "Forum not found"}), 404
+        
+        # Retrieve the user who created the forum
+        user = db.session.query(User).filter_by(id=forum.created_by).first()
+        if not user:
+            return jsonify({"error": "User not found"}), 404
+
+        # Retrieve members of the forum
+        memberships = db.session.query(ForumMembership).filter_by(forum_id=forum_id).all()
+        members = []
+        for membership in memberships:
+            member = db.session.query(User).filter_by(id=membership.user_id).first()
+            if member:
+                members.append({
+                    "user_id": member.id,
+                    "first_name": member.first_name,
+                    "last_name": member.last_name
+                })
+        
+        forum_details = {
+            "forum_id": forum.id,
+            "created_by": {
+                "user_id": user.id,
+                "first_name": user.first_name,
+                "last_name": user.last_name
+            },
+            "created_at": forum.created_at.isoformat(),
+            "category": forum.category,
+            "title": forum.title,
+            "members": members
+        }
+
+        return jsonify(forum_details), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+   
+
 @app.route('/list_forums', methods=['GET'])
 def list_forums():
     try:
@@ -1191,8 +1260,8 @@ def list_forums():
 
         forum_list = [
             {
-                "id": forum.id,
-                "title": forum.title,
+                "forum_id": forum.id,
+                "title": forum.title, 
                 "category": forum.category,
                 "created_by": {
                     "user_id": user.id,
@@ -1228,9 +1297,9 @@ def forum_message():
         user = db.session.query(User).filter_by(id=user_id).first()
         if not user:
             return jsonify({"error": "User not found"}), 404
-        membership = ForumMembership.query.filter_by(forum_id=forum_id, user_id=user_id).first()
-        if not membership:
-            return jsonify({"error": "User is not a member of this forum"}), 403
+        # membership = ForumMembership.query.filter_by(forum_id=forum_id, user_id=user_id).first()
+        # if not membership:
+        #     return jsonify({"error": "User is not a member of this forum"}), 403
 
         new_message = ForumMessage(
             forum_id=forum_id,

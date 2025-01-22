@@ -2,21 +2,17 @@ import DashboardHeader from "@/components/admin/DashboardHeader";
 import DashboardShell from "@/components/admin/DashboardShell";
 import React from "react";
 import { Helmet } from "react-helmet";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-// function AdminDashboardHeader({ heading, text }) {
-//   return (
-//     <header className="dashboard-header">
-//       <div>
-//         <h1>{heading}</h1>
-//         <p>{text}</p>
-//       </div>
-//     </header>
-//   );
-// }
-
-// function AdminDashboardShell({ children }) {
-//   return <div className="admin-dashboard-shell">{children}</div>;
-// }
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
 
 function User() {
   const users = [
@@ -57,37 +53,42 @@ function User() {
           heading="Users"
           text="Manage and monitor user accounts."
         />
-        <div className="card">
-          <div className="card-header">
-            <h2>User List</h2>
-          </div>
-          <div className="card-content">
-            <table className="table">
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Email</th>
-                  <th>Join Date</th>
-                  <th>Status</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
+        <Card>
+          <CardHeader>
+            <CardTitle>Users</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Join Date</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
                 {users.map((user) => (
-                  <tr key={user.id}>
-                    <td>{user.name}</td>
-                    <td>{user.email}</td>
-                    <td>{user.joinDate}</td>
-                    <td>{user.status}</td>
-                    <td>
-                      <button className="btn-outline-sm">Edit</button>
-                    </td>
-                  </tr>
+                  <TableRow key={user.id}>
+                    <TableCell>{user.name}</TableCell>
+                    <TableCell>{user.email}</TableCell>
+                    <TableCell>{user.joinDate}</TableCell>
+                    <TableCell>{user.status}</TableCell>
+                    <TableCell>
+                      <Button
+                        size="sm"
+                        className="bg-blue-500 text-white hover:bg-blue-600"
+                      >
+                        Edit
+                      </Button>
+                    </TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
       </DashboardShell>
     </>
   );

@@ -4,8 +4,11 @@ import * as Yup from "yup";
 // import confusedPerson from "../../assets/Images/forgotPassword.avif";
 import confusedPerson from "../../assets/Images/forgotpswd.png";
 import { Helmet } from "react-helmet";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const ForgotPassword = () => {
+  const nav = useNavigate();
   const validationSchema = Yup.object({
     email: Yup.string()
       .email("Invalid email address")
@@ -42,7 +45,15 @@ const ForgotPassword = () => {
               initialValues={{ email: "" }}
               validationSchema={validationSchema}
               onSubmit={(values) => {
-                console.log("Form submitted with:", values);
+                axios
+                  .post(`http://localhost:5000/forgot_password`, values)
+                  .then((res) => {
+                    console.log(res);
+                    nav("/email-sent");
+                  })
+                  .catch((err) => {
+                    console.log(err);
+                  });
               }}
             >
               <Form>

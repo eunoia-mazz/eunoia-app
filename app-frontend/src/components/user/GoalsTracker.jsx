@@ -40,7 +40,12 @@ export default function GoalsTracker({ className }) {
             onChange={(e) => setNewGoal(e.target.value)}
             placeholder="Add a new goal"
           />
-          <Button type="submit">Add</Button>
+          <Button
+            type="submit"
+            className="text-white bg-blue-500 hover:bg-blue-600"
+          >
+            Add
+          </Button>
         </form>
         <ul className="space-y-2">
           {goals.map((goal) => (

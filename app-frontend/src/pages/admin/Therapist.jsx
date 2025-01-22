@@ -52,7 +52,12 @@ export function Therapist() {
           heading="Therapists"
           text="Manage and monitor therapist accounts."
         >
-          <Button>Add Therapist</Button>
+          <Button
+            size="sm"
+            className="bg-blue-500 text-white hover:bg-blue-600"
+          >
+            Add Therapist
+          </Button>
         </DashboardHeader>
         <Card>
           <CardHeader>
@@ -77,10 +82,18 @@ export function Therapist() {
                     <TableCell>{therapist.patients}</TableCell>
                     <TableCell>{therapist.status}</TableCell>
                     <TableCell>
-                      <Button variant="outline" size="sm" className="mr-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="mr-2 bg-blue-500 text-white"
+                      >
                         Edit
                       </Button>
-                      <Button variant="outline" size="sm">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="bg-blue-500 text-white"
+                      >
                         View Patients
                       </Button>
                     </TableCell>

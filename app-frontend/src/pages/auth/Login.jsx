@@ -151,15 +151,48 @@
 
 // export default Login;
 
-import React from "react";
+import React, { useState } from "react";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { FaGoogle, FaFacebook, FaLinkedin, FaGithub } from "react-icons/fa";
 import { Mail, Lock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import useStore from "../../useStore";
+import axios from "axios";
 
 const Login = () => {
   const navigate = useNavigate();
+
+  const updateClientId = (newId) => {
+    useStore.getState().setClientId(newId);
+  };
+  const updateClientName = (newName) => {
+    useStore.getState().setFirstName(newName);
+  };
+  const [errorMessage, setErrorMessage] = useState("");
+  const setIsAdmin = useStore((state) => state.setIsAdmin);
+  const setLastName = useStore((state) => state.setLastName);
+  const loginUser = (values) => {
+    axios
+      .post(`http://localhost:5000/login`, values)
+      .then((res) => {
+        console.log(res);
+        const user = res.data.user;
+        console.log(user.id);
+        // setClientId(user.id);
+        // setFirstName(user.first_name);
+        setIsAdmin(user.admin);
+        setLastName(user.last_name);
+        updateClientId(user.id);
+        updateClientName(user.first_name);
+        navigate("/dashboard");
+      })
+      .catch((err) => {
+        console.log(err);
+        const errorMsg = err.response.data.error;
+        setErrorMessage(errorMsg);
+      });
+  };
 
   const validationSchema = Yup.object({
     email: Yup.string()
@@ -171,8 +204,7 @@ const Login = () => {
   });
 
   const handleSubmit = (values) => {
-    console.log("Login successful:", values);
-    navigate("/dashboard"); // Redirect after login
+    loginUser(values);
   };
 
   return (
@@ -221,7 +253,7 @@ const Login = () => {
                 <ErrorMessage
                   name="email"
                   component="p"
-                  className="text-red-500 text-sm mt-1"
+                  className="text-red-500 text-xs font-normal mt-1"
                 />
               </div>
 
@@ -242,7 +274,7 @@ const Login = () => {
                 <ErrorMessage
                   name="password"
                   component="p"
-                  className="text-red-500 text-sm mt-1"
+                  className="text-red-500 text-xs font-normal mt-1"
                 />
               </div>
 
@@ -256,7 +288,10 @@ const Login = () => {
                   <span className="text-sm text-gray-600">Remember me</span>
                 </label>
                 <a
-                  href="./reset-password"
+                  // target="_blank"
+                  href="./forgot-password"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="text-sm text-blue-600 hover:underline"
                 >
                   Forgot Password
@@ -269,6 +304,11 @@ const Login = () => {
               >
                 Sign In
               </button>
+              {errorMessage && (
+                <p className="text-red-500 text-sm font-normal text-center">
+                  {errorMessage}
+                </p>
+              )}
             </Form>
           )}
         </Formik>

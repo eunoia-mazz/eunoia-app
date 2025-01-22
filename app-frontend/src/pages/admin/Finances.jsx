@@ -3,7 +3,17 @@ import DashboardShell from "@/components/admin/DashboardShell";
 import FinancialSummary from "@/components/admin/FinancialSummary";
 import React from "react";
 import { Helmet } from "react-helmet";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
 export default function Finances() {
   const transactions = [
     {
@@ -45,37 +55,42 @@ export default function Finances() {
         />
         <div className="grid gap-6">
           <FinancialSummary />
-          <div className="card">
-            <div className="card-header">
-              <h2>Recent Transactions</h2>
-            </div>
-            <div className="card-content">
-              <table className="table">
-                <thead>
-                  <tr>
-                    <th>Date</th>
-                    <th>Description</th>
-                    <th>Amount</th>
-                    <th>Type</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
+          <Card>
+            <CardHeader>
+              <CardTitle>Recent Transactions</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Date</TableHead>
+                    <TableHead>Description</TableHead>
+                    <TableHead>Amount</TableHead>
+                    <TableHead>Type</TableHead>
+                    <TableHead>Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
                   {transactions.map((transaction) => (
-                    <tr key={transaction.id}>
-                      <td>{transaction.date}</td>
-                      <td>{transaction.description}</td>
-                      <td>${transaction.amount.toFixed(2)}</td>
-                      <td>{transaction.type}</td>
-                      <td>
-                        <button className="btn-outline-sm">View Details</button>
-                      </td>
-                    </tr>
+                    <TableRow key={transaction.id}>
+                      <TableCell>{transaction.date}</TableCell>
+                      <TableCell>{transaction.description}</TableCell>
+                      <TableCell>${transaction.amount.toFixed(2)}</TableCell>
+                      <TableCell>{transaction.type}</TableCell>
+                      <TableCell>
+                        <Button
+                          size="sm"
+                          className="bg-blue-500 mx-1 text-white hover:bg-blue-600"
+                        >
+                          View Details
+                        </Button>
+                      </TableCell>
+                    </TableRow>
                   ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
         </div>
       </DashboardShell>
     </div>

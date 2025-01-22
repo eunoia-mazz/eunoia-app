@@ -8,8 +8,8 @@
 .stepper::before {
   content: "";
   position: absolute;
-  width: 2px; /* Thin line width */
-  height: 100%; /* Full height of the stepper */
+  width: 2px;
+  height: 100%;
   background-color: #ccc;
   z-index: 0;
 }
@@ -30,9 +30,9 @@
   height: 20px;
   background-color: #ccc;
   border-radius: 50%;
-  z-index: 1; /* Ensure the points are on top of the line */
-  margin: 50px 0; /* Spacing between steps */
-  transition: all 0.3s ease;
+  z-index: 1;
+  margin: 50px 0;
+  transition: all 1000ms ease-in-out;
 }
 
 .step.active {
@@ -41,21 +41,12 @@
   height: 30px;
 }
 
-button {
+.stepper button {
   padding: 10px 20px;
   background-color: #007bff;
   color: #fff;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-
-button:not(:disabled):hover {
-  background-color: #0056b3;
+  transition: background-color 5000ms ease-in-out;
 }

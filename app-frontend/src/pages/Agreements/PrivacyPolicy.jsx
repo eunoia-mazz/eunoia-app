@@ -110,7 +110,10 @@ const PrivacyPolicy = () => {
         <p className="text-gray-700 text-base font-normal mt-2">
           {" "}
           If you have any questions, please contact us at{" "}
-          <a href="mailto:teams.eunoia.ai@gmail.com" className="no-underline">
+          <a
+            href="mailto:teams.eunoia.ai@gmail.com"
+            className="no-underline text-blue-600"
+          >
             teams.eunoia.ai@gmail.com
           </a>
         </p>

@@ -22,11 +22,11 @@ function BeliefCard({ data }) {
     // </div>
     // </div>
     /* From Uiverse.io by eslam-hany */
-    <div class="book">
+    <div className="book">
       <p className="ml-9 mr-2 font-semibold text-base ">{data.statement}</p>
-      <div class="cover">
+      <div className="cover">
         <img src={data.image} alt="" className="w-20 h-20 object-cover" />
-        <p className="py-2 border-b-2 border-blue-500">{data.title}</p>
+        <p className="MLMT py-2 border-b-2 border-blue-500">{data.title}</p>
       </div>
     </div>
   );

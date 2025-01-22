@@ -33,6 +33,8 @@ import PageNotFound from "./pages/user/PageNotFound/PageNotFound.jsx";
 // new
 import Login from "./pages/auth/Login";
 import SignUp from "./pages/auth/SignUp";
+import EmailSent from "./pages/auth/EmailSent";
+import PasswordUpdated from "./pages/auth/PasswordUpdated";
 
 function App() {
   const location = useLocation();
@@ -54,12 +56,12 @@ function App() {
         <Route path="/about" element={<AboutUs />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
-        {/* <Route path="/auth" element={<Login_SignUp />} /> */}
+        <Route path="/password-updated" element={<PasswordUpdated />} />
+        <Route path="/email-sent" element={<EmailSent />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/journal" element={<Journal />} />
         <Route path="/articles" element={<Articles />} />
-        <Route path="/forum/:id" element={<ForumDetail />} />
         <Route path="/therapist" element={<Therapists />} />
         <Route path="/therapist/:id" element={<TherapistProfile />} />
 
@@ -81,6 +83,7 @@ function App() {
         <Route path="/dashboard/settings" element={<UserSettings />} />
         <Route path="/dashboard/journal" element={<Journal />} />
         <Route path="/dashboard/forums" element={<Forum />} />
+        <Route path="/dashboard/forum/:id" element={<ForumDetail />} />
         {/*  */}
 
         {/* Legal Agreements */}
@@ -96,5 +99,3 @@ function App() {
 }
 
 export default App;
-
-

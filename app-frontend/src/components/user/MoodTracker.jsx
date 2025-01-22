@@ -32,7 +32,7 @@ export default function MoodTracker({ className }) {
               onClick={() => setSelectedMood(option.mood)}
             >
               <option.icon className={`h-8 w-8 ${option.color}`} />
-              <span className="mt-2 text-sm ">{option.mood}</span>
+              <span className="mt-2 text-sm text-black ">{option.mood}</span>
             </Button>
           ))}
         </div>

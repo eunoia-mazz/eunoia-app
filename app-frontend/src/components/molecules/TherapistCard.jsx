@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { Star, Clock, MessageSquare } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-const TherapistCard = ({ tutor }) => {
+const TherapistCard = ({ therapist }) => {
   const nav = useNavigate();
   const [isExpanded, setIsExpanded] = useState(false);
 
   const wordLimit = 30;
-  const words = tutor.review.details.split(" ");
+  const words = therapist.review.details.split(" ");
 
   const toggleReadMore = () => setIsExpanded((prev) => !prev);
 
@@ -20,44 +20,44 @@ const TherapistCard = ({ tutor }) => {
         <div className="flex flex-col md:flex-row">
           <div className="md:w-1/4 mb-4 md:mb-0 flex flex-col gap-3 items-start justify-start">
             <img
-              src={tutor.image}
-              alt={tutor.name}
+              src={therapist.image}
+              alt={therapist.name}
               className="w-40 h-40 md:w-52 md:h-52 rounded-xl object-cover mx-auto md:mx-0"
             />
             <div className="flex ml-5 mb-2">
-              {Array.from({ length: tutor.rating.stars }, (_, index) => (
+              {Array.from({ length: therapist.rating.stars }, (_, index) => (
                 <Star
                   key={index}
                   className="w-5 h-5 fill-yellow-400 text-yellow-400"
                 />
               ))}
               <span className="ml-2 text-gray-600">
-                {tutor.rating.value} ({tutor.rating.count})
+                {therapist.rating.value} ({therapist.rating.count})
               </span>
             </div>
           </div>
 
-          {/* Tutor Details and Buttons */}
+          {/* therapist Details and Buttons */}
           <div className="md:w-2/4 md:px-4 flex flex-col justify-start gap-3 md:border-r border-slate py-2 mr-4">
             <div className="flex items-center mb-2">
               <h2 className="text-xl md:text-xl font-semibold mr-2">
-                {tutor.name}
+                {therapist.name}
               </h2>
               {/* <img src={verifiedIcon} alt="Verified" className="w-7 h-7" /> */}
             </div>
             <p className="text-[#40A8CD] font-semibold text-lg">
-              {tutor.title}
+              {therapist.title}
             </p>
             <p className="font-normal text-base">
-              {tutor.description}{" "}
-              {/* <a href={`/find-a-tutor/${tutor.id}`} className="text-blue-500">
+              {therapist.description}{" "}
+              {/* <a href={`/find-a-therapist/${therapist.id}`} className="text-blue-500">
                 See Full Profile
               </a> */}
             </p>
             <div className="flex gap-3">
               <button
-                className="bg-primary w-40 hover:bg-blue-400 py-3 rounded-md text-white"
-                onClick={() => handleButtonClick(tutor.id)}
+                className="bg-primary w-40 bg-blue-500 hover:bg-blue-400 py-3 rounded-md text-white"
+                onClick={() => handleButtonClick(therapist.id)}
               >
                 View Full Profile
               </button>
@@ -69,19 +69,19 @@ const TherapistCard = ({ tutor }) => {
             <div className="flex flex-col items-start">
               <p className="text-2xl mt-4 font-bold text-left">
                 <sup className="font-medium text-sm">AED</sup>
-                {tutor.rate}/hr
+                {therapist.rate}/hr
               </p>
               <div className="flex justify-start items-center mt-8">
                 <Clock className="text-green-500 mr-2" />
                 <p className="text-gray font-normal text-base">
-                  {tutor.hoursTutored || 4} sessions conducted
+                  {therapist.hourstherapisted || 4} sessions conducted
                 </p>
               </div>
               <div className="flex justify-start items-center mt-2">
                 <MessageSquare className="w-4 h-4 text-green-500 mr-2" />
                 <p className="text-gray font-normal text-base">
                   Respond time:
-                  <span className="font-bold">{tutor.responseTime}</span>
+                  <span className="font-bold">{therapist.responseTime}</span>
                 </p>
               </div>
               <div className="w-full flex flex-wrap">
@@ -96,16 +96,16 @@ const TherapistCard = ({ tutor }) => {
         <div className="bg-gray-50 rounded-md mt-8">
           <blockquote className="font-semibold text-base">
             <span className="text-4xl font-serif text-[#A3D154]">&#8220;</span>
-            {tutor.review.quote}
+            {therapist.review.quote}
           </blockquote>
           <p className="mt-2 ml-5 font-normal text-base ">
             {isExpanded || words.length <= wordLimit
-              ? tutor.review.details
+              ? therapist.review.details
               : `${words.slice(0, wordLimit).join(" ")}...`}
             {words.length > wordLimit && (
               <>
                 <span className="text-[#707070]">
-                  {isExpanded ? "-" + tutor.review.reviewer : ""}
+                  {isExpanded ? "-" + therapist.review.reviewer : ""}
                 </span>
                 <span
                   onClick={toggleReadMore}

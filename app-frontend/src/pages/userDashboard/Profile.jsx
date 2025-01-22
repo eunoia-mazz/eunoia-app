@@ -13,9 +13,9 @@ export const metadata = {
 };
 
 export default function Profile() {
-  const [name, setName] = useState("John Doe");
-  const [email, setEmail] = useState("john@example.com");
-  const [phone, setPhone] = useState("+1 (555) 123-4567");
+  const [name, setName] = useState("Ammar Nadeem");
+  const [email, setEmail] = useState("ammar@example.com");
+  const [phone, setPhone] = useState("+92 3228696218");
   const [religion, setReligion] = useState("Islam");
 
   const handleSubmit = (e) => {
@@ -82,7 +82,12 @@ export default function Profile() {
                 onChange={(e) => setReligion(e.target.value)}
               />
             </div>
-            <Button type="submit">Save Changes</Button>
+            <Button
+              type="submit"
+              className="bg-blue-500 hover:bg-blue-600 text-white"
+            >
+              Save Changes
+            </Button>
           </form>
         </CardContent>
       </Card>

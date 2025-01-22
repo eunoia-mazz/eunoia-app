@@ -66,10 +66,16 @@ export default function Modules() {
                       <TableCell>{module.status}</TableCell>
                       <TableCell>{module.lastUpdated}</TableCell>
                       <TableCell>
-                        <Button variant="outline" size="sm" className="mr-2">
+                        <Button
+                          size="sm"
+                          className="bg-blue-500 mx-1 text-white hover:bg-blue-600"
+                        >
                           Edit
                         </Button>
-                        <Button variant="outline" size="sm">
+                        <Button
+                          size="sm"
+                          className="bg-blue-500 mx-1 text-white hover:bg-blue-600"
+                        >
                           Disable
                         </Button>
                       </TableCell>

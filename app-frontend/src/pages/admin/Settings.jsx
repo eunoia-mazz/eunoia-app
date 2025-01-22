@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
+import { Switch } from "@mui/material";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Helmet } from "react-helmet";
@@ -29,13 +29,14 @@ export default function Settings() {
           heading="Settings"
           text="Manage system-wide settings for the Eunoia platform."
         />
-        <Tabs defaultValue="general" className="space-y-4">
+        <Tabs defaultValue="general">
           <TabsList>
             <TabsTrigger value="general">General</TabsTrigger>
             <TabsTrigger value="security">Security</TabsTrigger>
             <TabsTrigger value="notifications">Notifications</TabsTrigger>
             <TabsTrigger value="integrations">Integrations</TabsTrigger>
           </TabsList>
+
           <TabsContent value="general">
             <Card>
               <CardHeader>
@@ -61,7 +62,9 @@ export default function Settings() {
                   <Switch id="maintenance-mode" />
                   <Label htmlFor="maintenance-mode">Maintenance Mode</Label>
                 </div>
-                <Button>Save General Settings</Button>
+                <Button className="bg-blue-500 hover:bg-blue-600 text-white">
+                  Save General Settings
+                </Button>
               </CardContent>
             </Card>
           </TabsContent>
@@ -94,7 +97,9 @@ export default function Settings() {
                   <Switch id="ssl-encryption" defaultChecked />
                   <Label htmlFor="ssl-encryption">SSL Encryption</Label>
                 </div>
-                <Button>Save Security Settings</Button>
+                <Button className="bg-blue-500 hover:bg-blue-600 text-white">
+                  Save Security Settings
+                </Button>
               </CardContent>
             </Card>
           </TabsContent>
@@ -131,7 +136,9 @@ export default function Settings() {
                     defaultValue="24"
                   />
                 </div>
-                <Button>Save Notification Settings</Button>
+                <Button className="bg-blue-500 hover:bg-blue-600 text-white">
+                  Save Notification Settings
+                </Button>
               </CardContent>
             </Card>
           </TabsContent>
@@ -166,11 +173,14 @@ export default function Settings() {
                     defaultValue="••••••••••••••••"
                   />
                 </div>
-                <Button>Save Integration Settings</Button>
+                <Button className="bg-blue-500 hover:bg-blue-600 text-white">
+                  Save Integration Settings
+                </Button>
               </CardContent>
             </Card>
           </TabsContent>
         </Tabs>
+        {/* </Tabs> */}
       </DashboardShell>
     </>
   );

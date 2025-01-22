@@ -217,19 +217,45 @@
 // };
 
 // export default Signup;
-
-import React from "react";
+import React, { useState } from "react";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { FaGoogle, FaFacebook, FaLinkedin, FaGithub } from "react-icons/fa";
 import { Mail, Lock, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import useStore from "../../useStore";
+import axios from "axios";
 
 function SignUp() {
+  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
+  const updateClientId = (newId) => {
+    useStore.getState().setClientId(newId);
+  };
+  const setIsAdmin = useStore((state) => state.setIsAdmin);
+  const setFirstName = useStore((state) => state.setFirstName);
+  const setLastName = useStore((state) => state.setLastName);
+  const registerUser = (values) => {
+    axios
+      .post(`http://localhost:5000/signup`, values)
+      .then((res) => {
+        const user = res.data.user;
+        // setClientId(user.id);
+        updateClientId(user.id);
+        setIsAdmin(user.admin);
+        setFirstName(user.first_name);
+        setLastName(user.last_name);
+        navigate("/dashboard");
+      })
+      .catch((err) => {
+        const errorMsg = err.response.data.error;
+        setErrorMessage(errorMsg);
+      });
+  };
 
   const validationSchema = Yup.object({
-    fullName: Yup.string().required("Full Name is required"),
+    firstName: Yup.string().required("First Name is required"),
+    lastName: Yup.string().required("Last Name is required"),
     email: Yup.string()
       .email("Invalid email address")
       .required("Email is required"),
@@ -242,8 +268,8 @@ function SignUp() {
   });
 
   const handleSubmit = (values) => {
-    console.log("Sign Up successful:", values);
-    navigate("/dashboard");
+    console.log(values);
+    registerUser(values);
   };
 
   return (
@@ -271,7 +297,8 @@ function SignUp() {
 
           <Formik
             initialValues={{
-              fullName: "",
+              firstName: "",
+              lastName: "",
               email: "",
               password: "",
               confirmPassword: "",
@@ -287,8 +314,29 @@ function SignUp() {
                   </div>
                   <Field
                     type="text"
-                    name="fullName"
-                    placeholder="Full Name"
+                    name="firstName"
+                    placeholder="First Name"
+                    className={`w-full pl-14 pr-6 py-3 rounded-full border-none bg-white shadow-md focus:outline-none focus:ring-2 ${
+                      errors.fullName && touched.fullName
+                        ? "focus:ring-red-300"
+                        : "focus:ring-blue-300"
+                    }`}
+                  />
+                  <ErrorMessage
+                    name="firstName"
+                    component="p"
+                    className="text-red-500 text-xs font-normal mt-1 ml-4"
+                  />
+                </div>
+
+                <div className="relative">
+                  <div className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400">
+                    <User className="w-5 h-5" />
+                  </div>
+                  <Field
+                    type="text"
+                    name="lastName"
+                    placeholder="Last Name"
                     className={`w-full pl-14 pr-6 py-3 rounded-full border-none bg-white shadow-md focus:outline-none focus:ring-2 ${
                       errors.fullName && touched.fullName
                         ? "focus:ring-red-300"
@@ -298,7 +346,7 @@ function SignUp() {
                   <ErrorMessage
                     name="fullName"
                     component="p"
-                    className="text-red-500 text-sm mt-1 ml-4"
+                    className="text-red-500 text-xs font-normal mt-1 ml-4"
                   />
                 </div>
 
@@ -319,7 +367,7 @@ function SignUp() {
                   <ErrorMessage
                     name="email"
                     component="p"
-                    className="text-red-500 text-sm mt-1 ml-4"
+                    className="text-red-500 text-xs font-normal mt-1 ml-4"
                   />
                 </div>
 
@@ -340,7 +388,7 @@ function SignUp() {
                   <ErrorMessage
                     name="password"
                     component="p"
-                    className="text-red-500 text-sm mt-1 ml-4"
+                    className="text-red-500 text-xs font-normal mt-1 ml-4"
                   />
                 </div>
 
@@ -361,7 +409,7 @@ function SignUp() {
                   <ErrorMessage
                     name="confirmPassword"
                     component="p"
-                    className="text-red-500 text-sm mt-1 ml-4"
+                    className="text-red-500 text-xs font-normal mt-1 ml-4"
                   />
                 </div>
 
@@ -371,6 +419,11 @@ function SignUp() {
                 >
                   Sign Up
                 </button>
+                {errorMessage && (
+                  <p className="text-red-500 text-sm font-normal text-center">
+                    {errorMessage}
+                  </p>
+                )}
               </Form>
             )}
           </Formik>

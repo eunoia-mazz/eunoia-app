@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import TestimonialStepper from "../../../components/molecules/Stepper/Stepper";
+import Stepper from "../../../components/molecules/Stepper/Stepper";
 import TestimonyNameCard from "../../../components/atoms/TestimonyNameCard";
 import sofia from "../../../assets/Images/file.png";
 import john from "../../../assets/Images/john2.jpeg";
@@ -41,39 +41,69 @@ function Testimonials() {
   console.log("namesAndAges", namesAndAges);
 
   return (
-    <div className="w-full  flex justify-center items-center py-20 flex-wrap ">
-      <div className="w-5/6 flex flex-wrap justify-center items-center ">
-        <p className="w-full text-center text-2xl font-semibold">
-          Feedback from
-        </p>
-        <p className="w-full text-2xl md:text-5xl font-bold text-blue-500 text-center ">
-          Our Clients
-        </p>
-        {/* Names List */}
-        <div className="flex w-1/2  flex-col justify-evenly py-20">
-          {namesAndAges.map((name, index) => (
-            <div
-              className={`w-1/2 flex justify-evenly`}
-              onClick={() => setActiveStep(index)}
-            >
-              <TestimonyNameCard
-                isActive={activeStep === index}
-                data={namesAndAges[index]}
-              />
-            </div>
-          ))}
-        </div>
+    <>
+      <div className="w-full justify-center items-center py-20 flex-wrap hidden lg:flex">
+        <div className="w-5/6 flex flex-wrap justify-center items-center ">
+          <p className="w-full text-center text-2xl font-semibold">
+            Feedback from
+          </p>
+          <p className="w-full text-2xl md:text-5xl font-bold text-blue-500 text-center ">
+            Our Clients
+          </p>
+          {/* Names List */}
+          <div className="flex w-1/2  flex-col justify-evenly py-20">
+            {namesAndAges.map((name, index) => (
+              <div
+                className={`w-1/2 flex justify-evenly`}
+                onClick={() => setActiveStep(index)}
+              >
+                <TestimonyNameCard
+                  isActive={activeStep === index}
+                  data={namesAndAges[index]}
+                />
+              </div>
+            ))}
+          </div>
 
-        {/* Testimonial Stepper */}
-        <div className="w-1/2 py-20">
-          <TestimonialStepper
-            activeStep={activeStep}
-            setActiveStep={setActiveStep}
-            testimonials={testimonialsOnly}
-          />
+          {/* Testimonial Stepper */}
+          <div className="w-1/2 py-20">
+            <Stepper
+              activeStep={activeStep}
+              setActiveStep={setActiveStep}
+              testimonials={testimonialsOnly}
+            />
+          </div>
         </div>
       </div>
-    </div>
+      <div className="py-12 bg-gray-50 lg:hidden">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold text-center mb-8">
+            What People Say
+          </h2>
+          <div className="flex flex-wrap justify-center gap-6">
+            {testimonials.map((testimonial) => (
+              <div
+                key={testimonial.id}
+                className="bg-white flex flex-col items-center p-6 shadow-md rounded-lg w-full md:w-1/3"
+              >
+                <img
+                  src={testimonial.image}
+                  alt={testimonial.name}
+                  className="w-20 h-20 rounded-full mb-4"
+                />
+
+                <p className="text-sm text-gray-500 mb-4">
+                  {testimonial.Testimonial}
+                </p>
+                <p className="text-gray-700 text-center">
+                  {testimonial.content}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </>
   );
 }
 

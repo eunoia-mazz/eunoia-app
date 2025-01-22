@@ -10,8 +10,12 @@ import QuickJournalEntry from "@/components/user/QuickJournalEntry";
 import GoalsTracker from "@/components/user/GoalsTracker";
 import WellnessQuote from "@/components/user/WellnessQuote";
 import { Helmet } from "react-helmet";
-
+import { useEffect } from "react";
+import useStore from "../../useStore";
 export default function Dashboard() {
+  const clientId = useStore((state) => state.clientId);
+  const firstName = useStore((state) => state.firstName);
+
   return (
     <DashboardShell>
       <Helmet>
@@ -22,7 +26,7 @@ export default function Dashboard() {
         />
       </Helmet>
       <DashboardHeader
-        heading="Welcome back, Aina"
+        heading={`Welcome, ${firstName}`}
         text="Here's your wellness journey at a glance."
       >
         <WellnessQuote />

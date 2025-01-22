@@ -27,10 +27,13 @@ export default function QuickJournalEntry({ className }) {
             placeholder="What's on your mind today?"
             value={entry}
             onChange={(e) => setEntry(e.target.value)}
-            className="min-h-[120px] resize-none"
+            className="min-h-[120px] resize-none border-gray-300"
           />
-          <Button type="submit" className="w-full">
-            <Sparkles className="mr-2 h-4 w-4" />
+          <Button
+            type="submit"
+            className="w-full bg-blue-500 hover:bg-blue-600 text-white"
+          >
+            <Sparkles className="mr-2 h-4 w-4 " />
             Save Entry
           </Button>
         </form>

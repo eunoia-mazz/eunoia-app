@@ -42,7 +42,7 @@ export function Settings() {
             <CardTitle>Location</CardTitle>
             <Switch id="location" />
           </div>
-          </CardContent>
+        </CardContent>
       </Card>
     </DashboardShell>
   );

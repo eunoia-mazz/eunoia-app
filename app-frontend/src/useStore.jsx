@@ -1,13 +1,32 @@
 import { create } from "zustand";
+
 const useStore = create((set) => ({
-  clientId: null,
-  setClientId: (clientId) => set(() => ({ clientId })),
+  clientId: localStorage.getItem("clientId") || null,
+  // setClientId: (clientId) => set({ clientId }),
+  setClientId: (clientId) => {
+    localStorage.setItem("clientId", clientId);
+    set({ clientId });
+  },
+
+  firstName: localStorage.getItem("firstName") || "",
+  setFirstName: (firstName) => {
+    localStorage.setItem("firstName", firstName);
+    set({ firstName });
+  },
+  // setFirstName: (firstName) => set({ firstName }),
+
+  lastName: "",
+  setLastName: (lastName) => set({ lastName }),
+
+  isAdmin: false,
+  setIsAdmin: (isAdmin) => set({ isAdmin }),
 
   currentChatId: null,
-  setCurrentChatId: (currentChatId) => set(() => ({ currentChatId })),
+  setCurrentChatId: (currentChatId) => set({ currentChatId }),
 
   currentChat: [],
-  setCurrentChat: (currentChat) => set(() => ({ currentChat })),
+  setCurrentChat: (currentChat) => set({ currentChat }),
+
   addNewMessage: (newMessage) =>
     set((state) => ({ currentChat: [...state.currentChat, newMessage] })),
 }));

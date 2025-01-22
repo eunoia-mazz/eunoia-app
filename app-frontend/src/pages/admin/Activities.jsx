@@ -59,7 +59,12 @@ export default function Activities() {
           heading="Activities"
           text="Manage and create activities for users."
         >
-          <Button>Add Activity</Button>
+          <Button
+            size="sm"
+            className="bg-blue-500 text-white hover:bg-blue-600"
+          >
+            Add Activity
+          </Button>
         </DashboardHeader>
         <Card>
           <CardHeader>
@@ -84,10 +89,16 @@ export default function Activities() {
                     <TableCell>{activity.duration}</TableCell>
                     <TableCell>{activity.difficulty}</TableCell>
                     <TableCell>
-                      <Button variant="outline" size="sm" className="mr-2">
+                      <Button
+                        size="sm"
+                        className="bg-blue-500 mx-1 text-white hover:bg-blue-600"
+                      >
                         Edit
                       </Button>
-                      <Button variant="outline" size="sm">
+                      <Button
+                        size="sm"
+                        className="bg-blue-500 mx-1 text-white hover:bg-blue-600"
+                      >
                         Delete
                       </Button>
                     </TableCell>
