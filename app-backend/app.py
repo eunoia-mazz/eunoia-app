@@ -14,6 +14,8 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from flask_migrate import Migrate
+from sentence_transformers import SentenceTransformer
+import chromadb
 
 load_dotenv()
 
@@ -44,6 +46,9 @@ quran_path = "/home/ammar/AmmarNadeem/University/FYP/Eunoia_Clone/eunoia-app/app
 bible_path = "/home/ammar/AmmarNadeem/University/FYP/Eunoia_Clone/eunoia-app/app-backend/bible.txt"  
 quran_ayat = load_text(quran_path)
 bible_verses = load_text(bible_path)
+embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
+client = chromadb.PersistentClient(path="chroma_db")
+collection = client.get_or_create_collection("eunoia")
 
 class User(db.Model):
     __tablename__ = 'user'
@@ -366,34 +371,46 @@ def create_chat():
         db.session.rollback()  
         return jsonify({"error": str(e)}), 500
 
+
+
+def retrieve_context(user_input):
+    """Retrieve relevant context from ChromaDB based on the user query."""
+    try:
+        query_embedding = embedding_model.encode(user_input)
+
+        results = collection.query(
+            query_embeddings=[query_embedding],
+            n_results=3  
+        )
+
+        if not results or 'metadatas' not in results or not results['metadatas'][0]:
+            return "No relevant context found."
+
+        retrieved_contexts = "\n\n".join([
+            f"Q: {metadata.get('question', 'N/A')}\n"
+            f"A: {metadata.get('answer', 'N/A')}\n"
+            f"Context: {metadata.get('context', 'N/A')}"
+            for metadata in results['metadatas'][0]
+        ])
+        return retrieved_contexts
+
+    except Exception as e:
+        print(f"Error retrieving context: {e}")
+        return "No relevant context found."
+
 @app.route('/generate_response', methods=['POST'])
 def generate_response():
     try:
         data = request.get_json()
-        user_input = data.get('user_input')
-        user_id = data.get('user_id')  
-        chat_id = data.get('chat_id')
+        if not data or 'user_input' not in data:
+            return jsonify({"error": "Please say something"}), 400
+        user_input = data.get('user_input', 'I am not feeling well')  
 
-        messages = Message.query.filter_by(user_id=user_id, chat_id=chat_id).all()
-        if not messages:
-            prompt =(
-                f"{user_input}\n"
-                f"This is the user's first message. I want you to just give me a title as a response which matches the user's first message."
-                f"Just give me the title. Nothing else. No other lines or things as a response. I repeat just the title."
-            )
-            response = model.generate_content(prompt)
-            title = response.candidates[0].content.parts[0].text.strip() if response.candidates else "Hello chat"
-            chatt = Chat.query.filter_by(user_id=user_id,id=chat_id).first()
-            if chatt:
-                chatt.title = title
-                db.session.commit()
-                print(f"Chat updated with title: {chatt.title}")
-
-        conversation_history = "\n".join(f"{msg.client_msg or ''} {msg.bot_msg or ''}".strip() for msg in messages)
+        retrieved_context = retrieve_context(user_input)
 
         prompt = (
-            f"{conversation_history}\n"
             f"User question: {user_input}\n\n"
+            f"Relevant context:\n{retrieved_context}\n\n"
             "You are a friendly and helpful chatbot. Provide clear answers and support based on the user’s question. "
             "If the user asks for an ayat from the Quran or a Bible verse, randomly choose one to share from the list below. "
             "Otherwise, give a direct answer to their question.\n\n"
@@ -402,19 +419,18 @@ def generate_response():
         )
 
         response = model.generate_content(prompt)
-        bot_response = response.candidates[0].content.parts[0].text.strip() if response.candidates else "Sorry, I couldn't generate a response."
-
-        user_message = Message(user_id=user_id, chat_id=chat_id, client_msg=user_input)
-        bot_message = Message(user_id=user_id, chat_id=chat_id, bot_msg=bot_response)
-        db.session.add_all([user_message, bot_message])
-        db.session.commit()
+        bot_response = (
+            response.candidates[0].content.parts[0].text.strip()
+            if response and response.candidates and response.candidates[0].content.parts else "Sorry, I couldn't generate a response."
+        )
 
         return jsonify({"response": bot_response})
 
     except Exception as e:
-        db.session.rollback()
-        return jsonify({"error": str(e)}), 500
-
+        print(f"Error during response generation: {e}")
+        return jsonify({"error": "An internal error occurred. Please try again later."}), 500
+   
+    
 @app.route('/get_chat', methods=['POST'])
 def get_chat():
     try:
