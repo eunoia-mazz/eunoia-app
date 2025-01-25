@@ -402,13 +402,33 @@ def retrieve_context(user_input):
 def generate_response():
     try:
         data = request.get_json()
+        user_input = data.get('user_input')
+        user_id = data.get('user_id')  
+        chat_id = data.get('chat_id')
+
+        messages = Message.query.filter_by(user_id=user_id, chat_id=chat_id).all()
+        if not messages:
+            prompt =(
+                f"{user_input}\n"
+                f"This is the user's first message. I want you to just give me a title as a response which matches the user's first message."
+                f"Just give me the title. Nothing else. No other lines or things as a response. I repeat just the title."
+            )
+            response = model.generate_content(prompt)
+            title = response.candidates[0].content.parts[0].text.strip() if response.candidates else "Hello chat"
+            chatt = Chat.query.filter_by(user_id=user_id,id=chat_id).first()
+            if chatt:
+                chatt.title = title
+                db.session.commit()
+                print(f"Chat updated with title: {chatt.title}")
         if not data or 'user_input' not in data:
             return jsonify({"error": "Please say something"}), 400
         user_input = data.get('user_input', 'I am not feeling well')  
 
+        conversation_history = "\n".join(f"{msg.client_msg or ''} {msg.bot_msg or ''}".strip() for msg in messages)
         retrieved_context = retrieve_context(user_input)
 
         prompt = (
+            f"{conversation_history}\n"
             f"User question: {user_input}\n\n"
             f"Relevant context:\n{retrieved_context}\n\n"
             "You are a friendly and helpful chatbot. Provide clear answers and support based on the user’s question. "
@@ -419,6 +439,12 @@ def generate_response():
         )
 
         response = model.generate_content(prompt)
+        bot_response = response.candidates[0].content.parts[0].text.strip() if response.candidates else "Sorry, I couldn't generate a response."
+
+        user_message = Message(user_id=user_id, chat_id=chat_id, client_msg=user_input)
+        bot_message = Message(user_id=user_id, chat_id=chat_id, bot_msg=bot_response)
+        db.session.add_all([user_message, bot_message])
+        db.session.commit()
         bot_response = (
             response.candidates[0].content.parts[0].text.strip()
             if response and response.candidates and response.candidates[0].content.parts else "Sorry, I couldn't generate a response."
@@ -427,9 +453,12 @@ def generate_response():
         return jsonify({"response": bot_response})
 
     except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
+
         print(f"Error during response generation: {e}")
         return jsonify({"error": "An internal error occurred. Please try again later."}), 500
-   
+
     
 @app.route('/get_chat', methods=['POST'])
 def get_chat():
