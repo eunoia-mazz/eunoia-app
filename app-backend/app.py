@@ -1,19 +1,21 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 from flask_cors import CORS
-from sqlalchemy import select, delete
+from sqlalchemy import select, delete, func, extract
 import google.generativeai as genai
 import os
+from sqlalchemy.exc import IntegrityError
 from dotenv import load_dotenv
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 import traceback
 import logging
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from flask_migrate import Migrate
+from urllib.parse import quote
 from sentence_transformers import SentenceTransformer
 import chromadb
 
@@ -118,6 +120,10 @@ class UserActivity(db.Model):
     activity_id = db.Column(db.Integer, db.ForeignKey('activities.id'), nullable=False)
     deadline = db.Column(db.DateTime, nullable=True)
     recommended_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
+    completed = db.Column(db.Boolean, default=False, nullable=True)
+    completed_at = db.Column(db.DateTime, nullable=True)
+    completed_in_time = db.Column(db.Boolean, default=False, nullable=True)
+
 
 
 class Activity(db.Model):
@@ -158,6 +164,9 @@ class SubActivity(db.Model):
     description = db.Column(db.Text, nullable=True)
     reps = db.Column(db.Integer, default=0)
     is_active = db.Column(db.Boolean, default=True)
+    duration = db.Column(db.Integer)  
+    category = db.Column(db.String(100)) 
+    difficulty_level = db.Column(db.Enum('easy', 'medium', 'hard', name='difficulty_levels'))
 
     activities = db.relationship('Activity', backref='subactivities', lazy=True)
 
@@ -290,6 +299,46 @@ class ModuleVisit(db.Model):
     visit_count = db.Column(db.Integer, default=0)
     last_visited_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
 
+class GeneralSettings(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    platform_name = db.Column(db.Text, nullable=False)
+    support_email = db.Column(db.Text, nullable=False)
+    updated_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
+
+class SecuritySettings(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    minimum_password_length = db.Column(db.Integer, default=8)
+    two_factor_auth = db.Column(db.Boolean, default=False)
+    ssl_encryption = db.Column(db.Boolean, default=False)
+    updated_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
+
+class NotificationSettings(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    email_notifications = db.Column(db.Boolean, default=False)
+    push_notifications = db.Column(db.Boolean, default=True)
+    sms_notifications = db.Column(db.Boolean, default=False)
+    notification_frequency = db.Column(db.Integer, default=24) 
+    updated_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
+
+class IntegrationSettings(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    google_calendar = db.Column(db.Boolean, default=False)
+    slack_integration = db.Column(db.Boolean, default=False)
+    zoom_integration = db.Column(db.Boolean, default=False)
+    api_key = db.Column(db.Text, nullable=True)
+    updated_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
+
+class UserSettings(db.Model):
+    __tablename__ = 'user_settings'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), unique=True, nullable=False)
+    email_notifications = db.Column(db.Boolean, default=False, nullable=False)
+    sms_notifications = db.Column(db.Boolean, default=False, nullable=False)
+    push_notifications = db.Column(db.Boolean, default=False, nullable=False)
+    location_sharing = db.Column(db.Boolean, default=False, nullable=False)
+
+    user = db.relationship('User', backref=db.backref('settings', uselist=False))
+
 
 
 class UserSchema(SQLAlchemyAutoSchema):
@@ -304,11 +353,11 @@ users_schema = UserSchema(many=True)
 @app.route('/signup', methods=['POST'])
 def signup():
     data = request.get_json()
-    fname = data.get('firstName')
-    lname = data.get('lastName')
+    fname = data.get('firstname')
+    lname = data.get('lastname')
     email = data.get('email')
     password = data.get('password')
-    confirm_password = data.get('confirmPassword')
+    confirm_password = data.get('confirm_password')
 
     if not fname or not lname or not email or not password or not confirm_password:
         return jsonify({"error": "All fields are required"}), 400
@@ -328,9 +377,11 @@ def signup():
         lname = lname.upper()[0] + lname[1:].lower()
     except IndexError:
         lname = lname
+
     hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
     created_at = datetime.now()
     new_user = User(first_name=fname,last_name=lname, email=email, password=hashed_password, created_at=created_at)
+
     db.session.add(new_user)
     db.session.commit()
 
@@ -348,7 +399,7 @@ def login():
     user = User.query.filter_by(email=email).first()
 
     if not user or not bcrypt.check_password_hash(user.password, password):
-        return jsonify({"error": "Incorrect email or password"}), 401
+        return jsonify({"error": "Invalid email or password"}), 401
 
     return jsonify({"message": "Login successful", "user": user_schema.dump(user)}), 200
 
@@ -368,7 +419,7 @@ def create_chat():
         return jsonify({"chat_id": new_chat.id, "timestamp": new_chat.timestamp})
     
     except Exception as e:
-        db.session.rollback()  
+        db.session.rollback()
         return jsonify({"error": str(e)}), 500
 
 
@@ -471,8 +522,8 @@ def get_chat():
         chat = db.session.get(Chat, chat_id)
 
 
-        # if not messages:
-        #     return jsonify({"error": "No messages found for this chat"}), 404
+        if not messages:
+            return jsonify({"error": "No messages found for this chat"}), 404
 
         return jsonify({
             "chat_id": chat.id,
@@ -495,8 +546,8 @@ def get_all_chats():
 
         chats = Chat.query.filter_by(user_id=user_id).all()
 
-        # if not chats:
-        #     return jsonify({"error": "No chats found for this user"}), 404
+        if not chats:
+            return jsonify({"error": "No chats found for this user"}), 404
 
         return jsonify({
             "chats": [{"chat_id": chat.id, "title": chat.title} for chat in chats]
@@ -530,74 +581,48 @@ def delete_chat():
     
 @app.route("/contact_us", methods=["POST", "GET"])
 def contact_us():
-    # print(f"Form Data: {request.form}")
-    # if request.method == "POST":
-    #     try:
-    #         name = request.form['name']
-    #         email = request.form['email']
-    #         query = request.form['message']
-    #         contacted_on = datetime.now()
-    #         # data = request.get_json().get("data", {})
-    #         # name = data.get("name")
-    #         # email = data.get("email")
-    #         # query = data.get("messsage")
-    #         # contacted_on = datetime.datetime.now()
+    print(f"Form Data: {request.form}")
+    if request.method == "POST":
+        try:
+            name = request.form['name']
+            email = request.form['email']
+            query = request.form['query']
+            contacted_on = datetime.now()
+            # data = request.get_json().get("data", {})
+            # name = data.get("name")
+            # email = data.get("email")
+            # query = data.get("query")
+            # contacted_on = datetime.datetime.now()
 
-    #         # if request.is_json:
-    #         #     data = request.get_json().get("data", {})
-    #         #     name = data.get("name")
-    #         #     email = data.get("email")
-    #         #     query = data.get("query")
-    #         #     contacted_on = datetime.datetime.now()
-    #         # else:
-    #         #     return jsonify({"status": "error", "error": "Invalid content type"}), 400
+            # if request.is_json:
+            #     data = request.get_json().get("data", {})
+            #     name = data.get("name")
+            #     email = data.get("email")
+            #     query = data.get("query")
+            #     contacted_on = datetime.datetime.now()
+            # else:
+            #     return jsonify({"status": "error", "error": "Invalid content type"}), 400
 
-    #         try:
-    #             name = name.upper()[0] + name[1:].lower()
-    #         except IndexError:
-    #             name = name
+            try:
+                name = name.upper()[0] + name[1:].lower()
+            except IndexError:
+                name = name
 
-    #         new_query = ContactUs(
-    #             name = name,
-    #             email = email,
-    #             query = query,
-    #             contacted_on = contacted_on
-    #         )
-    #         db.session.add(new_query)
-    #         db.session.commit()
+            new_query = ContactUs(
+                name = name,
+                email = email,
+                query = query,
+                contacted_on = contacted_on
+            )
+            db.session.add(new_query)
+            db.session.commit()
 
-    #         # print(new_query)
-    #         print(name)
-    #         return jsonify({"status": "success"}), 200
-    #     except Exception as e:
-    #         print(f'Error: {e}, Trace: {traceback.format_exc()}')
-    #         return jsonify({"status": "error", "error": str(e)}), 400
-    try:
-        data = request.get_json()
-
-        name = data.get("name")
-        email = data.get("email")
-        query = data.get("message")  
-        contacted_on = datetime.now()
-
-        if not name or not email or not query:
-            return jsonify({"status": "error", "error": "Missing required fields"}), 400
-
-        name = name.capitalize()
-
-        new_query = ContactUs(
-            name=name,
-            email=email,
-            query=query,
-            contacted_on=contacted_on
-        )
-        db.session.add(new_query)
-        db.session.commit()
-
-        return jsonify({"status": "success"}), 200
-    except Exception as e:
-        print(f'Error: {e}, Trace: {traceback.format_exc()}')
-        return jsonify({"status": "error", "error": str(e)}), 400
+            # print(new_query)
+            print(name)
+            return jsonify({"status": "success"}), 200
+        except Exception as e:
+            print(f'Error: {e}, Trace: {traceback.format_exc()}')
+            return jsonify({"status": "error", "error": str(e)}), 400
         
 @app.route("/forgot_password", methods=["POST"])
 def send_email():
@@ -634,7 +659,7 @@ def send_email():
                     <h1>Hello,</h1>
                     <p>We received a request to reset your password. If you made this request, please click the link below to reset your password:</p>
                     
-                    <p><a href="http://localhost:5173/reset-password" class="button">Reset Your Password</a></p>
+                    <p><a href="https://www.google.com/" class="button">Reset Your Password</a></p>
                     
                     <p>If you did not request a password reset, please ignore this email, and your account will remain secure.</p>
                     
@@ -679,7 +704,7 @@ def send_email():
 def reset_password():
     data = request.get_json()
     email = data.get('email')
-    new_password = data.get('newPassword')
+    new_password = data.get('new_password')
 
     if not email or not new_password:
         return jsonify({"error": "Email and new password are required"}), 400
@@ -697,10 +722,25 @@ def reset_password():
 
 @app.route('/list_users', methods=['GET'])
 def list_users():
-    users = db.session.query(User.id, User.first_name, User.last_name,User.email, User.treated, User.coupons).filter(User.is_active == True).all()
-    user_list = [{"id": u[0], "first_name": u[1], "last_name":u[2],"email": u[3], "Treated":u[4], "Coupons":u[5]} for u in users]
+    users = db.session.query(
+        User.id, User.first_name, User.last_name, User.email, User.treated, User.coupons, User.is_active, User.created_at
+    ).all()
+    
+    user_list = [
+        {
+            "id": u[0], 
+            "name": f"{u[1]} {u[2]}",
+            "email": u[3],
+            "Treated": u[4],
+            "Coupons": u[5],
+            "Active": "yes" if u[6] else "no",
+            "Joined At":u[7] 
+        } 
+        for u in users
+    ]
     
     return jsonify(user_list), 200
+
 
 
 @app.route('/get_user/<int:user_id>', methods=['GET'])
@@ -807,7 +847,9 @@ def list_reviews():
             "first_name": user.first_name,
             "last_name": user.last_name,
             "reviewing_msg": review.reviewing_msg,
-            "rating": review.rating
+            "rating": review.rating,
+            "date":review.created_at,
+            "email":user.email
         }
         for review, user in reviews
     ]
@@ -860,6 +902,62 @@ def list_therapists():
     ]
 
     return jsonify(therapist_list), 200
+
+
+@app.route('/edit_therapist/<int:therapist_id>', methods=['PUT'])
+def edit_therapist(therapist_id):
+    data = request.get_json()
+    therapist = Therapist.query.filter_by(id=therapist_id).first()
+    if not therapist:
+        return jsonify({"error": "Therapist not found"}), 404
+
+    try:
+        if 'name' in data:
+            therapist.name = data['name']
+        if 'designation' in data:
+            therapist.designation = data['designation']
+        if 'qualification' in data:
+            therapist.qualification = data['qualification']
+        if 'location' in data:
+            therapist.location = data['location']
+        if 'is_available' in data:
+            therapist.is_available = data['is_available']
+
+        db.session.commit()
+        return jsonify({"message": "Therapist updated successfully"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/view_patients/<int:therapist_id>', methods=['GET'])
+def view_patients(therapist_id):
+    therapist = Therapist.query.filter_by(id=therapist_id).first()
+    if not therapist:
+        return jsonify({"error": "Therapist not found"}), 404
+
+    appointments = Appointment.query.filter_by(therapist_id=therapist_id).all()
+    patients_in_queue = []
+    patients_treated = []
+
+    for appointment in appointments:
+        patient = {
+            "id": appointment.user.id,
+            "name": f"{appointment.user.first_name} {appointment.user.last_name}",
+            "email": appointment.user.email,
+            "treated": "Yes" if appointment.user.treated else "No"
+        }
+        if appointment.user.treated:
+            patients_treated.append(patient)
+        else:
+            patients_in_queue.append(patient)
+
+    return jsonify({
+        "patients_in_queue": patients_in_queue,
+        "patients_treated": patients_treated
+    }), 200
+
+
 
 
 @app.route('/add_finances', methods=['POST'])
@@ -963,25 +1061,32 @@ def get_finances():
 @app.route('/add_exercise', methods=['POST'])
 def add_exercise():
     data = request.get_json()
-    name = data.get('name')
-    description = data.get('description')
-    reps = data.get('reps')
-
-    if not name or not description or not reps:
-        return jsonify({"error": "name, description, and reps are required"}), 400
-
     try:
-        reps = int(reps)  
-        if reps < 0:
-            return jsonify({"error": "reps must be a positive integer"}), 400
+        if not all(key in data for key in ['name', 'description', 'reps', 'duration', 'category', 'difficulty_level']):
+            return jsonify({"error": "All fields are required"}), 400
+        
+        difficulty_level = data.get('difficulty_level')
+        if difficulty_level not in ['easy', 'medium', 'hard']:
+            raise ValueError(f"Invalid difficulty level: {difficulty_level}")
+
+        new_exercise = SubActivity(
+            name=data['name'],
+            description=data['description'],
+            reps=int(data['reps']),
+            duration=int(data['duration']),
+            category=data['category'],
+            difficulty_level=data['difficulty_level'],
+            is_active=True
+        )
+        db.session.add(new_exercise)
+        db.session.commit()
+        return jsonify({"message": "Exercise added successfully", "exercise_id": new_exercise.id}), 201
     except ValueError:
-        return jsonify({"error": "reps must be an integer"}), 400
+        return jsonify({"error": "Invalid input for integer fields"}), 400
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
 
-    new_exercise = SubActivity(name=name, description=description, reps=reps, is_active=True)
-    db.session.add(new_exercise)
-    db.session.commit()
-
-    return jsonify({"message": "Exercise added successfully", "exercise_id": new_exercise.id}), 201
 
 
 
@@ -1002,6 +1107,25 @@ def delete_exercise():
 
     return jsonify({"message": f"Exercise with ID {exercise_id} has been deactivated successfully."}), 200
 
+@app.route('/enable_exercise', methods=['POST'])
+def enable_exercise():
+    data = request.get_json()
+    exercise_id = data.get('exercise_id')
+
+    if not exercise_id:
+        return jsonify({"error": "exercise_id is required"}), 400
+
+    exercise = SubActivity.query.filter_by(id=exercise_id).first()
+    if not exercise:
+        return jsonify({"error": "Exercise not found"}), 404
+
+    if exercise.is_active:
+        return jsonify({"message": "Exercise is already active."}), 200
+
+    exercise.is_active = True
+    db.session.commit()
+
+    return jsonify({"message": f"Exercise with ID {exercise_id} has been reactivated successfully."}), 200
 
 
 
@@ -1014,10 +1138,54 @@ def list_exercises():
             "name": exercise.name,
             "description": exercise.description,
             "reps": exercise.reps,
+            "duration": exercise.duration,
+            "category": exercise.category,
+            "difficulty_level": exercise.difficulty_level
         }
         for exercise in exercises
     ]
     return jsonify(exercise_list), 200
+
+@app.route('/edit_exercise/<int:exercise_id>', methods=['PUT'])
+def edit_exercise(exercise_id):
+    data = request.get_json()
+    exercise = SubActivity.query.filter_by(id=exercise_id).first()
+
+    if not exercise:
+        return jsonify({"error": "Exercise not found"}), 404
+
+    try:
+        if 'name' in data:
+            exercise.name = data['name']
+        if 'description' in data:
+            exercise.description = data['description']
+        if 'reps' in data:
+            exercise.reps = int(data['reps'])
+        if 'duration' in data:
+            exercise.duration = int(data['duration'])
+        if 'category' in data:
+            exercise.category = data['category']
+        if 'difficulty_level' in data:
+            if data['difficulty_level'] in ['easy', 'medium', 'hard']:
+                exercise.difficulty_level = data['difficulty_level']
+            else:
+                return jsonify({"error": "Invalid difficulty level. Allowed values are: easy, medium, hard"}), 400
+        if 'is_active' in data:
+            exercise.is_active = data['is_active']
+        
+        db.session.commit()
+        return jsonify({"message": "Exercise updated successfully"}), 200
+    except ValueError:
+        db.session.rollback()
+        return jsonify({"error": "Invalid input for integer fields"}), 400
+    except IntegrityError as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 400
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
+
+
 
 
 @app.route('/add_journal', methods=['POST'])
@@ -1047,7 +1215,7 @@ def add_journal():
         db.session.commit()
 
         try:
-            prompt = f"Analyze the following journal and determine the mood: happy, sad, or angry. Just give a single word answer.\nJournal: {text}"
+            prompt = f"Analyze the following journal and determine the mood. Just give a single word answer.\nJournal: {text}"
             response = model.generate_content(prompt)
             detected_mood = response.candidates[0].content.parts[0].text.strip() if response.candidates else "Neutral"
         except Exception as e:
@@ -1138,7 +1306,7 @@ def get_moods():
         moods = (
             db.session.query(Mood, User)
             .join(subquery, db.and_(Mood.user_id == subquery.c.user_id, Mood.date == subquery.c.latest_date))
-            .join(User, Mood.user_id == User.id)
+            .join(User, db.and_(Mood.user_id == User.id, User.is_active == True))
             .all()
         )
 
@@ -1152,23 +1320,16 @@ def get_moods():
         for mood, user in moods:
             mood_entry = {
                 "user_id": user.id,
-                "first_name": user.first_name,
-                "last_name": user.last_name,
+                "name": f"{user.first_name} {user.last_name}",
                 "mood": mood.mood_category
             }
-            if mood.mood_category.lower() == "happy":
-                mood_data["happy"].append(mood_entry)
-            elif mood.mood_category.lower() == "sad":
-                mood_data["sad"].append(mood_entry)
-            elif mood.mood_category.lower() == "angry":
-                mood_data["angry"].append(mood_entry)
-            else:
-                mood_data["neutral"].append(mood_entry)
+            mood_data[mood.mood_category.lower()].append(mood_entry)
 
         return jsonify(mood_data), 200
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
     
 
 
@@ -1211,8 +1372,7 @@ def create_forum():
             "forum_id": new_forum.id,
             "title": new_forum.title,
             "category": new_forum.category,
-            "created_by": created_by,
-            "created_at": datetime.now(timezone.utc)
+            "created_by": created_by
         }), 201
 
     except Exception as e:
@@ -1254,50 +1414,6 @@ def join_forum():
         return jsonify({"error": str(e)}), 500
 
 
-
-@app.route('/get_forum/<int:forum_id>', methods=['GET'])
-def get_forum(forum_id):
-    try:
-        forum = db.session.query(Forum).filter_by(id=forum_id).first()
-        if not forum:
-            return jsonify({"error": "Forum not found"}), 404
-        
-        # Retrieve the user who created the forum
-        user = db.session.query(User).filter_by(id=forum.created_by).first()
-        if not user:
-            return jsonify({"error": "User not found"}), 404
-
-        # Retrieve members of the forum
-        memberships = db.session.query(ForumMembership).filter_by(forum_id=forum_id).all()
-        members = []
-        for membership in memberships:
-            member = db.session.query(User).filter_by(id=membership.user_id).first()
-            if member:
-                members.append({
-                    "user_id": member.id,
-                    "first_name": member.first_name,
-                    "last_name": member.last_name
-                })
-        
-        forum_details = {
-            "forum_id": forum.id,
-            "created_by": {
-                "user_id": user.id,
-                "first_name": user.first_name,
-                "last_name": user.last_name
-            },
-            "created_at": forum.created_at.isoformat(),
-            "category": forum.category,
-            "title": forum.title,
-            "members": members
-        }
-
-        return jsonify(forum_details), 200
-
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-   
-
 @app.route('/list_forums', methods=['GET'])
 def list_forums():
     try:
@@ -1305,8 +1421,8 @@ def list_forums():
 
         forum_list = [
             {
-                "forum_id": forum.id,
-                "title": forum.title, 
+                "id": forum.id,
+                "title": forum.title,
                 "category": forum.category,
                 "created_by": {
                     "user_id": user.id,
@@ -1342,9 +1458,9 @@ def forum_message():
         user = db.session.query(User).filter_by(id=user_id).first()
         if not user:
             return jsonify({"error": "User not found"}), 404
-        # membership = ForumMembership.query.filter_by(forum_id=forum_id, user_id=user_id).first()
-        # if not membership:
-        #     return jsonify({"error": "User is not a member of this forum"}), 403
+        membership = ForumMembership.query.filter_by(forum_id=forum_id, user_id=user_id).first()
+        if not membership:
+            return jsonify({"error": "User is not a member of this forum"}), 403
 
         new_message = ForumMessage(
             forum_id=forum_id,
@@ -1403,8 +1519,7 @@ def list_forum_messages():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
-
+    
 @app.route('/get_forum/<int:forum_id>', methods=['GET'])
 def get_forum(forum_id):
     try:
@@ -1412,12 +1527,10 @@ def get_forum(forum_id):
         if not forum:
             return jsonify({"error": "Forum not found"}), 404
         
-        # Retrieve the user who created the forum
         user = db.session.query(User).filter_by(id=forum.created_by).first()
         if not user:
             return jsonify({"error": "User not found"}), 404
 
-        # Retrieve members of the forum
         memberships = db.session.query(ForumMembership).filter_by(forum_id=forum_id).all()
         members = []
         for membership in memberships:
@@ -1447,7 +1560,6 @@ def get_forum(forum_id):
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-    
 
 
 @app.route('/add_badge', methods=['POST'])
@@ -1561,77 +1673,6 @@ def book_appointment():
         return jsonify({"error": str(e)}), 500
 
 
-@app.route('/alot_badge', methods=['POST'])
-def alot_badge():
-    try:
-        data = request.get_json()
-        user_id = data.get('user_id')
-        badge_id = data.get('badge_id')
-
-        if not user_id or not badge_id:
-            return jsonify({"error": "user_id and badge_id are required"}), 400
-
-        user = db.session.query(User).filter_by(id=user_id).first()
-        if not user:
-            return jsonify({"error": "User not found"}), 404
-
-        badge = db.session.query(Badge).filter_by(id=badge_id).first()
-        if not badge:
-            return jsonify({"error": "Badge not found"}), 404
-
-        existing_badge = UserBadge.query.filter_by(user_id=user_id, badge_id=badge_id).first()
-        if existing_badge:
-            return jsonify({"error": "Badge already assigned to this user"}), 400
-
-        new_user_badge = UserBadge(user_id=user_id, badge_id=badge_id)
-        db.session.add(new_user_badge)
-        db.session.commit()
-
-        return jsonify({"message": f"Badge {badge_id} assigned to user {user_id}"}), 201
-
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-
-@app.route('/alot_coupons', methods=['POST'])
-def alot_coupons():
-    try:
-        data = request.get_json()
-        user_id = data.get('user_id')
-        coupon_id = data.get('coupon_id')
-
-        if not user_id or not coupon_id:
-            return jsonify({"error": "user_id and coupon_id are required"}), 400
-
-        user = db.session.query(User).filter_by(id=user_id).first()
-        if not user:
-            return jsonify({"error": "User not found"}), 404
-
-        coupon = db.session.query(Coupon).filter_by(id=coupon_id).first()
-        if not coupon:
-            return jsonify({"error": "Coupon not found"}), 404
-
-        if coupon.total_coupons <= coupon.coupons_allotted:
-            return jsonify({"error": "No coupons available for allotment"}), 400
-
-        existing_coupon = UserCoupon.query.filter_by(user_id=user_id, coupon_id=coupon_id).first()
-        if existing_coupon:
-            return jsonify({"error": "Coupon already assigned to this user"}), 400
-
-        new_user_coupon = UserCoupon(user_id=user_id, coupon_id=coupon_id)
-        db.session.add(new_user_coupon)
-
-        coupon.coupons_allotted += 1
-        coupon.total_coupons -=1
-        user.coupons += 1
-        db.session.commit()
-
-        return jsonify({"message": f"Coupon {coupon_id} assigned to user {user_id}"}), 201
-
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-
 
 @app.route('/log_visit', methods=['POST'])
 def log_visit():
@@ -1681,6 +1722,303 @@ def get_visit_stats():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
+@app.route('/user_growth', methods=['GET'])
+def user_growth():
+    current_month = datetime.now(timezone.utc).month
+    current_year = datetime.now(timezone.utc).year
+    
+    start_year = current_year - 1 if current_month == 1 else current_year
+    start_month = current_month + 1 if current_month < 12 else 1
+
+    start_date = datetime(start_year, start_month, 1)
+    end_date = datetime(current_year, current_month, 1)
+
+    user_counts = db.session.query(
+        extract('year', User.created_at).label('year'),
+        extract('month', User.created_at).label('month'),
+        func.count(User.id).label('count')
+    ).filter(User.created_at >= start_date, User.created_at < end_date
+    ).group_by('year', 'month'
+    ).order_by('year', 'month').all()
+
+    results = []
+    for i in range(12):
+        year = (start_year if start_month + i <= 12 else start_year + 1)
+        month = (start_month + i - 1) % 12 + 1
+        month_name = datetime(year, month, 1).strftime('%B %Y').lower()
+        results.append({month_name: 0}) 
+
+    for year, month, count in user_counts:
+        month_name = datetime(year, month, 1).strftime('%B %Y').lower()
+        for result in results:
+            if month_name in result:
+                result[month_name] = count
+                break
+
+    total_users = sum(result[next(iter(result))] for result in results)
+    results.append({'total_users': total_users})
+
+    return jsonify(results)
+
+
+@app.route('/get_moods_counts', methods=['GET'])
+def get_moods_counts():
+    try:
+        subquery = db.session.query(
+            Mood.user_id,
+            db.func.max(Mood.date).label('latest_date')
+        ).group_by(Mood.user_id).subquery('latest_moods')
+
+        mood_counts = db.session.query(
+            Mood.mood_category,
+            db.func.count(Mood.user_id).label('count')
+        ).join(
+            subquery,
+            db.and_(
+                Mood.user_id == subquery.c.user_id,
+                Mood.date == subquery.c.latest_date
+            )
+        ).join(
+            User, db.and_(Mood.user_id == User.id, User.is_active == True)
+        ).group_by(Mood.mood_category).all()
+
+        result = {
+            "happy": 0,
+            "sad": 0,
+            "angry": 0,
+            "neutral": 0,
+            "anxious": 0  
+        }
+
+        for mood, count in mood_counts:
+            mood_key = mood.lower() 
+            if mood_key in result:
+                result[mood_key] = count
+
+        return jsonify(result)
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/edit_user_admin/<int:user_id>', methods=['PUT'])
+def edit_user(user_id):
+    if not request.json:
+        return jsonify({"error": "No input data provided"}), 400
+
+    data = request.json
+    try:
+        user = User.query.filter_by(id=user_id).first()
+        if not user:
+            return jsonify({"error": "User not found"}), 404
+
+        if 'first_name' in data:
+            user.first_name = data['first_name']
+        if 'last_name' in data:
+            user.last_name = data['last_name']
+        if 'email' in data:
+            if User.query.filter(User.email == data['email'], User.id != user_id).first():
+                return jsonify({"error": "Email already in use"}), 400
+            user.email = data['email']
+        if 'is_active' in data:
+            user.is_active = data['is_active']
+
+        db.session.commit()
+        return jsonify({"message": "User updated successfully"}), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
+
+# It will only run in browser
+@app.route('/respond_to_review/<int:user_id>', methods=['GET'])
+def respond_to_review(user_id):
+    try:
+        user = User.query.filter_by(id=user_id).first()
+        if not user:
+            return jsonify({"error": "User not found"}), 404
+
+        subject = quote("Response to Your Feedback")
+        body = quote("Dear {},\n\nThank you for your feedback.".format(user.first_name))
+
+        mailto_link = f"mailto:{user.email}?subject={subject}&body={body}"
+
+        return redirect(mailto_link)
+    
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+
+
+
+
+@app.route('/store_mood', methods=['POST'])
+def store_mood():
+    data = request.get_json()
+    user_id = data.get('user_id')
+    mood_category = data.get('mood_category')
+
+    if not user_id or not mood_category:
+        return jsonify({"error": "Missing data: user_id and mood_category are required."}), 400
+
+    user = db.session.get(User, user_id)
+    if not user:
+        return jsonify({"error": "User not found."}), 404
+
+    new_mood = Mood(
+        user_id=user_id,
+        mood_category=mood_category,
+        date=datetime.now(timezone.utc) 
+    )
+
+    db.session.add(new_mood)
+    db.session.commit()
+
+    return jsonify({"message": "Mood stored successfully.", "mood_id": new_mood.id}), 201
+
+
+@app.route('/mark_activity_as_done', methods=['POST'])
+def mark_activity_as_done():
+    data = request.get_json()
+    user_id = data.get('user_id')
+    activity_id = data.get('activity_id')
+
+    activity = UserActivity.query.filter_by(user_id=user_id, activity_id=activity_id).first()
+    if not activity:
+        return jsonify({"error": "Activity not found or already marked as done"}), 404
+
+    if activity.completed:
+        return jsonify({"error": "Activity is already marked as done"}), 409
+
+    activity.completed = True
+    activity.completed_at = datetime.now()
+
+    if activity.deadline and activity.completed_at <= activity.deadline:
+        activity.completed_in_time = True
+    else:
+        activity.completed_in_time = False
+
+    db.session.commit()
+
+    return jsonify({
+        "message": "Activity marked as done successfully",
+        "completed_in_time": activity.completed_in_time
+    }), 200
+
+
+@app.route('/get_activities/<int:user_id>', methods=['GET'])
+def get_activities(user_id):
+    assigned_activities = UserActivity.query.filter_by(user_id=user_id, completed=False).all()
+    completed_activities = UserActivity.query.filter_by(user_id=user_id, completed=True).all()
+
+    assigned_list = [{"activity_id": act.activity_id} for act in assigned_activities]
+    completed_list = [{"activity_id": act.activity_id, "completed_at": act.completed_at.strftime('%Y-%m-%d %H:%M:%S') if act.completed_at else "Not marked"} for act in completed_activities]
+
+    return jsonify({"Assigned Activities": assigned_list, "Completed Activities": completed_list}), 200
+
+
+@app.route('/recommend_activity', methods=['POST'])
+def recommend_activity():
+    user_id = request.json.get('user_id')
+    if not user_id:
+        return jsonify({"error": "User ID is required"}), 400
+    
+    latest_mood = Mood.query.filter(Mood.user_id == user_id).order_by(Mood.date.desc()).first()
+    if not latest_mood:
+        return jsonify({"error": "No mood data found for the user"}), 404
+
+    subactivities = SubActivity.query.filter_by(is_active=True).all()
+    subactivities_list = [subactivity.name for subactivity in subactivities]
+
+    try:
+        prompt = f"Generate a simple activity path for a user feeling {latest_mood.mood_category}. Suggest a sequence of these activities: {', '.join(subactivities_list)}. The output should be formatted as a simple comma list."
+        response = model.generate_content(prompt)
+        activity_path = response.candidates[0].content.parts[0].text.strip()
+
+        recommended_activities = activity_path.split(', ')
+
+        deadline = datetime.now() + timedelta(days=7)
+
+        new_activity = Activity(
+            mood=latest_mood.mood_category, 
+            activity_path=activity_path, 
+            recommended_activity=', '.join(recommended_activities)
+        )
+        db.session.add(new_activity)
+        db.session.commit()
+
+        new_user_activity = UserActivity(
+            user_id=user_id, 
+            activity_id=new_activity.id, 
+            recommended_at=datetime.now(), 
+            deadline=deadline
+        )
+        db.session.add(new_user_activity)
+        db.session.commit()
+
+        return jsonify({
+            "message": "Activity recommended successfully",
+            "activity_path": activity_path,
+            "deadline": deadline.strftime("%Y-%m-%d")
+        }), 201
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
+    
+
+
+@app.route('/store_user_settings', methods=['POST'])
+def store_user_settings():
+    data = request.get_json()
+    user_id = data.get('user_id')
+    email_notifications = data.get('email_notifications', False)
+    sms_notifications = data.get('sms_notifications', False)
+    push_notifications = data.get('push_notifications', False)
+    location_sharing = data.get('location_sharing', False)
+
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    settings = UserSettings.query.filter_by(user_id=user_id).first()
+    
+    if settings:
+        settings.email_notifications = email_notifications
+        settings.sms_notifications = sms_notifications
+        settings.push_notifications = push_notifications
+        settings.location_sharing = location_sharing
+    else:
+        settings = UserSettings(
+            user_id=user_id,
+            email_notifications=email_notifications,
+            sms_notifications=sms_notifications,
+            push_notifications=push_notifications,
+            location_sharing=location_sharing
+        )
+        db.session.add(settings)
+    
+    db.session.commit()
+
+    return jsonify({"message": "User settings updated successfully"}), 200
+
+
+@app.route('/get_user_settings/<int:user_id>', methods=['GET'])
+def get_user_settings(user_id):
+    settings = UserSettings.query.filter_by(user_id=user_id).first()
+    
+    if not settings:
+        return jsonify({"error": "Settings not found for this user"}), 404
+    
+    return jsonify({
+        "user_id": user_id,
+        "email_notifications": settings.email_notifications,
+        "sms_notifications": settings.sms_notifications,
+        "push_notifications": settings.push_notifications,
+        "location_sharing": settings.location_sharing
+    }), 200
 
 
 
