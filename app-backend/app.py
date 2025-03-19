@@ -2020,7 +2020,199 @@ def get_user_settings(user_id):
         "location_sharing": settings.location_sharing
     }), 200
 
+@app.route('/edit_profile/<int:user_id>', methods=['PUT'])
+def edit_profile(user_id):
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
 
+    data = request.get_json()
+    
+    if 'first_name' in data:
+        user.first_name = data['first_name']
+    if 'last_name' in data:
+        user.last_name = data['last_name']
+    if 'email' in data:
+        if User.query.filter(User.email == data['email'], User.id != user_id).first():
+            return jsonify({"error": "Email already in use"}), 409
+        user.email = data['email']
+    if 'password' in data:
+        hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
+        user.password = hashed_password
+
+    db.session.commit()
+    return jsonify({"message": "Profile updated successfully"}), 200
+
+@app.route('/store_general_settings', methods=['POST'])
+def create_general_settings():
+    data = request.get_json()
+    settings = GeneralSettings(platform_name=data['platform_name'], support_email=data['support_email'])
+    db.session.add(settings)
+    db.session.commit()
+    return jsonify({"message": "General settings saved successfully."}), 201
+
+@app.route('/get_general_settings', methods=['GET'])
+def get_general_settings():
+    settings = GeneralSettings.query.first()
+    if settings:
+        return jsonify({
+            "platform_name": settings.platform_name,
+            "support_email": settings.support_email
+        }), 200
+    return jsonify({"error": "General settings not found"}), 404
+
+
+
+@app.route('/store_security_settings', methods=['POST'])
+def create_security_settings():
+    data = request.get_json()
+    settings = SecuritySettings(
+        minimum_password_length=data['minimum_password_length'],
+        two_factor_auth=data['two_factor_auth'],
+        ssl_encryption=data['ssl_encryption']
+    )
+    db.session.add(settings)
+    db.session.commit()
+    return jsonify({"message": "Security settings saved successfully."}), 201
+
+@app.route('/get_security_settings', methods=['GET'])
+def get_security_settings():
+    settings = SecuritySettings.query.first()
+    if settings:
+        return jsonify({
+            "minimum_password_length": settings.minimum_password_length,
+            "two_factor_auth": settings.two_factor_auth,
+            "ssl_encryption": settings.ssl_encryption
+        }), 200
+    return jsonify({"error": "Security settings not found"}), 404
+
+
+
+
+@app.route('/store_notifications_settings', methods=['POST'])
+def create_notification_settings():
+    data = request.get_json()
+    settings = NotificationSettings(
+        email_notifications=data['email_notifications'],
+        push_notifications=data['push_notifications'],
+        sms_notifications=data['sms_notifications'],
+        notification_frequency=data['notification_frequency']
+    )
+    db.session.add(settings)
+    db.session.commit()
+    return jsonify({"message": "Notification settings saved successfully."}), 201
+
+@app.route('/get_notifications_settings', methods=['GET'])
+def get_notification_settings():
+    settings = NotificationSettings.query.first()
+    if settings:
+        return jsonify({
+            "email_notifications": settings.email_notifications,
+            "push_notifications": settings.push_notifications,
+            "sms_notifications": settings.sms_notifications,
+            "notification_frequency": settings.notification_frequency
+        }), 200
+    return jsonify({"error": "Notification settings not found"}), 404
+
+
+
+
+@app.route('/store_integration_settings', methods=['POST'])
+def create_integration_settings():
+    data = request.get_json()
+    settings = IntegrationSettings(
+        google_calendar=data['google_calendar'],
+        slack_integration=data['slack_integration'],
+        zoom_integration=data['zoom_integration'],
+        api_key=data['api_key']
+    )
+    db.session.add(settings)
+    db.session.commit()
+    return jsonify({"message": "Integration settings saved successfully."}), 201
+
+@app.route('/get_integration_settings', methods=['GET'])
+def get_integration_settings():
+    settings = IntegrationSettings.query.first()
+    if settings:
+        return jsonify({
+            "google_calendar": settings.google_calendar,
+            "slack_integration": settings.slack_integration,
+            "zoom_integration": settings.zoom_integration,
+            "api_key": settings.api_key
+        }), 200
+    return jsonify({"error": "Integration settings not found"}), 404
+
+@app.route('/alot_badge', methods=['POST'])
+def alot_badge():
+    try:
+        data = request.get_json()
+        user_id = data.get('user_id')
+        badge_id = data.get('badge_id')
+
+        if not user_id or not badge_id:
+            return jsonify({"error": "user_id and badge_id are required"}), 400
+
+        user = db.session.query(User).filter_by(id=user_id).first()
+        if not user:
+            return jsonify({"error": "User not found"}), 404
+
+        badge = db.session.query(Badge).filter_by(id=badge_id).first()
+        if not badge:
+            return jsonify({"error": "Badge not found"}), 404
+
+        existing_badge = UserBadge.query.filter_by(user_id=user_id, badge_id=badge_id).first()
+        if existing_badge:
+            return jsonify({"error": "Badge already assigned to this user"}), 400
+
+        new_user_badge = UserBadge(user_id=user_id, badge_id=badge_id)
+        db.session.add(new_user_badge)
+        db.session.commit()
+
+        return jsonify({"message": f"Badge {badge_id} assigned to user {user_id}"}), 201
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/alot_coupons', methods=['POST'])
+def alot_coupons():
+    try:
+        data = request.get_json()
+        user_id = data.get('user_id')
+        coupon_id = data.get('coupon_id')
+
+        if not user_id or not coupon_id:
+            return jsonify({"error": "user_id and coupon_id are required"}), 400
+
+        user = db.session.query(User).filter_by(id=user_id).first()
+        if not user:
+            return jsonify({"error": "User not found"}), 404
+
+        coupon = db.session.query(Coupon).filter_by(id=coupon_id).first()
+        if not coupon:
+            return jsonify({"error": "Coupon not found"}), 404
+
+        if coupon.total_coupons <= coupon.coupons_allotted:
+            return jsonify({"error": "No coupons available for allotment"}), 400
+
+        existing_coupon = UserCoupon.query.filter_by(user_id=user_id, coupon_id=coupon_id).first()
+        if existing_coupon:
+            return jsonify({"error": "Coupon already assigned to this user"}), 400
+
+        new_user_coupon = UserCoupon(user_id=user_id, coupon_id=coupon_id)
+        db.session.add(new_user_coupon)
+
+        coupon.coupons_allotted += 1
+        coupon.total_coupons -=1
+        user.coupons += 1
+        db.session.commit()
+
+        return jsonify({"message": f"Coupon {coupon_id} assigned to user {user_id}"}), 201
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+    
 
 with app.app_context():
     db.create_all()
