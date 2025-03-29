@@ -91,15 +91,15 @@ class TherapistExtractionAgent:
         """Enhanced HTML cleaning for any structure"""
         soup = BeautifulSoup(html_content, 'html.parser')
         
-        # Remove non-content elements
+       
         for tag in soup(['script', 'style', 'meta', 'link', 'iframe', 'noscript']):
             if tag.string and 'application/ld+json' not in str(tag.get('type', '')):
                 tag.decompose()
         
-        # Look for any meaningful content blocks
+        
         content_blocks = []
         
-        # Find elements with doctor/healthcare related content
+      
         for element in soup.find_all(['div', 'section', 'article']):
             text = element.get_text().lower()
             if any(keyword in text for keyword in ['doctor', 'therapist', 'psychologist', 'consultation']):
@@ -112,43 +112,43 @@ class TherapistExtractionAgent:
 
     def extract_data(self, html_content: str) -> Dict:
         """Extract therapist information from HTML content"""
-        # Pre-process HTML
+        
         cleaned_html = self.clean_html(html_content)
         
-        # Split into smaller chunks for processing
+        
         soup = BeautifulSoup(cleaned_html, 'html.parser')
         
-        # Try different strategies to find doctor information
+       
         chunks = []
         
-        # Strategy 1: Look for doctor-info-wrap elements (Sehatyab.com structure)
+        
         doctor_infos = soup.find_all('div', class_='doctor-info-wrap')
         if doctor_infos:
             chunks.extend([str(info) for info in doctor_infos])
         
-        # Strategy 2: Look for doctor-thumbnail elements with associated info
+        
         doctor_thumbnails = soup.find_all('div', class_='doctor-thumbnail')
         for thumbnail in doctor_thumbnails:
-            # Find associated info section
+            
             info_body = thumbnail.find_next_sibling('div', class_='doctor-info-body')
             if info_body:
                 chunks.append(str(thumbnail) + str(info_body))
         
-        # Strategy 3: Look for complete doctor cards (OlaDoc structure)
+        
         if not chunks:
             doctor_cards = soup.find_all('div', class_=lambda x: x and 'doctor-listing-card' in x)
             if doctor_cards:
                 chunks.extend([str(card) for card in doctor_cards])
         
-        # Strategy 4: Look for any sections with doctor information
+        
         if not chunks:
             for section in soup.find_all(['div', 'section', 'article']):
                 text = section.get_text().lower()
                 if any(keyword in text for keyword in ['psychologist', 'therapist', 'psychiatrist']):
-                    if len(text.strip()) > 100:  # Ensure meaningful content
+                    if len(text.strip()) > 100:  
                         chunks.append(str(section))
         
-        # If still no chunks, use the whole content
+        
         if not chunks:
             chunks = [cleaned_html]
         
@@ -156,7 +156,7 @@ class TherapistExtractionAgent:
         seen_therapists = set()
         
         for i, chunk in enumerate(chunks, 1):
-            if len(chunk.strip()) < 100:  # Skip very small chunks
+            if len(chunk.strip()) < 100:  
                 continue
             
             print(f"\nProcessing doctor information {i} of {len(chunks)} (size: {len(chunk)} characters)")
@@ -190,7 +190,7 @@ class TherapistExtractionAgent:
                 response = self.agent.run(prompt)
                 content = response.content.strip()
                 
-                # Clean up the response
+                
                 if '```' in content:
                     content = content.split('```')[1]
                     if content.startswith('json'):
@@ -200,7 +200,6 @@ class TherapistExtractionAgent:
                     chunk_data = json.loads(content)
                     if chunk_data.get('therapists'):
                         for therapist in chunk_data['therapists']:
-                            # Create unique identifier
                             therapist_id = f"{therapist.get('name', '')}-{therapist.get('designation', '')}"
                             
                             if therapist_id not in seen_therapists and therapist.get('name'):
@@ -232,5 +231,5 @@ class TherapistExtractionAgent:
         print(f"\nTotal unique therapists found: {len(all_therapists)}")
         return {"therapists": all_therapists}
 
-# Initialize the agent
+
 therapist_extraction_agent = TherapistExtractionAgent()

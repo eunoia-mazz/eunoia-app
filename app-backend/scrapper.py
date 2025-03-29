@@ -14,18 +14,17 @@ from scrapper_agents import TherapistExtractionAgent
 from models import app, db, Therapist
 from sqlalchemy.exc import SQLAlchemyError
 
-# Load environment variables
 load_dotenv()
 
 class TherapistScraper:
     def __init__(self):
-        # Setup Chrome options
+        
         self.chrome_options = Options()
         self.chrome_options.add_argument("--headless")  # Run in headless mode
         self.chrome_options.add_argument("--no-sandbox")
         self.chrome_options.add_argument("--disable-dev-shm-usage")
         
-        # Initialize the extraction agent
+       
         self.extraction_agent = TherapistExtractionAgent()
 
     def clean_html(self, html_content: str) -> str:
@@ -34,25 +33,25 @@ class TherapistScraper:
         """
         soup = BeautifulSoup(html_content, 'html.parser')
         
-        # Remove unnecessary elements
+       
         for element in soup(['script', 'style', 'iframe', 'nav', 'footer', 'header', 'meta', 'link']):
             element.decompose()
         
-        # First try: Find the doctors-page-content section (Sehatyab specific)
+        
         doctors_page = soup.find('div', class_='doctors-page-content')
         if doctors_page:
             print("Found doctors page content")
             return str(doctors_page)
         
-        # Second try: Find individual doctor sections
+        
         doctor_sections = []
         
-        # Look for doctor info wraps (Sehatyab structure)
+        
         info_wraps = soup.find_all('div', class_='doctor-info-wrap')
         if info_wraps:
             doctor_sections.extend(info_wraps)
         
-        # Look for doctor thumbnails with associated info
+       
         thumbnails = soup.find_all('div', class_='doctor-thumbnail')
         for thumb in thumbnails:
             info = thumb.find_next_sibling('div', class_='doctor-info-body')
@@ -63,7 +62,7 @@ class TherapistScraper:
             print(f"Found {len(doctor_sections)} doctor sections")
             return '\n'.join(str(section) for section in doctor_sections)
         
-        # If no specific doctor sections found, return the main content
+        
         main_content = soup.find(['main', 'article', '#main-content', '.main-content'])
         if main_content:
             print("Using main content area")
@@ -81,31 +80,31 @@ class TherapistScraper:
             print(f"\nNavigating to: {url}")
             driver.get(url)
             
-            # Wait for initial page load
+           
             WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located((By.CSS_SELECTOR, "body"))
             )
             
-            # Site-specific handling
+            
             if "oladoc.com" in url:
-                # Handle OlaDoc's "Load More" button
+               
                 while True:
                     try:
-                        # Wait for and find the "Load More" button
+                       
                         load_more = WebDriverWait(driver, 5).until(
                             EC.presence_of_element_located((By.CSS_SELECTOR, "button.load-more-btn"))
                         )
                         
-                        # Check if button is visible
+                        
                         if not load_more.is_displayed():
                             break
                             
-                        # Scroll to button and click
+                       
                         driver.execute_script("arguments[0].scrollIntoView();", load_more)
                         time.sleep(2)  # Wait for any animations
                         load_more.click()
                         
-                        # Wait for new content to load
+                       
                         time.sleep(3)
                         
                     except Exception as e:
@@ -113,17 +112,17 @@ class TherapistScraper:
                         break
                         
             elif "sehatyab.com" in url:
-                # Handle Sehatyab's pagination or dynamic loading
+               
                 last_height = 0
                 retries = 0
-                max_retries = 10  # Adjust based on expected content amount
+                max_retries = 10 
                 
                 while retries < max_retries:
-                    # Scroll to bottom
+                   
                     driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
                     time.sleep(3)
                     
-                    # Calculate new scroll height
+                    
                     new_height = driver.execute_script("return document.body.scrollHeight")
                     
                     if new_height == last_height:
@@ -133,7 +132,7 @@ class TherapistScraper:
                         
                     last_height = new_height
             
-            # Final scroll to ensure all content is loaded
+           
             driver.execute_script("window.scrollTo(0, 0);")  # Scroll back to top
             time.sleep(1)
             driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
@@ -152,30 +151,30 @@ class TherapistScraper:
         Main method to scrape therapist information from a website
         """
         try:
-            # Get the page source
+           
             html_content = self.get_page_source(url)
             
-            # Clean and extract relevant HTML
+           
             cleaned_html = self.clean_html(html_content)
             
-            # Extract data using the agent
+            
             therapist_data = self.extraction_agent.extract_data(cleaned_html)
             
-            # Add metadata
+           
             result = {
                 "url": url,
                 "timestamp": datetime.now().isoformat(),
                 "data": therapist_data
             }
             
-            # Save to JSON file
+            
             filename = f"therapists_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
             with open(filename, 'w') as f:
                 json.dump(result, f, indent=2)
             
             print(f"Data saved to {filename}")
             
-            # Ingest data into database
+           
             print("\nStarting database ingestion...")
             ingest_therapists_to_db(filename)
             
@@ -207,28 +206,28 @@ def ingest_therapists_to_db(json_file: str) -> None:
                     if not name:
                         continue
                     
-                    # Handle location data - convert list to string if needed
+                    
                     location = therapist_data.get('location')
                     if isinstance(location, list):
-                        location = ', '.join(location)  # Convert list to comma-separated string
+                        location = ', '.join(location)  
                     
-                    # Prepare therapist data
+                   
                     therapist_dict = {
                         'name': name,
                         'designation': therapist_data.get('designation', 'Therapist'),
                         'qualification': therapist_data.get('qualification'),
-                        'location': location,  # Now it's always a string
+                        'location': location,  
                         'is_available': True,
                         'patients_treated': 0,
                         'patients_queue': 0,
                         'created_at': datetime.now(timezone.utc)
                     }
                     
-                    # Check if therapist already exists
+                   
                     existing_therapist = Therapist.query.filter_by(name=name).first()
                     
                     if existing_therapist:
-                        # Update existing therapist
+                        
                         for key, value in therapist_dict.items():
                             if value is not None:
                                 setattr(existing_therapist, key, value)
@@ -236,7 +235,7 @@ def ingest_therapists_to_db(json_file: str) -> None:
                         print(f"Updated therapist: {name}")
                         updated += 1
                     else:
-                        # Create new therapist
+                        
                         new_therapist = Therapist(**therapist_dict)
                         db.session.add(new_therapist)
                         db.session.commit()
@@ -255,7 +254,7 @@ def ingest_therapists_to_db(json_file: str) -> None:
             print(f"Updates: {updated}")
             print(f"Errors: {errors}")
             
-            # Delete the JSON file
+
             os.remove(json_file)
             print(f"\nDeleted file: {json_file}")
             
@@ -266,7 +265,6 @@ def ingest_therapists_to_db(json_file: str) -> None:
 def main():
     scraper = TherapistScraper()
     
-    # Target URLs
     urls = [
         "https://oladoc.com/pakistan/lahore/psychologist",
         "https://www.sehatyab.com/our-doctors",
