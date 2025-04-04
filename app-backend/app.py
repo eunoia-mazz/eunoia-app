@@ -44,8 +44,9 @@ def load_text(txt_path):
     with open(txt_path, 'r', encoding='utf-8') as file:
         return file.read().strip().splitlines()
 
-quran_path = "/home/ammar/AmmarNadeem/University/FYP/Eunoia_Clone/eunoia-app/app-backend/quran.txt"  
-bible_path = "/home/ammar/AmmarNadeem/University/FYP/Eunoia_Clone/eunoia-app/app-backend/bible.txt"  
+# Instead of hardcoded paths:
+quran_path = os.path.join(os.path.dirname(__file__), 'quran.txt')  
+bible_path = os.path.join(os.path.dirname(__file__), 'bible.txt')  
 quran_ayat = load_text(quran_path)
 bible_verses = load_text(bible_path)
 embedding_model = SentenceTransformer("all-MiniLM-L6-v2")

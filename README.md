@@ -116,6 +116,101 @@ Once both servers are running, you can access the application at:
 
 ---
 
+## 🧪 Testing
+
+### Overview
+
+The Eunoia App includes a comprehensive test suite to ensure the reliability and functionality of the application. The tests cover various components including authentication, chat functionality, activity tracking, spiritual content, and more.
+
+### Test Structure
+
+Tests are organized in the `tests/unit/` directory with each module focusing on a specific area of functionality:
+
+- **test_auth.py**: Tests user authentication (signup, login)
+- **test_chat.py**: Tests chat creation and message generation
+- **test_activity.py**: Tests activity and subactivity models
+- **test_coupon.py**: Tests coupon allocation functionality
+- **test_spiritual.py**: Tests spiritual content features
+- **test_profile.py**: Tests user profile management
+- **test_journal.py**: Tests journal entry functionality
+- **test_forum.py**: Tests forum post and comment features
+- **test_mood.py**: Tests mood tracking functionality
+
+### Running Tests
+
+To run the entire test suite:
+
+```bash
+cd tests
+python run_tests.py
+```
+
+To run a specific test file:
+
+```bash
+cd tests
+python -m unittest unit.test_auth
+```
+
+### Continuous Integration
+
+Tests are automatically run on GitHub Actions when code is pushed to the main branch or when a pull request is created. The workflow configuration is defined in `.github/workflows/python-tests.yml`.
+
+### Test Coverage
+
+The tests use SQLite in-memory databases to ensure tests are isolated and don't affect production data. Key areas covered include:
+
+1. **Authentication**
+   - User registration
+   - User login with valid and invalid credentials
+
+2. **Chat Functionality**
+   - Creating new chats
+   - Generating AI responses (with mocked AI model)
+   - Retrieving chat history
+
+3. **Activities**
+   - Activity model validation
+   - SubActivity model validation
+   - Relationship between activities and subactivities
+
+4. **Coupons**
+   - Coupon allocation to users
+   - Validation of coupon limits
+
+5. **Spiritual Content**
+   - Creating spiritual guidance chats
+   - Testing chat creation
+
+6. **User Profiles**
+   - Profile retrieval through login
+
+### Adding New Tests
+
+When adding new features, corresponding tests should be created following the existing patterns:
+
+1. Create a new test class that inherits from `unittest.TestCase`
+2. Implement `setUp` and `tearDown` methods
+3. Add test methods that start with `test_`
+4. Update `run_tests.py` to include your new test case
+
+### Mocking External Services
+
+For tests that involve external services (like AI models), we use Python's `unittest.mock` to create mock responses:
+
+```python
+@patch('app.model.generate_content')
+def test_some_ai_feature(self, mock_generate_content):
+    # Set up the mock
+    mock_response = MagicMock()
+    mock_response.text = "This is a mock response"
+    mock_generate_content.return_value = mock_response
+    
+    # Test code that uses the AI model
+```
+
+---
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
