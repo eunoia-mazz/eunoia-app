@@ -68,6 +68,7 @@ class JournalTestCase(unittest.TestCase):
             self.assertIsNotNone(journal)
             self.assertEqual(journal.text, 'This is a test journal entry')
             self.assertTrue(journal.journal)
+            
             logger.info(f"Journal created with ID: {journal.id}")
 
     def test_add_questionnaire(self):

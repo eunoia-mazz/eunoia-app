@@ -80,6 +80,7 @@ class AuthTestCase(unittest.TestCase):
         data = json.loads(response.data)
         logger.info(f"Response data: {data}")
         self.assertIn('user', data)
+        
         self.assertEqual(data['user']['id'], self.user_id)
         self.assertEqual(data['user']['first_name'], 'Test')
         self.assertEqual(data['user']['last_name'], 'User')

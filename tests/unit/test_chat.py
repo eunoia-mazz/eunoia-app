@@ -204,7 +204,7 @@ class ChatTestCase(unittest.TestCase):
         self.assertEqual(len(data['chats']), 2)
         self.assertEqual(data['chats'][0]['title'], "First Test Chat")
         self.assertEqual(data['chats'][1]['title'], "Second Test Chat")
-        logger.info("All chats retrieved successfully with correct titles")
+        logger.info("All chats retrieved successfully with correct titles.")
 
     @patch('app.model.generate_content')
     def test_chat_response(self, mock_generate_content):

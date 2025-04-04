@@ -58,6 +58,7 @@ class SpiritualContentTestCase(unittest.TestCase):
         logger.info(f"Response data: {data}")
         self.assertIn('chat_id', data)
         logger.info(f"Chat created with ID: {data['chat_id']}")
+        
 
 if __name__ == '__main__':
     unittest.main() 

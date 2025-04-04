@@ -14,6 +14,7 @@ from app import app, db, User, Coupon, UserCoupon
 from flask_bcrypt import Bcrypt
 
 class CouponTestCase(unittest.TestCase):
+    
     def setUp(self):
         logger.info("Setting up CouponTestCase")
         app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'

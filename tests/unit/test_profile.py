@@ -49,6 +49,7 @@ class ProfileTestCase(unittest.TestCase):
         login_data = {
             'email': 'test@example.com',
             'password': 'password123'
+            
         }
         logger.info(f"Sending POST request to /login with data: {login_data}")
         response = self.app.post('/login', 

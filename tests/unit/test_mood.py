@@ -13,6 +13,7 @@ from app import app, db, User, Mood
 from datetime import datetime, timezone
 from flask_bcrypt import Bcrypt
 
+
 class MoodTestCase(unittest.TestCase):
     def setUp(self):
         logger.info("Setting up MoodTestCase")

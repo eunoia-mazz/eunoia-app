@@ -13,6 +13,7 @@ from app import app, db, User, Activity, SubActivity
 from datetime import datetime, timezone
 from flask_bcrypt import Bcrypt
 
+
 # Update the file paths to be relative or environment-variable based
 quran_path = os.path.join(os.path.dirname(__file__), '..', '..', 'app-backend', 'quran.txt')
 bible_path = os.path.join(os.path.dirname(__file__), '..', '..', 'app-backend', 'bible.txt')

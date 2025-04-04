@@ -135,6 +135,7 @@ class ForumTestCase(unittest.TestCase):
             'title': 'Forum for Messages'
         }
         logger.info(f"Creating test forum with data: {forum_data}")
+        
         create_response = self.app.post('/create_forum', 
                                         data=json.dumps(forum_data),
                                         content_type='application/json')
