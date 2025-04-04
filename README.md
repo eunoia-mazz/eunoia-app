@@ -162,7 +162,7 @@ The tests use SQLite in-memory databases to ensure tests are isolated and don't 
 
 1. **Authentication**
    - User registration
-   - User login with valid and invalid credentials
+   - User login with valid and invalid credentials.
 
 2. **Chat Functionality**
    - Creating new chats
