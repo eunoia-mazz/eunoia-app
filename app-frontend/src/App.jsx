@@ -35,6 +35,7 @@ import Login from "./pages/auth/Login";
 import SignUp from "./pages/auth/SignUp";
 import EmailSent from "./pages/auth/EmailSent";
 import PasswordUpdated from "./pages/auth/PasswordUpdated";
+import ArticleDetails from "./pages/user/Articles/ArticleDetails";
 
 function App() {
   const location = useLocation();
@@ -64,6 +65,7 @@ function App() {
         <Route path="/articles" element={<Articles />} />
         <Route path="/therapist" element={<Therapists />} />
         <Route path="/therapist/:id" element={<TherapistProfile />} />
+        <Route path="/articles/:id" element={<ArticleDetails />} />
 
         {/* Admin  Dashboard*/}
         <Route path="/admin" element={<AdminDashboard />} />

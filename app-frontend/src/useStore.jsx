@@ -2,7 +2,6 @@ import { create } from "zustand";
 
 const useStore = create((set) => ({
   clientId: localStorage.getItem("clientId") || null,
-  // setClientId: (clientId) => set({ clientId }),
   setClientId: (clientId) => {
     localStorage.setItem("clientId", clientId);
     set({ clientId });
@@ -13,7 +12,6 @@ const useStore = create((set) => ({
     localStorage.setItem("firstName", firstName);
     set({ firstName });
   },
-  // setFirstName: (firstName) => set({ firstName }),
 
   lastName: "",
   setLastName: (lastName) => set({ lastName }),
