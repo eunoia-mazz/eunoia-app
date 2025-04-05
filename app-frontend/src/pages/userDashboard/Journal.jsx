@@ -144,9 +144,6 @@ function Journal() {
             >
               Save Entry
             </button>
-            <button className="px-6 py-3 bg-green-500 text-white rounded-md hover:bg-green-400 focus:outline-none">
-              Share
-            </button>
           </div>
 
           <footer className="text-center mt-10">

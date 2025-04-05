@@ -13,7 +13,7 @@ import {
   Home,
   MessageSquare,
 } from "lucide-react";
-import { cn } from "@/lib/utils"; // Assuming cn is a utility function you've created
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Sidebar,
@@ -31,12 +31,12 @@ const navItems = [
   { title: "Home", href: "/", icon: Home },
   { title: "Dashboard", href: "/dashboard", icon: BarChart },
   { title: "Activities", href: "/dashboard/activities", icon: Activity },
-  { title: "Calendar", href: "/dashboard/calendar", icon: Calendar },
+  // { title: "Calendar", href: "/dashboard/calendar", icon: Calendar },
   { title: "Journal", href: "/dashboard/journal", icon: BookOpen },
   { title: "Forums", href: "/dashboard/forums", icon: MessageSquare },
   // { title: "Achievements", href: "/dashboard/achievements", icon: Award },
   { title: "Profile", href: "/dashboard/profile", icon: User },
-  { title: "Settings", href: "/dashboard/settings", icon: Settings },
+  // { title: "Settings", href: "/dashboard/settings", icon: Settings },
 ];
 
 export default function UserSidebar() {
