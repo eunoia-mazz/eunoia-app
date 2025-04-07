@@ -18,6 +18,8 @@ from flask_migrate import Migrate
 from urllib.parse import quote
 from sentence_transformers import SentenceTransformer
 import chromadb
+from apscheduler.schedulers.background import BackgroundScheduler
+from datetime import datetime, timedelta
 
 load_dotenv()
 
@@ -28,10 +30,11 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key ="zzboss1234"
 
 EMAIL_ADDRESS = os.getenv('EMAIL_ADDRESS')
+print(EMAIL_ADDRESS)
 EMAIL_PASSWORD = os.getenv('EMAIL_PASSWORD')
 logging.basicConfig(level=logging.INFO)
 
-CC_EMAIL = "zainxaidi2003@gmail.com"
+CC_EMAIL = "ammarnadeem490@gmail.com"
 
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
@@ -67,7 +70,6 @@ class User(db.Model):
     admin = db.Column(db.Boolean, default=False)
     treated = db.Column(db.Boolean, default=False)
     is_active = db.Column(db.Boolean, default=True)
-
     chats = db.relationship('Chat', backref='user', lazy=True)
     messages = db.relationship('Message', backref='user', lazy=True)
     user_activities = db.relationship('UserActivity', backref='user', lazy=True)
@@ -75,8 +77,6 @@ class User(db.Model):
     journals = db.relationship('Journal', backref='user', lazy=True)
     forum_messages = db.relationship('ForumMessage', backref='user', lazy=True)
     moods = db.relationship('Mood', backref='user', lazy=True)
-
-
 
 class Chat(db.Model):
     __tablename__ = 'chats'
@@ -123,7 +123,9 @@ class UserActivity(db.Model):
     recommended_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
     completed = db.Column(db.Boolean, default=False, nullable=True)
     completed_at = db.Column(db.DateTime, nullable=True)
-    completed_in_time = db.Column(db.Boolean, default=False, nullable=True)
+    completed_in_time = db.Column(db.Boolean, default=False, nullable=False)
+
+    activity = db.relationship('Activity', backref='user_activity_details', lazy=True)
 
 
 
@@ -133,9 +135,8 @@ class Activity(db.Model):
     mood = db.Column(db.Text, nullable=False)
     activity_path = db.Column(db.Text, nullable=True)
     recommended_activity = db.Column(db.Text,db.ForeignKey('subactivities.name'), nullable=True)
-
-   
-    user_activities = db.relationship('UserActivity', backref='activities', lazy=True)
+    
+    # user_activities = db.relationship('UserActivity', backref='activity_parent', lazy=True)
 
 class Review(db.Model):
     __tablename__ = 'reviews'
@@ -354,8 +355,9 @@ users_schema = UserSchema(many=True)
 @app.route('/signup', methods=['POST'])
 def signup():
     data = request.get_json()
-    fname = data.get('firstname')
-    lname = data.get('lastname')
+    print("data",data)
+    fname = data.get('fname')
+    lname = data.get('lname')
     email = data.get('email')
     password = data.get('password')
     confirm_password = data.get('confirm_password')
@@ -1217,8 +1219,11 @@ def add_journal():
 
         try:
             prompt = f"Analyze the following journal and determine the mood. Just give a single word answer.\nJournal: {text}"
+            print(1,prompt)
             response = model.generate_content(prompt)
+            print(2,response)
             detected_mood = response.candidates[0].content.parts[0].text.strip() if response.candidates else "Neutral"
+            print(3,detected_mood)
         except Exception as e:
             detected_mood = "Unknown"
 
@@ -1235,7 +1240,8 @@ def add_journal():
             "first_name": user.first_name,
             "last_name": user.last_name,
             "text": text,
-            "mood": detected_mood
+            "mood": detected_mood,
+            "created_at":new_journal.created_at
         }), 201
 
     elif questionaire_flag and mood:
@@ -1909,16 +1915,73 @@ def mark_activity_as_done():
     }), 200
 
 
+# @app.route('/get_activities/<int:user_id>', methods=['GET'])
+# def get_activities(user_id):
+#     assigned_activities = UserActivity.query.filter_by(user_id=user_id, completed=False).all()
+#     completed_activities = UserActivity.query.filter_by(user_id=user_id, completed=True).all()
+#     print(assigned_activities,completed_activities)
+#     assigned_list = [
+#         {
+#             "activity_id": act.activity_id,
+#             "activity_name": act.activity.name,  # Assuming 'name' is a field in the Activity model
+#             "deadline": act.deadline.strftime('%Y-%m-%d %H:%M:%S') if act.deadline else "No deadline"
+#         }
+#         for act in assigned_activities
+#     ]
+
+#     completed_list = [
+#         {
+#             "activity_id": act.activity_id,
+#             "activity_name": act.activity.name,  # Assuming 'name' is a field in the Activity model
+#             "completed_at": act.completed_at.strftime('%Y-%m-%d %H:%M:%S') if act.completed_at else "Not marked",
+#             "completed_in_time": act.completed_in_time
+#         }
+#         for act in completed_activities
+#     ]
+
+#     return jsonify({"Assigned Activities": assigned_list, "Completed Activities": completed_list}), 200
+#     # assigned_list = [{"activity_id": act.activity_id} for act in assigned_activities]
+#     # completed_list = [{"activity_id": act.activity_id, "completed_at": act.completed_at.strftime('%Y-%m-%d %H:%M:%S') if act.completed_at else "Not marked"} for act in completed_activities]
+
+#     # return jsonify({"Assigned Activities": assigned_list, "Completed Activities": completed_list}), 200
 @app.route('/get_activities/<int:user_id>', methods=['GET'])
 def get_activities(user_id):
-    assigned_activities = UserActivity.query.filter_by(user_id=user_id, completed=False).all()
-    completed_activities = UserActivity.query.filter_by(user_id=user_id, completed=True).all()
+    try:
+        # Get active and completed activities
+        assigned_activities = UserActivity.query.filter_by(
+            user_id=user_id, 
+            completed=False
+        ).all()
 
-    assigned_list = [{"activity_id": act.activity_id} for act in assigned_activities]
-    completed_list = [{"activity_id": act.activity_id, "completed_at": act.completed_at.strftime('%Y-%m-%d %H:%M:%S') if act.completed_at else "Not marked"} for act in completed_activities]
+        completed_activities = UserActivity.query.filter_by(
+            user_id=user_id, 
+            completed=True
+        ).all()
 
-    return jsonify({"Assigned Activities": assigned_list, "Completed Activities": completed_list}), 200
+        # Serialize assigned activities
+        assigned_list = [{
+            "activity_id": ua.activity.id,
+            "activity_name": ua.activity.recommended_activity,
+            "mood": ua.activity.mood,
+            "activity_path": ua.activity.activity_path,
+            "deadline": ua.deadline.strftime('%Y-%m-%d %H:%M:%S') if ua.deadline else None
+        } for ua in assigned_activities]
 
+        # Serialize completed activities
+        completed_list = [{
+            "activity_id": ua.activity.id,
+            "activity_name": ua.activity.recommended_activity,
+            "completed_at": ua.completed_at.strftime('%Y-%m-%d %H:%M:%S') if ua.completed_at else None,
+            "completed_in_time": ua.completed_in_time
+        } for ua in completed_activities]
+
+        return jsonify({
+            "assigned_activities": assigned_list,
+            "completed_activities": completed_list
+        }), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/recommend_activity', methods=['POST'])
 def recommend_activity():
@@ -2214,6 +2277,97 @@ def alot_coupons():
         return jsonify({"error": str(e)}), 500
     
     
+# Schduler to respond to journals of day
+def check_and_add_activities():
+    with app.app_context():
+        # Get the current date to filter journals by date
+        today_date = (datetime.now() - timedelta(days=1)).date()
+        print("today_date",today_date)
+
+        # Get all users who have less than 10 activities
+        users = User.query.all()
+        print("users",users)
+        for user in users:
+            # Count the number of journals for the user on the current day
+            journals_today = Journal.query.filter(
+                Journal.user_id == user.id,
+                db.func.date(Journal.created_at) == today_date
+            ).all()
+            print("journals_today",journals_today)
+
+            if len(journals_today) >= 1:  # If there is at least 1 journal for the day
+                # Get the latest mood of the user
+                latest_mood = Mood.query.filter(Mood.user_id == user.id).order_by(Mood.date.desc()).first()
+           
+                if not latest_mood:
+                    continue  # Skip if no mood data is found
+
+                # Check if user has less than 10 activities
+                user_activities_count = UserActivity.query.filter_by(user_id=user.id).count()
+                if user_activities_count < 10:
+                    # Get all active subactivities
+                    subactivities = SubActivity.query.filter_by(is_active=True).all()
+                    subactivities_list = [subactivity.name for subactivity in subactivities]
+
+                    try:
+                        # Generate activity path based on user's mood
+                        prompt = (
+                            f"Generate a simple activity path for a user feeling {latest_mood.mood_category}. "
+                            f"Suggest a sequence of these activities: {', '.join(subactivities_list)}. "
+                            "The output should be formatted as a simple comma list."
+                        )
+                        response = model.generate_content(prompt)
+                        activity_path = response.candidates[0].content.parts[0].text.strip()
+
+                        recommended_activities = activity_path.split(', ')
+
+                        # Set the deadline for the activity
+                        deadline = datetime.now() + timedelta(days=7)
+                        print(recommended_activities,deadline,response)
+                        # Create a new activity
+                        new_activity = Activity(
+                            mood=latest_mood.mood_category,
+                            activity_path=activity_path,
+                            recommended_activity=', '.join(recommended_activities)
+                        )
+                        db.session.add(new_activity)
+                        db.session.commit()
+
+                        # Add the activity to user_activities
+                        new_user_activity = UserActivity(
+                            user_id=user.id,
+                            activity_id=new_activity.id,
+                            recommended_at=datetime.now(),
+                            deadline=deadline,
+                            completed=False  # Explicitly setting the value
+                        )
+                        db.session.add(new_user_activity)
+                        db.session.commit()
+
+                        # Remove the journals for the day once activities are added
+                        for journal in journals_today:
+                            db.session.delete(journal)
+                        db.session.commit()
+
+                        print(f"Activities added for user {user.id} and journals removed for {today_date}")
+
+                    except Exception as e:
+                        db.session.rollback()
+                        print(f"Error occurred while recommending activity for user {user.id}: {str(e)}")
+                        continue
+                else:
+                    print(f"User {user.id} already has 10 activities. No new activities added.")
+
+
+# Scheduler to run the check_and_add_activities function every midnight
+# scheduler = BackgroundScheduler()
+# scheduler.add_job(check_and_add_activities, 'interval', days=1, start_date='2025-04-06 00:00:00')  # Start at midnight of a specific date
+# scheduler.start()
+scheduler = BackgroundScheduler()
+start_time = datetime.now() + timedelta(seconds=10)  # Set to 10 seconds from now
+scheduler.add_job(check_and_add_activities, 'date', run_date=start_time)  # Run once at the specified time
+scheduler.start()
+
 
 with app.app_context():
     db.create_all()
