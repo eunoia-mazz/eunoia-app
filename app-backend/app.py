@@ -20,6 +20,7 @@ from sentence_transformers import SentenceTransformer
 import chromadb
 from apscheduler.schedulers.background import BackgroundScheduler
 from datetime import datetime, timedelta
+from collections import Counter
 
 load_dotenv()
 
@@ -77,6 +78,8 @@ class User(db.Model):
     journals = db.relationship('Journal', backref='user', lazy=True)
     forum_messages = db.relationship('ForumMessage', backref='user', lazy=True)
     moods = db.relationship('Mood', backref='user', lazy=True)
+    phone = db.Column(db.String(20), nullable=True)        
+    religion = db.Column(db.String(100), nullable=True)       
 
 class Chat(db.Model):
     __tablename__ = 'chats'
@@ -1218,7 +1221,7 @@ def add_journal():
         db.session.commit()
 
         try:
-            prompt = f"Analyze the following journal and determine the mood. Just give a single word answer.\nJournal: {text}"
+            prompt = f"Analyze the following journal and determine the mood. Just give a single word answer.Mood must be among these [\"happy\", \"sad\", \"angry\", \"calm\", \"stressed\", \"excited\", \"bored\", \"anxious\", \"content\"].Just give a single word answer.\nJournal: {text}"
             print(1,prompt)
             response = model.generate_content(prompt)
             print(2,response)
@@ -2276,12 +2279,147 @@ def alot_coupons():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
-    
+@app.route('/profile', methods=['PATCH'])
+def update_profile():
+    try:
+        data = request.get_json()
+        print("data",data)
+        client_id = data.get('client_id')
+        if not client_id:
+            return jsonify({"error": "Client ID is required"}), 400
+
+        user = db.session.get(User, client_id)
+        if not user:
+            return jsonify({"error": "User not found"}), 404
+        print(2)
+        if 'fname' in data:
+            user.first_name = data['fname']
+        if 'lname' in data:
+            user.last_name = data['lname']
+        if 'phone' in data:
+            user.phone = data['phone']
+        if 'religion' in data:
+            user.religion = data['religion']
+        print(3)
+        user.updated_at = datetime.now(timezone.utc)
+        db.session.commit()
+        print(user)
+        return jsonify({"message": "Profile updated successfully"}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500  
+
+
+
+
+# @app.route('/user/<int:user_id>/weekly_moods', methods=['GET'])
+# def get_weekly_moods(user_id):
+#     try:
+#         end_date = datetime.now()
+#         start_date = end_date - timedelta(days=7)
+
+#         moods = (
+#             db.session.query(Mood)
+#             .filter(
+#                 Mood.user_id == user_id,
+#                 Mood.date >= start_date,
+#                 Mood.date <= end_date
+#             )
+#             .order_by(Mood.date)
+#             .all()
+#         )
+
+#         daily_moods = {}
+#         for mood in moods:
+#             day = mood.date.strftime('%Y-%m-%d')
+#             daily_moods.setdefault(day, []).append(mood.mood_category)
+
+#         weekly_data = {}
+
+#         for day, moods_list in daily_moods.items():
+#             prompt = f"""
+#             A user has experienced the following moods today: {moods_list}.
+#             Pick only ONE word that BEST represents the user's overall mood for the day.
+
+#             Rules:
+#             - Don't say 'mixed', 'neutral', 'uncertain', or 'varied'.
+#             - Always choose one clear mood from the list or infer based on common feelings.
+#             - Reply with just that one mood word, nothing else.
+#             """
+
+#             response = model.generate_content(prompt)
+#             overall_mood = response.text.strip().lower()
+
+#             # fallback if LLM gives bad mood
+#             if overall_mood in ['mixed', 'neutral', 'uncertain', 'varied']:
+#                 overall_mood = Counter(moods_list).most_common(1)[0][0]
+
+#             weekly_data[day] = {
+#                 "overall_mood": overall_mood,
+#                 "all_moods": moods_list
+#             }
+
+#         return jsonify({
+#             "user_id": user_id,
+#             "weekly_moods": weekly_data
+#         }), 200
+
+#     except Exception as e:
+#         return jsonify({"error": str(e)}), 500
+ALLOWED_MOODS = {"happy", "sad", "angry", "calm", "stressed", "excited", "bored", "anxious", "content"}
+
+@app.route('/user/<int:user_id>/weekly_moods', methods=['GET'])
+def get_weekly_moods(user_id):
+    try:
+        end_date = datetime.now()
+        start_date = end_date - timedelta(days=7)
+
+        moods = (
+            db.session.query(Mood)
+            .filter(
+                Mood.user_id == user_id,
+                Mood.date >= start_date,
+                Mood.date <= end_date
+            )
+            .order_by(Mood.date)
+            .all()
+        )
+
+        # Group moods by day and convert each mood to lowercase.
+        daily_moods = {}
+        for mood in moods:
+            day = mood.date.strftime('%Y-%m-%d')
+            mood_lower = mood.mood_category.lower()
+            # Only add if the mood is allowed
+            if mood_lower in ALLOWED_MOODS:
+                daily_moods.setdefault(day, []).append(mood_lower)
+
+        weekly_data = {}
+        for day, moods_list in daily_moods.items():
+            if moods_list:
+                # Determine overall mood as the most common allowed mood
+                overall_mood = Counter(moods_list).most_common(1)[0][0]
+            else:
+                overall_mood = None
+            weekly_data[day] = {
+                "overall_mood": overall_mood,
+                "all_moods": moods_list
+            }
+
+        return jsonify({
+            "user_id": user_id,
+            "weekly_moods": weekly_data
+        }), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 # Schduler to respond to journals of day
 def check_and_add_activities():
     with app.app_context():
         # Get the current date to filter journals by date
-        today_date = (datetime.now() - timedelta(days=1)).date()
+        # today_date = (datetime.now() - timedelta(days=1)).date()
+        today_date = datetime.now().date()
         print("today_date",today_date)
 
         # Get all users who have less than 10 activities

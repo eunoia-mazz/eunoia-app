@@ -44,11 +44,6 @@ function ChatList() {
           console.log("response huh", response);
           const chats = response.data.chats;
           setChats(chats);
-          // const chatIds = chats.map((item) => item.chat_id);
-          // const chatTit = chats.map((item) => item.title);
-          // console.log("chatIds", chatIds);
-          // setChat_ids(chatIds);
-          // setChatTitle(chatTit);
           console.log("nope", response);
         })
         .catch((err) => {
@@ -74,24 +69,10 @@ function ChatList() {
 
       <div className="w-full flex flex-row h-[90vh] justify-center items-start flex-wrap overflow-hidden overflow-y-auto scrollbar-thin scrollbar-thumb-[#ebebeb] scrollbar-track-[#ffffff]">
         <div className="w-full flex flex-wrap justify-center items-center py-3 pl-2 gap-3">
-          {/* For API */}
-          {/* {chat_ids &&
-            chat_ids.map((chat, id) => (
-              <Chat key={id} title={chat} removeChat={removeChat} />
-            ))} */}
           {chats &&
             chats.map((chat, id) => (
               <Chat key={id} info={chat} removeChat={removeChat} />
             ))}
-          {/* Dummy */}
-          {/* {chatTitles.map((chat, id) => (
-            <Chat
-              key={id}
-              title={chat.title}
-              messages={chat.messages}
-              removeChat={removeChat}
-            />
-          ))} */}
         </div>
       </div>
     </div>
