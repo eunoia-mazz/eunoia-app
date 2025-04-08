@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import john from "../../assets/Images/john.jpeg";
-// Simple Avatar component using fallback for user's initials
+
 function Avatar({ children, src }) {
   return (
     <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-300">
@@ -14,22 +15,6 @@ function Avatar({ children, src }) {
     </div>
   );
 }
-
-const therapists = [
-  {
-    id: 1,
-    name: "Dr. Emily Johnson",
-    specialization: "Anxiety & Depression",
-    patients: 28,
-  },
-  { id: 2, name: "Dr. Michael Lee", specialization: "PTSD", patients: 22 },
-  {
-    id: 3,
-    name: "Dr. Sarah Williams",
-    specialization: "Relationship Counseling",
-    patients: 25,
-  },
-];
 
 function Button({ children, variant = "solid", size = "md", ...props }) {
   const baseStyle = "rounded px-4 py-2 transition duration-200";
@@ -51,6 +36,35 @@ function Button({ children, variant = "solid", size = "md", ...props }) {
 }
 
 function TherapistOverview({ className }) {
+  const [therapists, setTherapists] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const fetchTopTherapists = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/list_therapists");
+      if (response.status === 200) {
+        setTherapists(response.data.slice(0, 3));
+      }
+    } catch (err) {
+      setError("Failed to fetch therapist data.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchTopTherapists();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div className="text-red-500">{error}</div>;
+  }
+
   return (
     <div className={`p-4 bg-white shadow rounded-lg ${className}`}>
       <div className="flex items-center justify-between pb-4 space-y-0">
@@ -70,13 +84,13 @@ function TherapistOverview({ className }) {
               <div className="space-y-3">
                 <p className="font-medium">{therapist.name}</p>
                 <p className="text-xs text-gray-500 font-normal">
-                  {therapist.specialization}
+                  {therapist.designation}
                 </p>
               </div>
             </div>
             <div className="flex items-center space-x-2">
               <span className="text-sm font-medium">
-                {therapist.patients} patients
+                {therapist.patients_treated} patients 
               </span>
               <Button
                 size="sm"
