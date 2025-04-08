@@ -483,7 +483,7 @@ def generate_response():
             f"{conversation_history}\n"
             f"User question: {user_input}\n\n"
             f"Relevant context:\n{retrieved_context}\n\n"
-            "You are a friendly and helpful chatbot. Provide clear answers and support based on the user’s question. "
+            "You are a friendly and helpful chatbot. Provide clear answers and support based on the user's question. "
             "If the user asks for an ayat from the Quran or a Bible verse, randomly choose one to share from the list below. "
             "Otherwise, give a direct answer to their question.\n\n"
             f"Quran Ayats:\n{quran_ayat}\n\n"
@@ -725,18 +725,22 @@ def list_users():
         User.id, User.first_name, User.last_name, User.email, User.treated, User.coupons, User.is_active, User.created_at
     ).all()
     
-    user_list = [
-        {
+    user_list = []
+    for u in users:
+        # Get user's badges
+        user_badges = db.session.query(Badge.name).join(UserBadge).filter(UserBadge.user_id == u[0]).all()
+        badges = [badge[0] for badge in user_badges]  # Extract just the badge names
+        
+        user_list.append({
             "id": u[0], 
             "name": f"{u[1]} {u[2]}",
             "email": u[3],
             "Treated": u[4],
             "Coupons": u[5],
             "Active": "yes" if u[6] else "no",
-            "Joined At":u[7] 
-        } 
-        for u in users
-    ]
+            "Joined At": u[7],
+            "badges": badges
+        })
     
     return jsonify(user_list), 200
 
@@ -2252,6 +2256,15 @@ def alot_coupons():
         return jsonify({"error": str(e)}), 500
     
     
+
+@app.route('/list_badges', methods=['GET'])
+def list_badges():
+    try:
+        badges = db.session.query(Badge).all()
+        badge_list = [{"id": badge.id, "name": badge.name} for badge in badges]
+        return jsonify(badge_list), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 with app.app_context():
     db.create_all()
