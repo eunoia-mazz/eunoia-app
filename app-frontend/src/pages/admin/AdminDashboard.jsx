@@ -9,12 +9,14 @@ import TherapistOverview from "../../components/admin/TherapistOverview";
 import FinancialSummary from "../../components/admin/FinancialSummary";
 import ModuleUsage from "../../components/admin/ModuleUsage";
 import ActivityEngagement from "../../components/admin/ActivityEngagement";
+import useStore from "../../useStore";
 import AdSidebar from "../../components/admin/AdSidebar";
 // import { Button } from "./components/ui/button";
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function AdminDashboard() {
+  const firstName = useStore((state) => state.firstName);
   return (
     <>
       <Helmet>
@@ -27,7 +29,7 @@ export default function AdminDashboard() {
       <DashboardShell>
         <DashboardHeader
           heading="Admin Dashboard"
-          text="Welcome back, Manahil. Here's an overview of Eunoia's performance."
+          text={`Welcome back, ${firstName} Here's an overview of Eunoia's performance.`}
         ></DashboardHeader>
         <div className="flex flex-wrap gap-6">
           <div className="flex-grow md:basis-[50%] lg:basis-[42.14%]">
