@@ -241,7 +241,7 @@ This project is licensed under the [MIT License](LICENSE).
 
 ## 📧 Contact
 
-For support or inquiries, please email: [team.eunoia.ai@example.com](mailto:team.eunoia.ai@example.com).
+For support or inquiries, please email: [team.eunoia.ai@gmail.com](mailto:team.eunoia.ai@gmail.com).
 
 ---
 
