@@ -1,11 +1,5 @@
-import React from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"; // Adjust the import path based on your project structure
+import React, { useState, useEffect } from "react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"; // Adjust the import path based on your project structure
 import {
   BarChart,
   Bar,
@@ -15,22 +9,62 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import axios from "axios"; 
 
-// const data = [
-//   { name: "Meditation", usage: 4000 },
-//   { name: "Journaling", usage: 3000 },
-//   { name: "Mood Tracking", usage: 2000 },
-//   { name: "Therapy Sessions", usage: 2780 },
-//   { name: "Goal Setting", usage: 1890 },
-// ];
-const data = [
-  { name: "Meditation", usage: 4000 },
-  { name: "Journaling", usage: 3000 },
-  { name: "Mood Tracking", usage: 2000 },
-  { name: "Therapy Sessions", usage: 2780 },
-  { name: "Goal Setting", usage: 1890 },
-];
 export default function ModuleUsage({ className }) {
+  const [modulesData, setModulesData] = useState([]); 
+  const [loading, setLoading] = useState(true); 
+  const [error, setError] = useState(null); 
+
+  const fetchVisitStats = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/get_visit_stats"); 
+      if (response.status === 200) {
+        const formattedData = response.data.map((module) => ({
+          name: module.module_name,
+          usage: module.visit_count,
+        }));
+        setModulesData(formattedData); 
+      }
+    } catch (err) {
+      setError("Failed to fetch module visit data.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchVisitStats(); 
+  }, []);
+
+  if (loading) {
+    return (
+      <Card className={className}>
+        <CardHeader>
+          <CardTitle>Module Usage</CardTitle>
+          <CardDescription>Most accessed features and modules</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p>Loading...</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (error) {
+    return (
+      <Card className={className}>
+        <CardHeader>
+          <CardTitle>Module Usage</CardTitle>
+          <CardDescription>Most accessed features and modules</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p className="text-red-500">{error}</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <Card className={className}>
       <CardHeader>
@@ -39,7 +73,7 @@ export default function ModuleUsage({ className }) {
       </CardHeader>
       <CardContent>
         <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={data} layout="vertical">
+          <BarChart data={modulesData} layout="vertical">
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis type="number" />
             <YAxis tick={{ fontSize: 11 }} dataKey="name" type="category" />
