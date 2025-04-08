@@ -22,7 +22,10 @@ const ForumDetail = () => {
   const getForumDetails = () => {
     axios
       .get(`http://localhost:5000/get_forum/${forum_id}`)
-      .then((res) => setForum(res.data))
+      .then((res) => {
+        console.log(res.data);
+        setForum(res.data);
+      })
       .catch((err) => console.log("e", err));
   };
   const getReplies = () => {

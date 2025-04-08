@@ -64,21 +64,13 @@ function Footer() {
             fgColor="white"
             style={{ width: size, height: size }}
           />
-          {/* <SocialIcon
-            url="https://twitter.com/in/jaketrent"
-            fgColor="white"
-            style={{ width: size, height: size }}
-          /> */}
+
           <SocialIcon
             url="https://facebook.com/p/eunoia-mental-health-support-platform-61568029558660/"
             fgColor="white"
             style={{ width: size, height: size }}
           />
-          {/* <SocialIcon
-            url="https://upwork.com/in/jaketrent"
-            fgColor="white"
-            style={{ width: size, height: size }}
-          /> */}
+
           <SocialIcon
             url="https://linkedin.com/company/eunoia-app"
             fgColor="white"
@@ -105,17 +97,14 @@ function Footer() {
             needs.
           </p>
           <br />
-          {/* <p className="text-gray-400 w-full font-normal text-base">
-            Download App for Android and IOS mobile phone
-          </p> */}
         </div>
       </div>
       <hr className="text-white w-3/4 mx-auto" />
       <div className="my-1 w-full flex justify-center items-center gap-8">
-        <p className="text-gray-400 xs:text-xs md:text-base ">
+        <p className="text-gray-400 xs:text-xs md:text-base w-1/2 text-right">
           Copyright © 2024 All rights reserved
         </p>
-        <p className="flex gap-3 text-sm text-right">
+        <p className="flex gap-3 text-sm text-white w-1/3">
           <NavLink to="/termsOfService">Terms Of Service</NavLink>
           <NavLink to="/privacyPolicy">Privacy Policy</NavLink>
         </p>

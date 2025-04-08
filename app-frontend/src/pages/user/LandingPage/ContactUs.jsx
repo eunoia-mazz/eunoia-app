@@ -7,13 +7,14 @@ import { SocialIcon } from "react-social-icons";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 function ContactUs() {
   // Initial Values
   const initialValues = {
     name: "",
     email: "",
-    message: "",
+    query: "",
   };
   // Validation Schema
   const validationSchema = Yup.object({
@@ -23,7 +24,7 @@ function ContactUs() {
     email: Yup.string()
       .email("Invalid email address")
       .required("Email is required"),
-    message: Yup.string()
+    query: Yup.string()
       .min(10, "Message must be at least 10 characters")
       .required("Message is required"),
   });
@@ -31,18 +32,14 @@ function ContactUs() {
   const onSubmit = (values, { resetForm }) => {
     console.log(values);
     axios
-      .post("http://localhost:5000/contact_us", values, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
+      .post("http://localhost:5000/contact_us", values)
       .then((res) => {
         console.log(res);
-        alert("Form submitted successfully....");
+        toast.success("Form submitted successfully....");
       })
       .catch((err) => {
         console.log(err);
-        alert("nah");
+        toast.error("An error occured while submitting. Please try again.");
       });
 
     resetForm();
@@ -153,14 +150,14 @@ function ContactUs() {
                     </label>
                     <Field
                       as="textarea"
-                      id="message"
-                      name="message"
+                      id="query"
+                      name="query"
                       rows="5"
                       placeholder="Write your message"
                       className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                     <ErrorMessage
-                      name="message"
+                      name="query"
                       component="div"
                       className="text-red-500 text-sm"
                     />

@@ -15,10 +15,9 @@ const TermsOfService = () => {
           1. Acceptance of Terms
         </h2>
         <p className="text-gray-700 text-base font-normal mt-2">
-          By downloading or using the{" "}
-          <strong className="font-bold">Eunoia</strong> app, you agree to these
-          Terms of Service. If you do not agree, please stop using the app
-          immediately.
+          By visiting the <strong className="font-bold">Eunoia</strong> website,
+          you agree to these Terms of Service. If you do not agree, please stop
+          using the app immediately.
         </p>
       </section>
 

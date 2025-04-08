@@ -36,13 +36,13 @@ export default function Dashboard() {
         <MoodTracker className="md:col-span-2 lg:col-span-3" />
         <AssignedActivities className="md:col-span-2 lg:col-span-3" />
         <QuickJournalEntry className="md:col-span-2 lg:col-span-4" />
-        <GoalsTracker className="md:col-span-2 lg:col-span-4" />
-        <div className="space-y-6 md:col-span-2 lg:col-span-3">
-          <CompletedActivities />
-          <EarnedBadges />
+        {/* <GoalsTracker className="md:col-span-2 lg:col-span-4" /> */}
+        <div className="flex md:col-span-2 lg:col-span-7 space-x-4">
+          <CompletedActivities className="w-1/2" />
+          <EarnedBadges className="w-1/2" />
         </div>
       </div>
-      <RecentActivity className="mt-6" />
+      {/* <RecentActivity className="mt-6" /> */}
     </DashboardShell>
   );
 }

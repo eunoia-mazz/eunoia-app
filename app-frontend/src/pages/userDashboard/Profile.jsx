@@ -6,6 +6,8 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Helmet } from "react-helmet";
+import axios from "axios";
+import useStore from "../../useStore";
 
 export const metadata = {
   title: "Profile | Mental Health Support",
@@ -13,19 +15,30 @@ export const metadata = {
 };
 
 export default function Profile() {
-  const [name, setName] = useState("Ammar Nadeem");
-  const [email, setEmail] = useState("ammar@example.com");
-  const [phone, setPhone] = useState("+92 3228696218");
+  const client_id = useStore((state) => state.clientId);
+  const [fname, setFName] = useState("Ammar");
+  const [lname, setLName] = useState("Nadeem");
+  // const [email, setEmail] = useState("ammar@example.com");
+  const [phone, setPhone] = useState("");
   const [religion, setReligion] = useState("Islam");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    // Send updated data to the backend here
-    console.log("Saving profile:", { name, email, phone });
-    // Example API call could go here like:
-    // await api.updateProfile({ name, email, phone });
-
+    console.log("Saving profile:", { fname, lname, phone, religion });
+    axios
+      .patch("http://localhost:5000/profile", {
+        client_id,
+        fname,
+        lname,
+        phone,
+        religion,
+      })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
     alert("Profile updated!");
   };
 
@@ -49,14 +62,22 @@ export default function Profile() {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid gap-2">
-              <Label htmlFor="name">Name</Label>
+              <Label htmlFor="fname">First Name</Label>
               <Input
-                id="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                id="fname"
+                value={fname}
+                onChange={(e) => setFName(e.target.value)}
               />
             </div>
             <div className="grid gap-2">
+              <Label htmlFor="lname">Last Name</Label>
+              <Input
+                id="lname"
+                value={lname}
+                onChange={(e) => setLName(e.target.value)}
+              />
+            </div>
+            {/* <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
@@ -64,13 +85,14 @@ export default function Profile() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
-            </div>
+            </div> */}
             <div className="grid gap-2">
               <Label htmlFor="phone">Phone</Label>
               <Input
                 id="phone"
                 type="tel"
                 value={phone}
+                placeholder="1234-1234567"
                 onChange={(e) => setPhone(e.target.value)}
               />
             </div>

@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Boy from "../../assets/Images/depression.png";
 import { useLocation } from "react-router-dom";
-const CustomDropdown = ({ table }) => {
+const CustomDropdown = ({ table = [] }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
   const location = useLocation();
@@ -49,15 +49,17 @@ const CustomDropdown = ({ table }) => {
       {isOpen && (
         <div className="absolute right-0 z-10 mt-2 w-40 bg-[#1B5F7C] text-white-300 rounded-md shadow-lg">
           <div className="py-1">
-            {table.map(({ option, action }) => (
-              <button
-                key={option}
-                onClick={() => handleOptionClick(option, action)}
-                className="w-full px-2 py-2 text-sm text-left bg-[#1B5F7C] hover:bg-[#1e6583] hover:text-white"
-              >
-                {option}
-              </button>
-            ))}
+            {table &&
+              table.length > 0 &&
+              table.map(({ option, action }) => (
+                <button
+                  key={option}
+                  onClick={() => handleOptionClick(option, action)}
+                  className="w-full px-2 py-2 text-sm text-left bg-[#1B5F7C] hover:bg-[#1e6583] hover:text-white"
+                >
+                  {option}
+                </button>
+              ))}
           </div>
         </div>
       )}

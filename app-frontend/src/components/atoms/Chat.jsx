@@ -40,7 +40,7 @@ function Chat({ info, removeChat }) {
   });
   return (
     <div
-      className="bg-blue-900  hover:bg-blue-700 text-white rounded-md w-11/12 py-1 px-2 flex mt-1 justify-between cursor-pointer"
+      className="bg-blue-900  hover:bg-blue-700 text-white rounded-md w-full py-1 px-2 flex mt-1 justify-between cursor-pointer"
       onClick={loadChat}
     >
       <div className="flex items-center  line-clamp-1 overflow-hidden whitespace-nowrap overflow-ellipsis">

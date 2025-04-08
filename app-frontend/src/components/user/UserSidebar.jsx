@@ -1,5 +1,10 @@
 import React from "react";
-import { BrowserRouter as Router, Link, useLocation } from "react-router-dom"; // Changed to react-router-dom
+import {
+  BrowserRouter as Router,
+  Link,
+  useLocation,
+  useNavigate,
+} from "react-router-dom"; // Changed to react-router-dom
 import {
   BarChart,
   Calendar,
@@ -25,6 +30,8 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import useStore from "@/useStore";
+import axios from "axios";
 // import { ThemeToggle } from "@/components/theme-toggle";
 
 const navItems = [
@@ -41,6 +48,29 @@ const navItems = [
 
 export default function UserSidebar() {
   const location = useLocation(); // useLocation is the React Router equivalent of usePathname
+  const { clearUserData } = useStore();
+  const nav = useNavigate();
+  const token = useStore((state) => {
+    return state.token;
+  });
+  const logoutUser = () => {
+    console.log(token);
+    axios
+      .post(
+        `http://localhost:5000/logout`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      )
+      .then(() => {
+        clearUserData();
+        nav("/login");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   return (
     <Sidebar>
@@ -77,7 +107,7 @@ export default function UserSidebar() {
       </SidebarContent>
 
       <SidebarFooter className="p-4">
-        <Button variant="outline" className="w-full">
+        <Button onClick={logoutUser} variant="outline" className="w-full">
           Logout
         </Button>
       </SidebarFooter>

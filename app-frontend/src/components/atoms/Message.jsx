@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-
+import ReactMarkdown from "react-markdown";
 function Message({ content }) {
   useEffect(() => {
     console.log(content);
@@ -10,7 +10,9 @@ function Message({ content }) {
         <div className="w-[10px] bg-[#2785ad] rounded-l-lg"></div>
       )}
       <div className="px-2 py-1 flex-1 flex items-center">
-        <p className="font-normal text-base">{content.content}</p>
+        <p className="font-normal text-base">
+          <ReactMarkdown>{content.content}</ReactMarkdown>
+        </p>
       </div>
       {content.role !== "bot" && (
         <div className="w-[10px] bg-[#2785ad] rounded-r-lg"></div>

@@ -30,28 +30,25 @@ const Forum = () => {
     axios
       .get(`http://localhost:5000/list_forums`)
       .then((res) => {
-        console.log(res.data);
+        console.log("forums", res.data);
         setForums(res.data);
       })
       .catch((err) => {
         console.log(err);
       });
   };
-  const createForum = () => {
-    axios
-      .post(`http://localhost:5000/create_forum`, {
+  const createForum = async () => {
+    try {
+      await axios.post(`http://localhost:5000/create_forum`, {
         created_by: clientId,
         category: forumCategory,
         title: forumTitle,
-      })
-      .then((res) => {
-        console.log(res.data);
-        setForums((prevForums) => [...prevForums, res.data]);
-      })
-      .catch((err) => {
-        console.log("Err", err);
       });
-    // getAllForums();
+
+      await getAllForums(); // always get latest data from DB
+    } catch (err) {
+      console.log("Err", err);
+    }
   };
   useEffect(() => {
     getAllForums();
@@ -89,7 +86,7 @@ const Forum = () => {
             {forums.map((forum) => (
               <Link
                 key={forum.forum_id}
-                to={`/dashboard/forum/${forum.forum_id}`}
+                to={`/dashboard/forum/${forum.id}`}
                 className="no-underline"
               >
                 <div className="bg-white border-2 min-h-[160px] border-gray-300 rounded-lg p-6 shadow-md hover:shadow-lg transition-all">
