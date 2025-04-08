@@ -36,6 +36,7 @@ import SignUp from "./pages/auth/SignUp";
 import EmailSent from "./pages/auth/EmailSent";
 import PasswordUpdated from "./pages/auth/PasswordUpdated";
 import ArticleDetails from "./pages/user/Articles/ArticleDetails";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   const location = useLocation();
@@ -50,6 +51,14 @@ function App() {
 
   return (
     <div className="">
+      <ToastContainer
+        position="top-center"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        pauseOnHover
+      />
       {showNavbar && <Navbar />}
       <Routes>
         <Route path="/" element={<LandingPage />} />

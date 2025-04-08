@@ -56,7 +56,7 @@ function CurrentChat() {
   }, [currentChat]);
 
   return (
-    <div className="w-4/5  flex flex-wrap justify-center items-center ">
+    <div className="w-full  flex flex-wrap justify-center items-center ">
       <div
         ref={chatContainerRef}
         className="h-[87vh] w-full flex flex-col justify-start items-center overflow-hidden overflow-y-auto scrollbar-thin scrollbar-thumb-[#1a1a68] scrollbar-track-[#222294]"

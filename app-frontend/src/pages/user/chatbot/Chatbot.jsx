@@ -14,7 +14,7 @@ function Chatbot() {
         />
       </Helmet>
       <div
-        className="  max-h-screen text-white min-h-screen min-w-full flex justify-center items-center"
+        className="  max-h-screen  text-white min-h-screen min-w-full flex justify-center items-center"
         style={{
           backgroundRepeat: "no-repeat",
           backgroundSize: "cover",
@@ -22,7 +22,7 @@ function Chatbot() {
         }}
       >
         <ChatList />
-        <CurrentChat />
+        {/* <CurrentChat /> */}
       </div>
     </>
   );

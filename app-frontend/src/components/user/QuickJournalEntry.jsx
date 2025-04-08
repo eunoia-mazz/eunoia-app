@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { BookOpen, Sparkles } from "lucide-react";
 import useStore from "@/useStore";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 export default function QuickJournalEntry({ className }) {
   const [entry, setEntry] = useState("");
@@ -20,10 +21,10 @@ export default function QuickJournalEntry({ className }) {
       .post("http://localhost:5000/add_journal", values)
       .then((res) => {
         console.log(res);
-        alert(res.data.mood);
+        toast.success("Journal added successfully.");
       })
       .catch((err) => {
-        console.log(err);
+        toast.error("Please try againa after some time.");
       });
     setEntry("");
   };

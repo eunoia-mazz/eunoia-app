@@ -21,6 +21,7 @@ import chromadb
 from apscheduler.schedulers.background import BackgroundScheduler
 from datetime import datetime, timedelta
 from collections import Counter
+import jwt
 
 load_dotenv()
 
@@ -79,7 +80,8 @@ class User(db.Model):
     forum_messages = db.relationship('ForumMessage', backref='user', lazy=True)
     moods = db.relationship('Mood', backref='user', lazy=True)
     phone = db.Column(db.String(20), nullable=True)        
-    religion = db.Column(db.String(100), nullable=True)       
+    religion = db.Column(db.String(100), nullable=True)   
+    token = db.Column(db.Text, nullable=True)    
 
 class Chat(db.Model):
     __tablename__ = 'chats'
@@ -403,11 +405,37 @@ def login():
         return jsonify({"error": "Email and password are required"}), 400
 
     user = User.query.filter_by(email=email).first()
+    
 
     if not user or not bcrypt.check_password_hash(user.password, password):
         return jsonify({"error": "Invalid email or password"}), 401
+    token = jwt.encode({'email': user.email},"This is my secret key", algorithm='HS256')
+    user.token = token
+    db.session.commit()
+    return jsonify({"message": "Login successful", "user": user_schema.dump(user),"token": token}), 200
 
-    return jsonify({"message": "Login successful", "user": user_schema.dump(user)}), 200
+
+@app.route('/logout', methods=['POST'])
+def logout():
+    token = request.headers.get('Authorization')
+
+    if not token:
+        return jsonify({'error': 'Token missing'}), 400
+
+    # Remove "Bearer " from the token if it's in the header
+    if token.startswith('Bearer '):
+        token = token.split(' ')[1]
+
+    user = User.query.filter_by(token=token).first()
+    
+    if not user:
+        return jsonify({'error': 'Invalid token'}), 400
+
+    user.token = None
+    db.session.commit()
+
+    return jsonify({'message': 'Logout successful'}), 200
+
 
 @app.route('/create_chat', methods=['POST'])
 def create_chat():
@@ -585,14 +613,15 @@ def delete_chat():
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
     
-@app.route("/contact_us", methods=["POST", "GET"])
+@app.route("/contact_us", methods=["POST"])
 def contact_us():
-    print(f"Form Data: {request.form}")
-    if request.method == "POST":
+    # print(f"Form Data: {request.form}")
+    # if request.method == "POST":
         try:
-            name = request.form['name']
-            email = request.form['email']
-            query = request.form['query']
+            data = request.get_json() 
+            name = data.get('name')
+            email = data.get('email')
+            query = data.get('query')
             contacted_on = datetime.now()
             # data = request.get_json().get("data", {})
             # name = data.get("name")
@@ -2309,63 +2338,8 @@ def update_profile():
     except Exception as e:
         return jsonify({"error": str(e)}), 500  
 
+        daily_moods.setdefault(day, []).append(mood.mood_category)
 
-
-
-# @app.route('/user/<int:user_id>/weekly_moods', methods=['GET'])
-# def get_weekly_moods(user_id):
-#     try:
-#         end_date = datetime.now()
-#         start_date = end_date - timedelta(days=7)
-
-#         moods = (
-#             db.session.query(Mood)
-#             .filter(
-#                 Mood.user_id == user_id,
-#                 Mood.date >= start_date,
-#                 Mood.date <= end_date
-#             )
-#             .order_by(Mood.date)
-#             .all()
-#         )
-
-#         daily_moods = {}
-#         for mood in moods:
-#             day = mood.date.strftime('%Y-%m-%d')
-#             daily_moods.setdefault(day, []).append(mood.mood_category)
-
-#         weekly_data = {}
-
-#         for day, moods_list in daily_moods.items():
-#             prompt = f"""
-#             A user has experienced the following moods today: {moods_list}.
-#             Pick only ONE word that BEST represents the user's overall mood for the day.
-
-#             Rules:
-#             - Don't say 'mixed', 'neutral', 'uncertain', or 'varied'.
-#             - Always choose one clear mood from the list or infer based on common feelings.
-#             - Reply with just that one mood word, nothing else.
-#             """
-
-#             response = model.generate_content(prompt)
-#             overall_mood = response.text.strip().lower()
-
-#             # fallback if LLM gives bad mood
-#             if overall_mood in ['mixed', 'neutral', 'uncertain', 'varied']:
-#                 overall_mood = Counter(moods_list).most_common(1)[0][0]
-
-#             weekly_data[day] = {
-#                 "overall_mood": overall_mood,
-#                 "all_moods": moods_list
-#             }
-
-#         return jsonify({
-#             "user_id": user_id,
-#             "weekly_moods": weekly_data
-#         }), 200
-
-#     except Exception as e:
-#         return jsonify({"error": str(e)}), 500
 ALLOWED_MOODS = {"happy", "sad", "angry", "calm", "stressed", "excited", "bored", "anxious", "content"}
 
 @app.route('/user/<int:user_id>/weekly_moods', methods=['GET'])
@@ -2413,6 +2387,11 @@ def get_weekly_moods(user_id):
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
+
+
+
 
 # Schduler to respond to journals of day
 def check_and_add_activities():

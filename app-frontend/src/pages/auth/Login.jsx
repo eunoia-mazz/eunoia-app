@@ -10,28 +10,36 @@ import axios from "axios";
 const Login = () => {
   const navigate = useNavigate();
 
-  const updateClientId = (newId) => {
-    useStore.getState().setClientId(newId);
-  };
-  const updateClientName = (newName) => {
-    useStore.getState().setFirstName(newName);
-  };
+  // const updateClientId = (newId) => {
+  //   useStore.getState().setClientId(newId);
+  // };
+  // const updateClientName = (newName) => {
+  //   useStore.getState().setFirstName(newName);
+  // };
   const [errorMessage, setErrorMessage] = useState("");
-  const setIsAdmin = useStore((state) => state.setIsAdmin);
+  const setClientId = useStore((state) => state.setClientId);
+  const setFirstName = useStore((state) => state.setFirstName);
   const setLastName = useStore((state) => state.setLastName);
+  const setIsAdmin = useStore((state) => state.setIsAdmin);
+  const setToken = useStore((state) => state.setToken);
+
   const loginUser = (values) => {
     axios
       .post(`http://localhost:5000/login`, values)
       .then((res) => {
-        console.log(res);
+        console.log(res.data.user.token);
         const user = res.data.user;
-        console.log(user.id);
+        const token = res.data.user.token;
         // setClientId(user.id);
         // setFirstName(user.first_name);
-        setIsAdmin(user.admin);
+        setToken(user.token);
+        setClientId(user.id);
+        setFirstName(user.first_name);
         setLastName(user.last_name);
-        updateClientId(user.id);
-        updateClientName(user.first_name);
+        setIsAdmin(user.admin);
+        // setIsAdmin(user.admin);
+        // updateClientId(user.id);
+        // updateClientName(user.first_name);
         navigate("/dashboard");
       })
       .catch((err) => {

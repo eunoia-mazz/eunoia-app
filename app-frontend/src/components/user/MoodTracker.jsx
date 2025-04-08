@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import axios from "axios";
 import useStore from "@/useStore";
+import { toast } from "react-toastify";
 
 const moodOptions = [
   { mood: "Happy", icon: Smile, color: "text-green-500" },
@@ -42,10 +43,10 @@ export default function MoodTracker({ className }) {
       .post("http://localhost:5000/add_journal", values)
       .then((res) => {
         console.log(res);
-        alert(res.data.mood);
+        toast.success("Mood logged successfully.");
       })
       .catch((err) => {
-        console.log(err);
+        toast.error("Please try againa after some time.");
       });
   }
 
