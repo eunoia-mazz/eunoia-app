@@ -508,8 +508,6 @@ def generate_response():
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
 
-        print(f"Error during response generation: {e}")
-        return jsonify({"error": "An internal error occurred. Please try again later."}), 500
 
     
 @app.route('/get_chat', methods=['POST'])
@@ -531,8 +529,8 @@ def get_chat():
             "title": chat.title,
             "messages": [
                 {"role": "user" if msg.client_msg else "bot", 
-                 "content": msg.client_msg or msg.bot_msg, 
-                 "timestamp": msg.timestamp.isoformat()} for msg in messages
+                "content": msg.client_msg or msg.bot_msg, 
+                "timestamp": msg.timestamp.isoformat()} for msg in messages
             ]
         })
 
@@ -1720,6 +1718,46 @@ def get_visit_stats():
         ]
 
         return jsonify(visit_stats), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/update_visit_stats', methods=['PUT'])
+def update_visit_stats():
+    try:
+        data = request.get_json()
+        module_name = data.get('module_name')
+        visit_count = data.get('visit_count')
+        last_visited_at = data.get('last_visited_at')
+
+        visit = ModuleVisit.query.filter_by(module_name=module_name).first()
+        if not visit:
+            return jsonify({"error": "Module not found."}), 404
+
+        visit.visit_count = visit_count
+        visit.last_visited_at = datetime.fromisoformat(last_visited_at)
+
+        db.session.commit()
+
+        return jsonify({"message": "Visit stats updated successfully."}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/delete_visit_stats', methods=['DELETE'])
+def delete_visit_stats():
+    try:
+        data = request.get_json()
+        module_name = data.get('module_name')
+
+        visit = ModuleVisit.query.filter_by(module_name=module_name).first()
+        if not visit:
+            return jsonify({"error": "Module not found."}), 404
+
+        db.session.delete(visit)
+        db.session.commit()
+
+        return jsonify({"message": "Visit stats deleted successfully."}), 200
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
