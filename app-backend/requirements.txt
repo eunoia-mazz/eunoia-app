@@ -11,6 +11,9 @@ python-dotenv
 # Essential ML/AI (keeping only what's actually used)
 sentence-transformers==2.2.2
 chromadb
+numpy==1.24.3
+torch==2.0.1
+transformers==4.31.0
 
 # Database and Utils
 SQLAlchemy
