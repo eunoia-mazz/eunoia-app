@@ -1,0 +1,39 @@
+# Core dependencies
+flask
+flask-sqlalchemy
+flask-bcrypt
+marshmallow-sqlalchemy
+flask-cors
+flask-migrate
+google-generativeai
+python-dotenv
+
+# Essential ML/AI (keeping only what's actually used)
+sentence-transformers==2.2.2
+chromadb
+
+# Database and Utils
+SQLAlchemy
+psycopg2-binary
+alembic
+
+# API and HTTP
+requests
+aiohttp
+urllib3
+
+# Authentication and Security
+PyJWT
+bcrypt
+cryptography
+
+# Testing
+pytest
+pytest-cov
+
+# Email
+twilio
+
+# Utilities
+python-dateutil
+PyYAML

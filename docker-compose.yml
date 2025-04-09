@@ -1,0 +1,38 @@
+services:
+  backend:
+    build:
+      context: ./app-backend
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=development
+      - FLASK_APP=app.py
+      - SQLALCHEMY_DATABASE_URI=sqlite:///eunoia.db
+      - API_KEY=${API_KEY}
+      - EMAIL_ADDRESS=${EMAIL_ADDRESS}
+      - EMAIL_PASSWORD=${EMAIL_PASSWORD}
+      - HF_HUB_DOWNLOAD_TIMEOUT=500
+      - REQUESTS_TIMEOUT=500
+    volumes:
+      - ./app-backend:/app
+      - backend_data:/app/chroma_db
+      - model_data:/app/models
+
+  frontend:
+    build:
+      context: ./app-frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_URL=http://backend:5000
+    volumes:
+      - ./app-frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+
+volumes:
+  backend_data:
+  model_data: 
