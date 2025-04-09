@@ -103,11 +103,20 @@ Start the React development server:
 npm run dev
 ```
 
+###4. Docker Deployment
+To simplify deployment, you can use Docker. This will ensure your environment is consistent and isolated:
+
+```bash
+
+docker-compose up --build
+```
+This command builds the Docker images and starts the containers for both the frontend and backend. Ensure your docker-compose.yml file is correctly configured to build these services.
+
 ### 5. Run the Application
 
 Once the backend and frontend are set up and running, you can access the app by navigating to `http://localhost:5173` for the frontend and `http://localhost:5000` for the backend.
 
-### 4. Access the Application
+### 6. Access the Application
 
 Once both servers are running, you can access the application at:
 
