@@ -1,7 +1,7 @@
-import React from "react";
-import john from "../../assets/Images/john.jpeg";
+import React, { useState, useEffect } from "react";
+import axios from "axios"; 
+import john from "../../assets/Images/john.jpeg"; 
 
-// Simple Avatar component using fallback for user initials
 function Avatar({ children, src }) {
   return (
     <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-300">
@@ -16,33 +16,38 @@ function Avatar({ children, src }) {
   );
 }
 
-const feedbacks = [
-  {
-    id: 1,
-    user: "Alice",
-    content: "Great app! Really helping me track my mood.",
-    rating: 5,
-    avatarUrl: john,
-  },
-  {
-    id: 2,
-    user: "Bob",
-    content: "The meditation exercises are fantastic.",
-    rating: 4,
-    avatarUrl: john,
-  },
-  {
-    id: 3,
-    user: "Charlie",
-    content: "Could use more personalization options.",
-    rating: 3,
-    avatarUrl: john,
-  },
-];
-
 function RecentFeedback({ className }) {
+  const [feedbacks, setFeedbacks] = useState([]); 
+  const [loading, setLoading] = useState(true); 
+  const [error, setError] = useState(null); 
+
+  const fetchReviews = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/list_reviews"); 
+      if (response.status === 200) {
+        setFeedbacks(response.data.slice(0, 3)); 
+      }
+    } catch (err) {
+      setError("Failed to fetch reviews.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchReviews();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div className="text-red-500">{error}</div>;
+  }
+
   return (
-    <div className={`p-4 bg-white rounded-lg shadow  ${className}`}>
+    <div className={`p-4 bg-white rounded-lg shadow ${className}`}>
       <div className="mb-4">
         <h2 className="text-xl font-bold">Recent Feedback</h2>
         <p className="text-sm text-gray-500 font-normal">
@@ -52,20 +57,19 @@ function RecentFeedback({ className }) {
       <div className="">
         {feedbacks.map((feedback) => (
           <div key={feedback.id} className="flex items-start space-x-4">
-            <Avatar src={feedback.avatarUrl}>{feedback.user[0]}</Avatar>
+            <Avatar src={john}>{feedback.first_name[0]}</Avatar>
             <div className="-space-y-2">
-              <h4 className="font-semibold text-lg">{feedback.user}</h4>
+              <h4 className="font-semibold text-lg">
+                {feedback.first_name} {feedback.last_name}
+              </h4>
               <p className="text-sm text-gray-500 font-normal">
-                {feedback.content}
+                {feedback.reviewing_msg}
               </p>
               <div className="flex items-center py-2">
-                {/* Loop to generate star icons based on rating */}
                 {Array.from({ length: 5 }).map((_, i) => (
                   <svg
                     key={i}
-                    className={`h-4 w-4 ${
-                      i < feedback.rating ? "text-yellow-400" : "text-gray-300"
-                    }`}
+                    className={`h-4 w-4 ${i < feedback.rating ? "text-yellow-400" : "text-gray-300"}`}
                     fill="currentColor"
                     viewBox="0 0 20 20"
                   >

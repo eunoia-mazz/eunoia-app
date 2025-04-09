@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -17,18 +17,66 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-
-// Data for the chart
-const data = [
-  { name: "Jan", users: 4000 },
-  { name: "Feb", users: 5000 },
-  { name: "Mar", users: 6000 },
-  { name: "Apr", users: 7000 },
-  { name: "May", users: 8500 },
-  { name: "Jun", users: 10000 },
-];
+import axios from "axios"; 
 
 export default function UserGrowth({ className }) {
+  const [growthData, setGrowthData] = useState([]); 
+  const [loading, setLoading] = useState(true); 
+  const [error, setError] = useState(null); 
+
+  const fetchUserGrowth = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/user_growth");
+      if (response.status === 200) {
+        setGrowthData(response.data); 
+      }
+    } catch (err) {
+      setError("Failed to fetch user growth data.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchUserGrowth(); 
+  }, []);
+
+  if (loading) {
+    return (
+      <Card className={className}>
+        <CardHeader>
+          <CardTitle>User Growth</CardTitle>
+          <CardDescription>Number of users over time</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p>Loading...</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (error) {
+    return (
+      <Card className={className}>
+        <CardHeader>
+          <CardTitle>User Growth</CardTitle>
+          <CardDescription>Number of users over time</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p className="text-red-500">{error}</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  const chartData = growthData.map((monthData) => {
+    const monthName = Object.keys(monthData)[0]; 
+    return {
+      name: monthName,
+      users: monthData[monthName] || 0, 
+    };
+  });
+
   return (
     <Card className={className}>
       <CardHeader>
@@ -37,7 +85,7 @@ export default function UserGrowth({ className }) {
       </CardHeader>
       <CardContent>
         <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={data}>
+          <LineChart data={chartData}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="name" />
             <YAxis />

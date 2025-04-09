@@ -483,7 +483,7 @@ def generate_response():
             f"{conversation_history}\n"
             f"User question: {user_input}\n\n"
             f"Relevant context:\n{retrieved_context}\n\n"
-            "You are a friendly and helpful chatbot. Provide clear answers and support based on the user’s question. "
+            "You are a friendly and helpful chatbot. Provide clear answers and support based on the user's question. "
             "If the user asks for an ayat from the Quran or a Bible verse, randomly choose one to share from the list below. "
             "Otherwise, give a direct answer to their question.\n\n"
             f"Quran Ayats:\n{quran_ayat}\n\n"
@@ -508,8 +508,6 @@ def generate_response():
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
 
-        print(f"Error during response generation: {e}")
-        return jsonify({"error": "An internal error occurred. Please try again later."}), 500
 
     
 @app.route('/get_chat', methods=['POST'])
@@ -531,8 +529,8 @@ def get_chat():
             "title": chat.title,
             "messages": [
                 {"role": "user" if msg.client_msg else "bot", 
-                 "content": msg.client_msg or msg.bot_msg, 
-                 "timestamp": msg.timestamp.isoformat()} for msg in messages
+                "content": msg.client_msg or msg.bot_msg, 
+                "timestamp": msg.timestamp.isoformat()} for msg in messages
             ]
         })
 
@@ -727,18 +725,22 @@ def list_users():
         User.id, User.first_name, User.last_name, User.email, User.treated, User.coupons, User.is_active, User.created_at
     ).all()
     
-    user_list = [
-        {
+    user_list = []
+    for u in users:
+        # Get user's badges
+        user_badges = db.session.query(Badge.name).join(UserBadge).filter(UserBadge.user_id == u[0]).all()
+        badges = [badge[0] for badge in user_badges]  # Extract just the badge names
+        
+        user_list.append({
             "id": u[0], 
             "name": f"{u[1]} {u[2]}",
             "email": u[3],
             "Treated": u[4],
             "Coupons": u[5],
             "Active": "yes" if u[6] else "no",
-            "Joined At":u[7] 
-        } 
-        for u in users
-    ]
+            "Joined At": u[7],
+            "badges": badges
+        })
     
     return jsonify(user_list), 200
 
@@ -1724,6 +1726,46 @@ def get_visit_stats():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@app.route('/update_visit_stats', methods=['PUT'])
+def update_visit_stats():
+    try:
+        data = request.get_json()
+        module_name = data.get('module_name')
+        visit_count = data.get('visit_count')
+        last_visited_at = data.get('last_visited_at')
+
+        visit = ModuleVisit.query.filter_by(module_name=module_name).first()
+        if not visit:
+            return jsonify({"error": "Module not found."}), 404
+
+        visit.visit_count = visit_count
+        visit.last_visited_at = datetime.fromisoformat(last_visited_at)
+
+        db.session.commit()
+
+        return jsonify({"message": "Visit stats updated successfully."}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/delete_visit_stats', methods=['DELETE'])
+def delete_visit_stats():
+    try:
+        data = request.get_json()
+        module_name = data.get('module_name')
+
+        visit = ModuleVisit.query.filter_by(module_name=module_name).first()
+        if not visit:
+            return jsonify({"error": "Module not found."}), 404
+
+        db.session.delete(visit)
+        db.session.commit()
+
+        return jsonify({"message": "Visit stats deleted successfully."}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 
 @app.route('/user_growth', methods=['GET'])
 def user_growth():
@@ -2214,6 +2256,15 @@ def alot_coupons():
         return jsonify({"error": str(e)}), 500
     
     
+
+@app.route('/list_badges', methods=['GET'])
+def list_badges():
+    try:
+        badges = db.session.query(Badge).all()
+        badge_list = [{"id": badge.id, "name": badge.name} for badge in badges]
+        return jsonify(badge_list), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 with app.app_context():
     db.create_all()
