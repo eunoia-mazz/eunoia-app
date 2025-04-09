@@ -107,6 +107,13 @@ npm run dev
 For users preferring Docker for deployment, you can pull the pre-built Docker images and run them directly:
 
 Pull Docker Images
+
+You will be prompted to enter a passphrase upon pulling the Docker images. Please use the following passphrase:
+
+### Passphrase: eunoiamazz
+
+Pull Docker Images
+
 Frontend
 
 ```bash
@@ -120,6 +127,7 @@ Backend
 docker pull eunoiamazz/eunoia-backend:latest
 ```
 Run Docker Containers
+
 Frontend
 
 ```bash
