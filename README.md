@@ -103,7 +103,7 @@ Start the React development server:
 npm run dev
 ```
 
-###4. Docker Deployment
+### 4. Docker Deployment
 To simplify deployment, you can use Docker. This will ensure your environment is consistent and isolated:
 
 ```bash
