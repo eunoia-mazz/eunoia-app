@@ -104,13 +104,35 @@ npm run dev
 ```
 
 ### 4. Docker Deployment
-To simplify deployment, you can use Docker. This will ensure your environment is consistent and isolated:
+For users preferring Docker for deployment, you can pull the pre-built Docker images and run them directly:
+
+Pull Docker Images
+Frontend
 
 ```bash
 
-docker-compose up --build
+docker pull eunoiamazz/eunoia-frontend:latest
 ```
-This command builds the Docker images and starts the containers for both the frontend and backend. Ensure your docker-compose.yml file is correctly configured to build these services.
+Backend
+
+```bash
+
+docker pull eunoiamazz/eunoia-backend:latest
+```
+Run Docker Containers
+Frontend
+
+```bash
+
+docker run -p 5173:5173 eunoiamazz/eunoia-frontend:latest
+```
+Backend
+
+```bash
+
+docker run -p 5000:5000 eunoiamazz/eunoia-backend:latest
+```
+This will start the frontend accessible at http://localhost:5173 and the backend at http://localhost:5000.
 
 ### 5. Run the Application
 
