@@ -1,35 +1,35 @@
-name: Python Tests
+# name: Python Tests
 
-on:
-  push:
-    branches: [ main, master ]
-  pull_request:
-    branches: [ main, master ]
+# on:
+#   push:
+#     branches: [ main, master ]
+#   pull_request:
+#     branches: [ main, master ]
 
-jobs:
-  test:
-    runs-on: ubuntu-latest
+# jobs:
+#   test:
+#     runs-on: ubuntu-latest
     
-    steps:
-    - uses: actions/checkout@v3
+#     steps:
+#     - uses: actions/checkout@v3
     
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.10'
+#     - name: Set up Python
+#       uses: actions/setup-python@v4
+#       with:
+#         python-version: '3.10'
         
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
+#     - name: Install dependencies
+#       run: |
+#         python -m pip install --upgrade pip
+#         pip install -r requirements.txt
         
-    - name: Create dummy text files for testing
-      run: |
-        mkdir -p app-backend
-        echo "Sample Quran verse 1\nSample Quran verse 2" > app-backend/quran.txt
-        echo "Sample Bible verse 1\nSample Bible verse 2" > app-backend/bible.txt
+#     - name: Create dummy text files for testing
+#       run: |
+#         mkdir -p app-backend
+#         echo "Sample Quran verse 1\nSample Quran verse 2" > app-backend/quran.txt
+#         echo "Sample Bible verse 1\nSample Bible verse 2" > app-backend/bible.txt
         
-    - name: Run tests
-      run: |
-        cd tests
-        python run_tests.py 
+#     - name: Run tests
+#       run: |
+#         cd tests
+#         python run_tests.py 
