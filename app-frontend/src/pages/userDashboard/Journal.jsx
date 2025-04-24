@@ -72,19 +72,12 @@ function Journal() {
     { emoji: "😊", label: "Happy" },
     { emoji: "😞", label: "Sad" },
     { emoji: "😡", label: "Angry" },
-    { emoji: "😅", label: "Nervous" },
-    { emoji: "😢", label: "Crying" },
-    { emoji: "🥰", label: "Loved" },
-    { emoji: "😎", label: "Cool" },
-    { emoji: "😴", label: "Tired" },
-    { emoji: "😌", label: "Relaxed" },
-    { emoji: "🤔", label: "Thoughtful" },
-    { emoji: "😱", label: "Scared" },
-    { emoji: "😜", label: "Playful" },
-    { emoji: "🤗", label: "Hugged" },
-    { emoji: "😬", label: "Embarrassed" },
-    { emoji: "🥺", label: "Feeling small" },
+    { emoji: "😌", label: "Calm" },
+    { emoji: "😅", label: "Stressed" },
     { emoji: "🤩", label: "Excited" },
+    { emoji: "😴", label: "Bored" },
+    { emoji: "😬", label: "Anxious" },
+    { emoji: "🥰", label: "Content" },
   ];
 
   return (
@@ -116,7 +109,7 @@ function Journal() {
             <p className="text-2xl font-semibold text-blue-500 mb-3">
               How are you feeling?
             </p>
-            <div className="grid grid-cols-4 gap-4 justify-center">
+            <div className="grid grid-cols-3 gap-1 justify-center">
               {moods.map((mood, index) => (
                 <div key={index} className="flex flex-col items-center">
                   <button

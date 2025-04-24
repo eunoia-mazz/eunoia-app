@@ -12,6 +12,7 @@ import useStore from "@/useStore";
 function Navbar() {
   const nav = useNavigate();
   const isAdmin = useStore((state) => state.isAdmin);
+  const token = useStore((state) => state.token);
   const [isOpen, setIsOpen] = useState(false);
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -122,15 +123,20 @@ function Navbar() {
         >
           <CustomDropdown
             table={[
-              { option: "SignUp / Login", action: () => goTo("/login") },
-              {
-                option: "User Dashboard",
-                action: () => goTo("/dashboard"),
+              !token && {
+                option: "SignUp / Login",
+                action: () => goTo("/login"),
               },
-              {
-                option: "Admin Dashboard",
-                action: () => goTo("/admin"),
-              },
+              token &&
+                !isAdmin && {
+                  option: "User Dashboard",
+                  action: () => goTo("/dashboard"),
+                },
+              token &&
+                isAdmin && {
+                  option: "Admin Dashboard",
+                  action: () => goTo("/admin"),
+                },
             ]}
           />
         </div>
