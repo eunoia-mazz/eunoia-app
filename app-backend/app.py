@@ -140,7 +140,7 @@ class Activity(db.Model):
     mood = db.Column(db.Text, nullable=False)
     activity_path = db.Column(db.Text, nullable=True)
     recommended_activity = db.Column(db.Text,db.ForeignKey('subactivities.name'), nullable=True)
-    
+
     # user_activities = db.relationship('UserActivity', backref='activity_parent', lazy=True)
 
 class Review(db.Model):
@@ -562,8 +562,8 @@ def get_chat():
             "title": chat.title,
             "messages": [
                 {"role": "user" if msg.client_msg else "bot", 
-                "content": msg.client_msg or msg.bot_msg, 
-                "timestamp": msg.timestamp.isoformat()} for msg in messages
+                 "content": msg.client_msg or msg.bot_msg, 
+                 "timestamp": msg.timestamp.isoformat()} for msg in messages
             ]
         })
 
@@ -2075,17 +2075,17 @@ def recommend_activity():
     subactivities_list = [subactivity.name for subactivity in subactivities]
 
     try:
-        prompt = f"Generate a simple activity path for a user feeling {latest_mood.mood_category}. Suggest a sequence of these activities: {', '.join(subactivities_list)}. The output should be formatted as a simple comma list."
-        response = model.generate_content(prompt)
-        activity_path = response.candidates[0].content.parts[0].text.strip()
+        # prompt = f"Generate a simple activity path for a user feeling {latest_mood.mood_category}. Suggest a sequence of these activities: {', '.join(subactivities_list)}. The output should be formatted as a simple comma list."
+        # response = model.generate_content(prompt)
+        # activity_path = response.candidates[0].content.parts[0].text.strip()
 
-        recommended_activities = activity_path.split(', ')
+        # recommended_activities = activity_path.split(', ')
 
         deadline = datetime.now() + timedelta(days=7)
 
         new_activity = Activity(
             mood=latest_mood.mood_category, 
-            activity_path=activity_path, 
+            activity_path=subactivities_list, 
             recommended_activity=', '.join(recommended_activities)
         )
         db.session.add(new_activity)
