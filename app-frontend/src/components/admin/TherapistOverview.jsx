@@ -80,7 +80,9 @@ function TherapistOverview({ className }) {
             className="flex items-center justify-between space-x-4"
           >
             <div className="flex items-center space-x-4">
-              <Avatar src={john}></Avatar>
+              <Avatar
+                src={`https://api.dicebear.com/6.x/initials/svg?seed=${therapist.name}`}
+              ></Avatar>
               <div className="space-y-3">
                 <p className="font-medium">{therapist.name}</p>
                 <p className="text-xs text-gray-500 font-normal">
@@ -90,14 +92,14 @@ function TherapistOverview({ className }) {
             </div>
             <div className="flex items-center space-x-2">
               <span className="text-sm font-medium">
-                {therapist.patients_treated} patients 
+                {therapist.patients_treated} patients
               </span>
-              <Button
+              {/* <Button
                 size="sm"
                 className="bg-blue-500 text-white px-3 py-2 rounded-md"
               >
                 View
-              </Button>
+              </Button> */}
             </div>
           </div>
         ))}

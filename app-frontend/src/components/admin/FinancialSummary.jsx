@@ -18,7 +18,10 @@ import {
 } from "recharts";
 
 export default function FinancialSummary({ className }) {
-  const [finances, setFinances] = useState({ finances_available: 0, coupons: [] });
+  const [finances, setFinances] = useState({
+    finances_available: 0,
+    coupons: [],
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -68,12 +71,36 @@ export default function FinancialSummary({ className }) {
   }
 
   const chartData = [
-    { month: "Jan", revenue: finances.finances_available * 0.2, expenses: finances.finances_available * 0.1 },
-    { month: "Feb", revenue: finances.finances_available * 0.15, expenses: finances.finances_available * 0.12 },
-    { month: "Mar", revenue: finances.finances_available * 0.25, expenses: finances.finances_available * 0.18 },
-    { month: "Apr", revenue: finances.finances_available * 0.2, expenses: finances.finances_available * 0.14 },
-    { month: "May", revenue: finances.finances_available * 0.18, expenses: finances.finances_available * 0.16 },
-    { month: "Jun", revenue: finances.finances_available * 0.22, expenses: finances.finances_available * 0.12 },
+    {
+      month: "Jan",
+      revenue: finances.finances_available * 0.2,
+      expenses: finances.finances_available * 0.1,
+    },
+    {
+      month: "Feb",
+      revenue: finances.finances_available * 0.15,
+      expenses: finances.finances_available * 0.12,
+    },
+    {
+      month: "Mar",
+      revenue: finances.finances_available * 0.25,
+      expenses: finances.finances_available * 0.18,
+    },
+    {
+      month: "Apr",
+      revenue: finances.finances_available * 0.2,
+      expenses: finances.finances_available * 0.14,
+    },
+    {
+      month: "May",
+      revenue: finances.finances_available * 0.18,
+      expenses: finances.finances_available * 0.16,
+    },
+    {
+      month: "Jun",
+      revenue: finances.finances_available * 0.22,
+      expenses: finances.finances_available * 0.12,
+    },
   ];
 
   return (

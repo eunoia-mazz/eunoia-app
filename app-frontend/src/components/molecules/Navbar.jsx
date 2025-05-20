@@ -128,16 +128,16 @@ function Navbar() {
                 action: () => goTo("/login"),
               },
               token &&
-                !isAdmin && {
-                  option: "User Dashboard",
-                  action: () => goTo("/dashboard"),
-                },
-              token &&
                 isAdmin && {
                   option: "Admin Dashboard",
                   action: () => goTo("/admin"),
                 },
-            ]}
+              token &&
+                !isAdmin && {
+                  option: "User Dashboard",
+                  action: () => goTo("/dashboard"),
+                },
+            ].filter(Boolean)}
           />
         </div>
         {/* )} */}
@@ -195,12 +195,39 @@ function Navbar() {
           className="navLink no-underline flex justify-center text-xl py-2 w-full text-center border-b border-gray-600"
           onClick={toggleMenu}
         >
+          {/* <CustomDropdown
+            table={[
+              !token && {
+                option: "SignUp / Login",
+                action: () => goTo("/login"),
+              },
+              token && {
+                option: "User Dashboard",
+                action: () => goTo("/dashboard"),
+              },
+              token && {
+                option: "Admin Dashboard",
+                action: () => goTo("/admin"),
+              },
+            ].filter(Boolean)}
+          /> */}
           <CustomDropdown
             table={[
-              { option: "SignUp / Login", action: () => goTo("/login") },
-              { option: "User Dashboard", action: () => goTo("/dashboard") },
-              { option: "Admin Dashboard", action: () => goTo("/admin") },
-            ]}
+              !token && {
+                option: "SignUp / Login",
+                action: () => goTo("/login"),
+              },
+              token &&
+                isAdmin && {
+                  option: "Admin Dashboard",
+                  action: () => goTo("/admin"),
+                },
+              token &&
+                !isAdmin && {
+                  option: "User Dashboard",
+                  action: () => goTo("/dashboard"),
+                },
+            ].filter(Boolean)}
           />
         </div>
         {/* )} */}

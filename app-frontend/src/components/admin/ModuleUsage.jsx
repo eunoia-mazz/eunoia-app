@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"; // Adjust the import path based on your project structure
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"; // Adjust the import path based on your project structure
 import {
   BarChart,
   Bar,
@@ -9,22 +15,22 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import axios from "axios"; 
+import axios from "axios";
 
 export default function ModuleUsage({ className }) {
-  const [modulesData, setModulesData] = useState([]); 
-  const [loading, setLoading] = useState(true); 
-  const [error, setError] = useState(null); 
+  const [modulesData, setModulesData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const fetchVisitStats = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/get_visit_stats"); 
+      const response = await axios.get("http://localhost:5000/get_visit_stats");
       if (response.status === 200) {
         const formattedData = response.data.map((module) => ({
           name: module.module_name,
           usage: module.visit_count,
         }));
-        setModulesData(formattedData); 
+        setModulesData(formattedData);
       }
     } catch (err) {
       setError("Failed to fetch module visit data.");
@@ -34,7 +40,7 @@ export default function ModuleUsage({ className }) {
   };
 
   useEffect(() => {
-    fetchVisitStats(); 
+    fetchVisitStats();
   }, []);
 
   if (loading) {

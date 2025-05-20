@@ -24,10 +24,11 @@ const Login = () => {
   const setToken = useStore((state) => state.setToken);
 
   const loginUser = (values) => {
+    console.log(values);
     axios
       .post(`http://localhost:5000/login`, values)
       .then((res) => {
-        console.log(res.data.user.token);
+        console.log(res);
         const user = res.data.user;
         const token = res.data.user.token;
         // setClientId(user.id);

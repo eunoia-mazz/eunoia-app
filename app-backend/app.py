@@ -1866,11 +1866,15 @@ def get_moods_counts():
         ).group_by(Mood.mood_category).all()
 
         result = {
-            "happy": 0,
-            "sad": 0,
-            "angry": 0,
-            "neutral": 0,
-            "anxious": 0  
+           "happy":0, 
+            "sad":0,
+            "angry":0,
+            "calm":0,
+            "stressed":0,
+            "excited":0,
+            "bored":0,
+            "anxious":0,
+            "content":0,
         }
 
         for mood, count in mood_counts:

@@ -17,18 +17,18 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import axios from "axios"; 
+import axios from "axios";
 
 export default function UserGrowth({ className }) {
-  const [growthData, setGrowthData] = useState([]); 
-  const [loading, setLoading] = useState(true); 
-  const [error, setError] = useState(null); 
+  const [growthData, setGrowthData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const fetchUserGrowth = async () => {
     try {
       const response = await axios.get("http://localhost:5000/user_growth");
       if (response.status === 200) {
-        setGrowthData(response.data); 
+        setGrowthData(response.data);
       }
     } catch (err) {
       setError("Failed to fetch user growth data.");
@@ -38,7 +38,7 @@ export default function UserGrowth({ className }) {
   };
 
   useEffect(() => {
-    fetchUserGrowth(); 
+    fetchUserGrowth();
   }, []);
 
   if (loading) {
@@ -70,10 +70,10 @@ export default function UserGrowth({ className }) {
   }
 
   const chartData = growthData.map((monthData) => {
-    const monthName = Object.keys(monthData)[0]; 
+    const monthName = Object.keys(monthData)[0];
     return {
       name: monthName,
-      users: monthData[monthName] || 0, 
+      users: monthData[monthName] || 0,
     };
   });
 
