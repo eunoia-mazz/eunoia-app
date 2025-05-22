@@ -74,35 +74,38 @@ function TherapistOverview({ className }) {
         </div>
       </div>
       <div className="space-y-4">
-        {therapists.map((therapist) => (
-          <div
-            key={therapist.id}
-            className="flex items-center justify-between space-x-4"
-          >
-            <div className="flex items-center space-x-4">
-              <Avatar
-                src={`https://api.dicebear.com/6.x/initials/svg?seed=${therapist.name}`}
-              ></Avatar>
-              <div className="space-y-3">
-                <p className="font-medium">{therapist.name}</p>
-                <p className="text-xs text-gray-500 font-normal">
-                  {therapist.designation}
-                </p>
+        {therapists.map((therapist, index) => {
+          if (index == 0) return null;
+          return (
+            <div
+              key={therapist.id}
+              className="flex items-center justify-between space-x-4"
+            >
+              <div className="flex items-center space-x-4">
+                <Avatar
+                  src={`https://api.dicebear.com/6.x/initials/svg?seed=${therapist.name}`}
+                ></Avatar>
+                <div className="space-y-3">
+                  <p className="font-medium">{therapist.name}</p>
+                  <p className="text-xs text-gray-500 font-normal">
+                    {therapist.designation}
+                  </p>
+                </div>
               </div>
-            </div>
-            <div className="flex items-center space-x-2">
-              <span className="text-sm font-medium">
-                {therapist.patients_treated} patients
-              </span>
-              {/* <Button
+              <div className="flex items-center space-x-2">
+                <span className="text-sm font-medium">
+                  {therapist.patients_treated} patients
+                </span>
+                {/* <Button
                 size="sm"
                 className="bg-blue-500 text-white px-3 py-2 rounded-md"
               >
                 View
               </Button> */}
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

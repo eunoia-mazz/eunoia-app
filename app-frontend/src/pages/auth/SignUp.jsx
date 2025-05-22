@@ -26,7 +26,9 @@ function SignUp() {
         setIsAdmin(user.admin);
         setFirstName(user.first_name);
         setLastName(user.last_name);
-        navigate("/dashboard");
+        user.role == "admin"
+          ? navigate("/admin/dashboard")
+          : navigate("/dashboard");
       })
       .catch((err) => {
         const errorMsg = err.response.data.error;

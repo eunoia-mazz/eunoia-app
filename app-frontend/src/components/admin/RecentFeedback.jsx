@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios"; 
-import john from "../../assets/Images/john.jpeg"; 
+import axios from "axios";
+import john from "../../assets/Images/john.jpeg";
 
 function Avatar({ children, src }) {
   return (
@@ -17,15 +17,15 @@ function Avatar({ children, src }) {
 }
 
 function RecentFeedback({ className }) {
-  const [feedbacks, setFeedbacks] = useState([]); 
-  const [loading, setLoading] = useState(true); 
-  const [error, setError] = useState(null); 
+  const [feedbacks, setFeedbacks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const fetchReviews = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/list_reviews"); 
+      const response = await axios.get("http://localhost:5000/list_reviews");
       if (response.status === 200) {
-        setFeedbacks(response.data.slice(0, 3)); 
+        setFeedbacks(response.data.slice(0, 3));
       }
     } catch (err) {
       setError("Failed to fetch reviews.");
@@ -69,7 +69,9 @@ function RecentFeedback({ className }) {
                 {Array.from({ length: 5 }).map((_, i) => (
                   <svg
                     key={i}
-                    className={`h-4 w-4 ${i < feedback.rating ? "text-yellow-400" : "text-gray-300"}`}
+                    className={`h-4 w-4 ${
+                      i < feedback.rating ? "text-yellow-400" : "text-gray-300"
+                    }`}
                     fill="currentColor"
                     viewBox="0 0 20 20"
                   >

@@ -189,7 +189,11 @@ class Therapist(db.Model):
     is_available = db.Column(db.Boolean, default=True)
     patients_treated = db.Column(db.Integer, default=0)
     patients_queue = db.Column(db.Integer, default=0)
-
+    about = db.Column(db.Text, nullable=True)
+    description = db.Column(db.Text, nullable=True)
+    specialization = db.Column(db.Text, nullable=True)
+    rating = db.Column(db.Integer, nullable=True)
+    experience = db.Column(db.Text,nullable=True)
     feedbacks = db.relationship('Feedback', backref='therapists', lazy=True)
 
 
@@ -360,7 +364,6 @@ users_schema = UserSchema(many=True)
 @app.route('/signup', methods=['POST'])
 def signup():
     data = request.get_json()
-    print("data",data)
     fname = data.get('fname')
     lname = data.get('lname')
     email = data.get('email')
@@ -504,7 +507,7 @@ def generate_response():
             if chatt:
                 chatt.title = title
                 db.session.commit()
-                print(f"Chat updated with title: {chatt.title}")
+                
         if not data or 'user_input' not in data:
             return jsonify({"error": "Please say something"}), 400
         user_input = data.get('user_input', 'I am not feeling well')  
@@ -613,8 +616,7 @@ def delete_chat():
     
 @app.route("/contact_us", methods=["POST"])
 def contact_us():
-    # print(f"Form Data: {request.form}")
-    # if request.method == "POST":
+   
         try:
             data = request.get_json() 
             name = data.get('name')
@@ -650,8 +652,6 @@ def contact_us():
             db.session.add(new_query)
             db.session.commit()
 
-            # print(new_query)
-            print(name)
             return jsonify({"status": "success"}), 200
         except Exception as e:
             print(f'Error: {e}, Trace: {traceback.format_exc()}')
@@ -893,6 +893,24 @@ def list_reviews():
 
     return jsonify(review_list), 200
 
+@app.route('/list_queries', methods=['GET'])
+def list_queries():
+    queries = db.session.query(ContactUs).all()
+
+    query_list = [
+        {
+            "id": q.id,
+            "name": q.name,
+            "email": q.email,
+            "query": q.query,
+            "contacted_on": q.contacted_on
+        }
+        for q in queries
+    ]
+    print(query_list)
+
+    return jsonify(query_list), 200
+
 
 
 @app.route('/create_therapist', methods=['POST'])
@@ -921,24 +939,21 @@ def create_therapist():
 
 @app.route('/list_therapists', methods=['GET'])
 def list_therapists():
- 
     therapists = db.session.query(Therapist).all()
-
-    therapist_list = [
-        {
-            "id": therapist.id,
-            "name": therapist.name,
-            "designation": therapist.designation,
-            "qualification": therapist.qualification,
-            "location": therapist.location,
-            "is_available": therapist.is_available,
-            "patients_treated": therapist.patients_treated,
-            "patients_queue": therapist.patients_queue
-        }
-        for therapist in therapists
+    result = [
+        {c.name: getattr(t, c.name) for c in t.__table__.columns}
+        for t in therapists
     ]
+    return jsonify(result), 200
 
-    return jsonify(therapist_list), 200
+@app.route('/get_therapist/<int:id>', methods=['GET'])
+def get_therapist(id):
+    therapist = db.session.query(Therapist).get(id)
+    if therapist is None:
+        return jsonify({'error': 'Therapist not found'}), 404
+
+    result = {c.name: getattr(therapist, c.name) for c in therapist.__table__.columns}
+    return jsonify(result), 200
 
 
 @app.route('/edit_therapist/<int:therapist_id>', methods=['PUT'])
@@ -1253,11 +1268,8 @@ def add_journal():
 
         try:
             prompt = f"Analyze the following journal and determine the mood. Just give a single word answer.Mood must be among these [\"happy\", \"sad\", \"angry\", \"calm\", \"stressed\", \"excited\", \"bored\", \"anxious\", \"content\"].Just give a single word answer.\nJournal: {text}"
-            print(1,prompt)
             response = model.generate_content(prompt)
-            print(2,response)
             detected_mood = response.candidates[0].content.parts[0].text.strip() if response.candidates else "Neutral"
-            print(3,detected_mood)
         except Exception as e:
             detected_mood = "Unknown"
 
@@ -2358,7 +2370,6 @@ def alot_coupons():
 def update_profile():
     try:
         data = request.get_json()
-        print("data",data)
         client_id = data.get('client_id')
         if not client_id:
             return jsonify({"error": "Client ID is required"}), 400
@@ -2366,7 +2377,6 @@ def update_profile():
         user = db.session.get(User, client_id)
         if not user:
             return jsonify({"error": "User not found"}), 404
-        print(2)
         if 'fname' in data:
             user.first_name = data['fname']
         if 'lname' in data:
@@ -2375,10 +2385,8 @@ def update_profile():
             user.phone = data['phone']
         if 'religion' in data:
             user.religion = data['religion']
-        print(3)
         user.updated_at = datetime.now(timezone.utc)
         db.session.commit()
-        print(user)
         return jsonify({"message": "Profile updated successfully"}), 200
 
     except Exception as e:
