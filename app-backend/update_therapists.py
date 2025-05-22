@@ -33,10 +33,11 @@ class Therapist(db.Model):
     is_available = db.Column(db.Boolean, default=True)
     patients_treated = db.Column(db.Integer, default=0)
     patients_queue = db.Column(db.Integer, default=0)
-    # about = db.Column(db.Text, nullable=True)
-    # description = db.Column(db.Text, nullable=True)
-    # specialization = db.Column(db.Text, nullable=True)
-    # rating = db.Column(db.Integer, nullable=True)
+    about = db.Column(db.Text, nullable=True)
+    description = db.Column(db.Text, nullable=True)
+    specialization = db.Column(db.Text, nullable=True)
+    rating = db.Column(db.Integer, nullable=True)
+    experience =  db.Column(db.Text, nullable=True)
 
 def generate_therapist_info(therapist):
     prompt = f"""
@@ -48,10 +49,11 @@ def generate_therapist_info(therapist):
     Return a JSON object in this exact format without any markdown formatting or additional text:
     {{
         "location": "<randomly choose: Lahore, Karachi, or Islamabad>",
-        "rating": <randomly choose: 3, 4, or 5>,
+        "rating": <randomly choose one value : 3, 4, or 5>,
         "description": "<2-3 sentences about their practice>",
         "about": "<3-4 sentences about their background>",
-        "specialization": "<2-3 mental health specialties>"
+        "specialization": "<2-3 mental health specialties>",
+        "experience":"<Give a random 'x-y' string where x is 1-4 and y = x + 1>"
     }}
     """
 
@@ -80,11 +82,12 @@ def generate_therapist_info(therapist):
             'rating': random.randint(3, 5),
             'description': 'Experienced therapist providing compassionate care and evidence-based treatment.',
             'about': 'Dedicated mental health professional with years of experience in helping clients achieve emotional well-being.',
-            'specialization': ', '.join(random.sample(specialties, 2))
+            'specialization': ', '.join(random.sample(specialties, 2)),
+            'experience':'1-2'
         }
 
 def update_therapists():
-    with app.app_context():
+     with app.app_context():
         therapists = Therapist.query.all()
         print(f"Found {len(therapists)} therapists")
 
@@ -97,13 +100,34 @@ def update_therapists():
             info = generate_therapist_info(therapist)
             if info:
                 try:
-                    therapist.location = info.get('location')
-                    therapist.rating = info.get('rating')
-                    therapist.description = info.get('description')
-                    therapist.about = info.get('about')
-                    therapist.specialization = info.get('specialization')
+                    # Always use random choice for rating to ensure variability
+                    therapist.rating = random.choice([3, 4, 5])
+                    # Process other fields
+                    therapist.location = info.get('location', random.choice(['Lahore', 'Karachi', 'Islamabad']))
+                    therapist.description = info.get('description', 'Experienced therapist providing compassionate care.')
+                    therapist.about = info.get('about', 'Dedicated mental health professional.')
+                    
+                    # Handle specialization which might come as list or string
+                    specs = info.get('specialization')
+                    if isinstance(specs, list):
+                        specs = ', '.join(specs)
+                    elif not specs:
+                        specs = random.choice([
+                            'Anxiety & Depression, Stress Management',
+                            'Cognitive Behavioral Therapy, Trauma Recovery',
+                            'Family Counseling, Mental Wellness'
+                        ])
+                    therapist.specialization = specs
+                    
+                    # Handle experience
+                    exp = info.get('experience')
+                    if not exp:
+                        x = random.randint(1, 4)
+                        exp = f"{x}-{x+1}"
+                    therapist.experience = exp
+                    
                     db.session.commit()
-                    print(f"Successfully updated {therapist.name} with: {info}")
+                    print(f"Successfully updated {therapist.name} with rating: {therapist.rating}")
                 except Exception as e:
                     print(f"Error updating database for {therapist.name}: {str(e)}")
                     db.session.rollback()

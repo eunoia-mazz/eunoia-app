@@ -37,7 +37,9 @@ import EmailSent from "./pages/auth/EmailSent";
 import PasswordUpdated from "./pages/auth/PasswordUpdated";
 import ArticleDetails from "./pages/user/Articles/ArticleDetails";
 import { ToastContainer } from "react-toastify";
-
+import RoleBasedRoute from "./components/molecules/RoleBasedRoute";
+import { adminRoutes, userRoutes } from "./routesConfig";
+import Unauthorized from "./pages/auth/Unauthorized";
 function App() {
   const location = useLocation();
   const showNavbar =
@@ -61,33 +63,32 @@ function App() {
       />
       {showNavbar && <Navbar />}
       <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/chatbot" element={<Chatbot />} />
+        {/* <Route path="/" element={<LandingPage />} />
         <Route path="/about" element={<AboutUs />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/password-updated" element={<PasswordUpdated />} />
         <Route path="/email-sent" element={<EmailSent />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/journal" element={<Journal />} />
-        <Route path="/articles" element={<Articles />} />
-        <Route path="/therapist" element={<Therapists />} />
-        <Route path="/therapist/:id" element={<TherapistProfile />} />
+        <Route path="/signup" element={<SignUp />} /> */}
+        {/* <Route path="/journal" element={<Journal />} /> */}
+        {/* <Route path="/articles" element={<Articles />} />
         <Route path="/articles/:id" element={<ArticleDetails />} />
+        <Route path="/therapist" element={<Therapists />} />
+        <Route path="/therapist/:id" element={<TherapistProfile />} /> */}
 
         {/* Admin  Dashboard*/}
-        <Route path="/admin" element={<AdminDashboard />} />
+        {/* <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/admin/therapists" element={<AdminTherapist />} />
         <Route path="/admin/users" element={<User />} />
         <Route path="/admin/feedback" element={<Feedback />} />
         <Route path="/admin/finances" element={<Finances />} />
         <Route path="/admin/modules" element={<Modules />} />
         <Route path="/admin/activities" element={<Activities />} />
-        <Route path="/admin/settings" element={<Settings />} />
+        <Route path="/admin/settings" element={<Settings />} /> */}
         {/*  */}
         {/* User Dashboard */}
-        <Route path="/dashboard" element={<Dashboard />} />
+        {/* <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/dashboard/activities" element={<UserActivites />} />
         <Route path="/dashboard/calendar" element={<Calendar />} />
         <Route path="/dashboard/profile" element={<Profile />} />
@@ -95,6 +96,7 @@ function App() {
         <Route path="/dashboard/journal" element={<Journal />} />
         <Route path="/dashboard/forums" element={<Forum />} />
         <Route path="/dashboard/forum/:id" element={<ForumDetail />} />
+        <Route path="/chatbot" element={<Chatbot />} /> */}
         {/*  */}
 
         {/* Legal Agreements */}
@@ -102,8 +104,53 @@ function App() {
         <Route path="/termsOfService" element={<TermsOfService />} />
 
         {/* Page Not Found */}
+        {/* <Route path="/*" element={<PageNotFound />} /> */}
+
+        {/* new way */}
+        {/* <Routes> */}
+        {/* Public Routes */}
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/unauthorized" element={<Unauthorized />} />
+        <Route path="/about" element={<AboutUs />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/password-updated" element={<PasswordUpdated />} />
+        <Route path="/email-sent" element={<EmailSent />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/articles" element={<Articles />} />
+        <Route path="/articles/:id" element={<ArticleDetails />} />
+        <Route path="/therapist" element={<Therapists />} />
+        <Route path="/therapist/:id" element={<TherapistProfile />} />
+
+        {/* Admin Routes */}
+        {adminRoutes.map(({ path, element }) => (
+          <Route
+            key={path}
+            path={path}
+            element={
+              <RoleBasedRoute allowedRoles={["Admin"]}>
+                {element}
+              </RoleBasedRoute>
+            }
+          />
+        ))}
+
+        {/* User Routes */}
+        {userRoutes.map(({ path, element }) => (
+          <Route
+            key={path}
+            path={path}
+            element={
+              <RoleBasedRoute allowedRoles={["User"]}>{element}</RoleBasedRoute>
+            }
+          />
+        ))}
+
+        {/* 404 */}
         <Route path="/*" element={<PageNotFound />} />
       </Routes>
+      {/* </Routes> */}
       {showNavbar && <Footer />}
     </div>
   );

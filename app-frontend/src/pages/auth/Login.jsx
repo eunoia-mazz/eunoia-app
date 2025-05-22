@@ -41,7 +41,7 @@ const Login = () => {
         // setIsAdmin(user.admin);
         // updateClientId(user.id);
         // updateClientName(user.first_name);
-        navigate("/dashboard");
+        user.admin ? navigate("/admin") : navigate("/dashboard");
       })
       .catch((err) => {
         console.log(err);

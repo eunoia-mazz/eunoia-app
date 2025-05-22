@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   BarChart,
   Users,
@@ -20,6 +20,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import useStore from "@/useStore";
+import axios from "axios";
 
 const navItems = [
   { title: "Home", href: "/", icon: Home },
@@ -36,6 +38,28 @@ const navItems = [
 function AdSidebar(props) {
   const location = useLocation();
   const pathname = location.pathname;
+  const { clearUserData } = useStore();
+  const nav = useNavigate();
+  const token = useStore((state) => {
+    return state.token;
+  });
+  const logoutUser = () => {
+    axios
+      .post(
+        `http://localhost:5000/logout`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      )
+      .then(() => {
+        clearUserData();
+        nav("/login");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   return (
     <Sidebar {...props}>
@@ -67,7 +91,7 @@ function AdSidebar(props) {
         </SidebarMenu>
       </SidebarContent>
       <SidebarFooter className="p-4">
-        <Button variant="outline" className="w-full">
+        <Button onClick={logoutUser} variant="outline" className="w-full">
           Logout
         </Button>
       </SidebarFooter>
