@@ -692,7 +692,7 @@ def send_email():
                     <h1>Hello,</h1>
                     <p>We received a request to reset your password. If you made this request, please click the link below to reset your password:</p>
                     
-                    <p><a href="https://www.google.com/" class="button">Reset Your Password</a></p>
+                    <p><a href="http://localhost:5173/reset-password" class="button">Reset Your Password</a></p>
                     
                     <p>If you did not request a password reset, please ignore this email, and your account will remain secure.</p>
                     
@@ -1015,9 +1015,9 @@ def view_patients(therapist_id):
 @app.route('/add_finances', methods=['POST'])
 def add_finances():
     data = request.get_json()
-    money = data.get('money')
-
-    if not isinstance(money, (int, float)) or money <= 0:
+    money_str = data.get('money')
+    money = float(money_str)
+    if money <= 0:
         return jsonify({"error": "Invalid amount. Money must be a positive number."}), 400
 
     finance = db.session.query(Finances).first()
@@ -1036,10 +1036,13 @@ def add_finances():
 @app.route('/add_coupons', methods=['POST'])
 def add_coupons():
     data = request.get_json()
-    coupon_id = data.get('coupon_id')
-    num_coupons = data.get('num_coupons')
+    coupon_id_str = data.get('coupon_id')
+    num_coupons_str = data.get('num_coupons')
+    num_coupons=float(num_coupons_str)
+    coupon_id=float(coupon_id_str)
+    print(num_coupons,coupon_id)
 
-    if not coupon_id or not isinstance(num_coupons, int) or num_coupons <= 0:
+    if not coupon_id or num_coupons <= 0:
         return jsonify({"error": "Invalid input. 'coupon_id' and 'num_coupons' are required and 'num_coupons' must be a positive integer."}), 400
 
     coupon = db.session.query(Coupon).filter_by(id=coupon_id).first()
@@ -1058,10 +1061,11 @@ def add_coupons():
 def enlist_coupon():
     data = request.get_json()
     partner_name = data.get('partner_name')
-    num_coupons = data.get('num_coupons')
+    num_coupons_str = data.get('num_coupons')
     valid_until = data.get('valid_until')
-
-    if not partner_name or not isinstance(num_coupons, int) or num_coupons <= 0:
+    num_coupons=float(num_coupons_str)
+    print(partner_name,num_coupons,valid_until)
+    if not partner_name  or num_coupons <= 0:
         return jsonify({"error": "Invalid input. 'partner_name' is required and 'num_coupons' must be a positive integer."}), 400
     
     if not valid_until:
@@ -2551,6 +2555,33 @@ def list_badges():
 
 with app.app_context():
     db.create_all()
+@app.route('/get_user_badges/<int:user_id>', methods=['GET'])
+def get_user_badges(user_id):
+    
+    badges = (
+        db.session.query(Badge)
+        .join(UserBadge)
+        .filter(UserBadge.user_id == user_id)
+        .all()
+    )
+    print("''''''''''''''''''''''''''''''''''''''''''''")
+    print("''''''''''''''''''''''''''''''''''''''''''''")
+    print("''''''''''''''''''''''''''''''''''''''''''''")
+    print("''''''''''''''''''''''''''''''''''''''''''''")
+
+    print("''''''''''''''''''''''''''''''''''''''''''''")
+    print("user_id",badges)
+    return [
+        {
+            "id": badge.id,
+            "name": badge.name,
+            "picture": badge.picture
+        }
+        for badge in badges
+    ]
+
+
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)

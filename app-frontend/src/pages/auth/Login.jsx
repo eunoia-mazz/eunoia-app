@@ -169,9 +169,9 @@ const Login = () => {
           )}
         </Formik>
 
-        <div className="mt-6 text-center text-gray-500">Or</div>
+        {/* <div className="mt-6 text-center text-gray-500">Or</div> */}
 
-        <div className="mt-6 grid grid-cols-2 gap-4">
+        {/* <div className="mt-6 grid grid-cols-2 gap-4">
           <button className="flex items-center justify-center space-x-2 py-2 px-4 border border-gray-300 rounded-full hover:bg-gray-50">
             <FaGoogle className="text-red-500" />
             <span>Google</span>
@@ -188,7 +188,7 @@ const Login = () => {
             <FaGithub className="text-gray-900" />
             <span>GitHub</span>
           </button>
-        </div>
+        </div> */}
       </div>
     </div>
   );

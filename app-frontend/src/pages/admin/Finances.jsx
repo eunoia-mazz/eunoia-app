@@ -2,29 +2,36 @@ import React, { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import DashboardHeader from "@/components/admin/DashboardHeader";
 import DashboardShell from "@/components/admin/DashboardShell";
-import axios from "axios"; 
+import axios from "axios";
 
 export default function Finances() {
-  const [finances, setFinances] = useState(null); 
-  const [coupons, setCoupons] = useState([]); 
-  const [loading, setLoading] = useState(true); 
-  const [error, setError] = useState(null); 
-  const [partnerName, setPartnerName] = useState(""); 
-  const [numCoupons, setNumCoupons] = useState(0); 
-  const [validUntil, setValidUntil] = useState(""); 
-  const [couponId, setCouponId] = useState(""); 
+  const [finances, setFinances] = useState(null);
+  const [coupons, setCoupons] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [partnerName, setPartnerName] = useState("");
+  const [numCoupons, setNumCoupons] = useState(0);
+  const [validUntil, setValidUntil] = useState("");
+  const [couponId, setCouponId] = useState("");
   const [addCoupons, setAddCoupons] = useState(0);
-  const [addAmount, setAddAmount] = useState(0); 
+  const [addAmount, setAddAmount] = useState(0);
 
   const fetchFinances = async () => {
     try {
       const response = await axios.get("http://localhost:5000/get_finances");
       if (response.status === 200) {
-        setFinances(response.data.finances_available); 
-        setCoupons(response.data.coupons); 
+        setFinances(response.data.finances_available);
+        setCoupons(response.data.coupons);
       }
     } catch (err) {
       setError("Failed to fetch finance data.");
@@ -34,13 +41,16 @@ export default function Finances() {
   };
 
   useEffect(() => {
-    fetchFinances(); 
+    fetchFinances();
   }, []);
 
   if (loading) {
     return (
       <DashboardShell>
-        <DashboardHeader heading="Finances" text="Manage and monitor financial data.">
+        <DashboardHeader
+          heading="Finances"
+          text="Manage and monitor financial data."
+        >
           <Button className="bg-blue-500 text-white hover:bg-blue-600">
             Add Finance
           </Button>
@@ -55,7 +65,10 @@ export default function Finances() {
   if (error) {
     return (
       <DashboardShell>
-        <DashboardHeader heading="Finances" text="Manage and monitor financial data.">
+        <DashboardHeader
+          heading="Finances"
+          text="Manage and monitor financial data."
+        >
           <Button className="bg-blue-500 text-white hover:bg-blue-600">
             Add Finance
           </Button>
@@ -68,32 +81,41 @@ export default function Finances() {
   }
 
   const handleEnlistCoupon = async () => {
+    console.log(partnerName, numCoupons, validUntil);
     try {
       const response = await axios.post("http://localhost:5000/enlist_coupon", {
         partner_name: partnerName,
         num_coupons: numCoupons,
         valid_until: validUntil,
       });
+      console.log(response);
       if (response.status === 201) {
-        setCoupons([...coupons, response.data]); 
+        setCoupons([...coupons, response.data]);
         alert("Coupon enlisted successfully!");
       }
     } catch (err) {
       setError("Failed to enlist coupon.");
+      console.log(err);
     }
   };
 
   const handleAddCoupons = async () => {
+    console.log(couponId, addCoupons);
     try {
       const response = await axios.post("http://localhost:5000/add_coupons", {
         coupon_id: couponId,
         num_coupons: addCoupons,
       });
+      console.log("response outside", response);
       if (response.status === 201) {
-        alert(`Successfully added ${addCoupons} coupons to coupon ID ${couponId}`);
-        fetchFinances();       }
+        alert(
+          `Successfully added ${addCoupons} coupons to coupon ID ${couponId}`
+        );
+        fetchFinances();
+      }
     } catch (err) {
       setError("Failed to add coupons.");
+      console.log(err);
     }
   };
 
@@ -102,8 +124,9 @@ export default function Finances() {
       const response = await axios.post("http://localhost:5000/add_finances", {
         money: addAmount,
       });
+      console.log("response outside", response);
       if (response.status === 201) {
-        setFinances(response.data.current_finances); 
+        setFinances(response.data.current_finances);
         alert(`Successfully added $${addAmount} to finances.`);
       }
     } catch (err) {
@@ -118,10 +141,16 @@ export default function Finances() {
         <meta name="description" content="Manage and monitor financial data." />
       </Helmet>
       <DashboardShell>
-        <DashboardHeader heading="Finances" text="Manage and monitor financial data.">
-          <Button onClick={() => {}} className="bg-blue-500 text-white hover:bg-blue-600">
+        <DashboardHeader
+          heading="Finances"
+          text="Manage and monitor financial data."
+        >
+          {/* <Button
+            onClick={() => {}}
+            className="bg-blue-500 text-white hover:bg-blue-600"
+          >
             Add Finance
-          </Button>
+          </Button> */}
         </DashboardHeader>
 
         <div className="grid gap-6">
@@ -142,7 +171,10 @@ export default function Finances() {
                   className="border px-3 py-2 rounded-md w-full"
                   placeholder="Amount to add to finances"
                 />
-                <Button onClick={handleAddFinances} className="mt-2 bg-green-500 text-white hover:bg-green-600">
+                <Button
+                  onClick={handleAddFinances}
+                  className="mt-2 bg-green-500 text-white hover:bg-green-600"
+                >
                   Add to Finances
                 </Button>
               </div>
@@ -188,7 +220,10 @@ export default function Finances() {
                   onChange={(e) => setAddCoupons(e.target.value)}
                   className="border px-3 py-2 rounded-md w-full mt-2"
                 />
-                <Button onClick={handleAddCoupons} className="mt-2 bg-blue-500 text-white hover:bg-blue-600">
+                <Button
+                  onClick={handleAddCoupons}
+                  className="mt-2 bg-blue-500 text-white hover:bg-blue-600"
+                >
                   Add Coupons
                 </Button>
               </div>
@@ -214,7 +249,10 @@ export default function Finances() {
                   onChange={(e) => setValidUntil(e.target.value)}
                   className="border px-3 py-2 rounded-md w-full mt-2"
                 />
-                <Button onClick={handleEnlistCoupon} className="mt-2 bg-green-500 text-white hover:bg-green-600">
+                <Button
+                  onClick={handleEnlistCoupon}
+                  className="mt-2 bg-green-500 text-white hover:bg-green-600"
+                >
                   Enlist Coupon
                 </Button>
               </div>

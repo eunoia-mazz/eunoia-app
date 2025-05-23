@@ -32,17 +32,6 @@ const EmailSent = () => {
           We’ve sent a password reset link to your email address. Please check
           your inbox and follow the instructions to reset your password.
         </p>
-
-        {/* Resend Link */}
-        <p className="text-gray-500">
-          Didn’t receive the email?{" "}
-          <a
-            href="/forgot-password"
-            className="no-underline text-blue-500 font-semibold hover:underline"
-          >
-            Resend
-          </a>
-        </p>
       </div>
     </div>
   );

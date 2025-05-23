@@ -218,9 +218,9 @@ function SignUp() {
             </a>
           </p>
 
-          <div className="mt-4 text-center text-gray-500">Or</div>
+          {/* <div className="mt-4 text-center text-gray-500">Or</div> */}
 
-          <div className="mt-6 grid grid-cols-2 gap-4">
+          {/* <div className="mt-6 grid grid-cols-2 gap-4">
             {[
               { icon: FaGoogle, label: "Google", color: "text-red-500" },
               { icon: FaFacebook, label: "Facebook", color: "text-blue-600" },
@@ -235,7 +235,7 @@ function SignUp() {
                 <span>{btn.label}</span>
               </button>
             ))}
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

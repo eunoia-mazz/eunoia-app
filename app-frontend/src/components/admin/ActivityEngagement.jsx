@@ -35,7 +35,7 @@ export default function ActivityEngagement({ className }) {
               <TableCell>Activity Name</TableCell>
               <TableCell>Engagement Rate (%)</TableCell>
               <TableCell>Completion Rate (%)</TableCell>
-              <TableCell>Actions</TableCell>
+              {/* <TableCell>Actions</TableCell> */}
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -44,7 +44,7 @@ export default function ActivityEngagement({ className }) {
                 <TableCell>{activity.name}</TableCell>
                 <TableCell>{activity.engagement}%</TableCell>
                 <TableCell>{activity.completionRate}%</TableCell>
-                <TableCell>
+                {/* <TableCell>
                   <Button
                     variant="outline"
                     size="sm"
@@ -52,7 +52,7 @@ export default function ActivityEngagement({ className }) {
                   >
                     Edit
                   </Button>
-                </TableCell>
+                </TableCell> */}
               </TableRow>
             ))}
           </TableBody>

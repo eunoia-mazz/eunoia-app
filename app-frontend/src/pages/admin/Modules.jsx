@@ -13,13 +13,13 @@ import { Button } from "@/components/ui/button";
 import ModuleUsage from "@/components/admin/ModuleUsage";
 import DashboardShell from "@/components/admin/DashboardShell";
 import DashboardHeader from "@/components/admin/DashboardHeader";
-import axios from "axios"; 
+import axios from "axios";
 
 export default function Modules() {
   const [modules, setModules] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [editModule, setEditModule] = useState(null); 
+  const [editModule, setEditModule] = useState(null);
 
   const fetchVisitStats = async () => {
     try {
@@ -49,14 +49,21 @@ export default function Modules() {
   const handleEditSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.put("http://localhost:5000/update_visit_stats", {
-        module_name: editModule.module_name,
-        visit_count: editModule.visit_count,
-        last_visited_at: editModule.last_visited_at,
-      });
+      const response = await axios.put(
+        "http://localhost:5000/update_visit_stats",
+        {
+          module_name: editModule.module_name,
+          visit_count: editModule.visit_count,
+          last_visited_at: editModule.last_visited_at,
+        }
+      );
       if (response.status === 200) {
-        setModules(modules.map((module) => (module.module_name === editModule.module_name ? editModule : module)));
-        setEditModule(null); 
+        setModules(
+          modules.map((module) =>
+            module.module_name === editModule.module_name ? editModule : module
+          )
+        );
+        setEditModule(null);
       }
     } catch (err) {
       setError("Failed to update module.");
@@ -65,11 +72,16 @@ export default function Modules() {
 
   const handleDelete = async (module_name) => {
     try {
-      const response = await axios.delete("http://localhost:5000/delete_visit_stats", {
-        data: { module_name },
-      });
+      const response = await axios.delete(
+        "http://localhost:5000/delete_visit_stats",
+        {
+          data: { module_name },
+        }
+      );
       if (response.status === 200) {
-        setModules(modules.filter((module) => module.module_name !== module_name));
+        setModules(
+          modules.filter((module) => module.module_name !== module_name)
+        );
       }
     } catch (err) {
       setError("Failed to delete module.");
@@ -80,16 +92,22 @@ export default function Modules() {
     <>
       <Helmet>
         <title>Modules | Admin Dashboard</title>
-        <meta name="description" content="Manage modules and features on the Eunoia platform" />
+        <meta
+          name="description"
+          content="Manage modules and features on the Eunoia platform"
+        />
       </Helmet>
       <DashboardShell>
-        <DashboardHeader heading="Modules" text="Manage and monitor platform modules.">
-          <Button>Add New Module</Button>
+        <DashboardHeader
+          heading="Modules"
+          text="Manage and monitor platform modules."
+        >
+          {/* <Button>Add New Module</Button> */}
         </DashboardHeader>
         <div className="grid gap-6">
           <ModuleUsage />
-          <Card>
-            <CardHeader>
+          {/*<Card>
+             <CardHeader>
               <CardTitle>Module List</CardTitle>
             </CardHeader>
             <CardContent>
@@ -127,23 +145,30 @@ export default function Modules() {
                     </TableRow>
                   ))}
                 </TableBody>
-              </Table>
+              </Table> 
             </CardContent>
-          </Card>
+          </Card>*/}
         </div>
 
         {/* Edit Modal */}
         {editModule && (
           <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
             <div className="bg-white p-6 rounded-md shadow-lg">
-              <h2 className="text-2xl mb-4">Edit Module: {editModule.module_name}</h2>
+              <h2 className="text-2xl mb-4">
+                Edit Module: {editModule.module_name}
+              </h2>
               <form onSubmit={handleEditSubmit}>
                 <div className="mb-4">
                   <label className="block mb-2">Visit Count</label>
                   <input
                     type="number"
                     value={editModule.visit_count}
-                    onChange={(e) => setEditModule({ ...editModule, visit_count: e.target.value })}
+                    onChange={(e) =>
+                      setEditModule({
+                        ...editModule,
+                        visit_count: e.target.value,
+                      })
+                    }
                     className="w-full border rounded-md px-3 py-2"
                   />
                 </div>
@@ -152,7 +177,12 @@ export default function Modules() {
                   <input
                     type="datetime-local"
                     value={editModule.last_visited_at}
-                    onChange={(e) => setEditModule({ ...editModule, last_visited_at: e.target.value })}
+                    onChange={(e) =>
+                      setEditModule({
+                        ...editModule,
+                        last_visited_at: e.target.value,
+                      })
+                    }
                     className="w-full border rounded-md px-3 py-2"
                   />
                 </div>
@@ -162,7 +192,7 @@ export default function Modules() {
                 <Button
                   type="button"
                   className="bg-gray-500 text-white ml-4"
-                  onClick={() => setEditModule(null)} 
+                  onClick={() => setEditModule(null)}
                 >
                   Cancel
                 </Button>
