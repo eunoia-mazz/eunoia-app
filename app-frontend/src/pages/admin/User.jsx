@@ -29,14 +29,14 @@ function User() {
     email: "",
     is_active: true,
     badge_id: "",
-    coupon_id: ""
+    coupon_id: "",
   });
 
   const fetchBadgesAndCoupons = async () => {
     try {
       const [badgesRes, couponsRes] = await Promise.all([
         axios.get("http://localhost:5000/list_badges"),
-        axios.get("http://localhost:5000/get_finances")
+        axios.get("http://localhost:5000/get_finances"),
       ]);
       setAvailableBadges(badgesRes.data);
       setAvailableCoupons(couponsRes.data.coupons);
@@ -65,7 +65,7 @@ function User() {
           coupons: u.Coupons,
           joinDate: new Date(u["Joined At"]).toLocaleDateString(),
           status: u.Active === "yes",
-          badges: u.badges || []
+          badges: u.badges || [],
         }));
         setUsers(formatted);
         setLoading(false);
@@ -86,7 +86,7 @@ function User() {
       email: user.email,
       is_active: user.status,
       badge_id: "",
-      coupon_id: ""
+      coupon_id: "",
     });
   };
 
@@ -101,29 +101,41 @@ function User() {
   const handleSubmitEdit = async () => {
     try {
       // Update user details
-      const updateResponse = await fetch(`http://localhost:5000/edit_user_admin/${editingUser.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          first_name: formData.first_name,
-          last_name: formData.last_name,
-          email: formData.email,
-          is_active: formData.is_active,
-        }),
-      });
+      const updateResponse = await fetch(
+        `http://localhost:5000/edit_user_admin/${editingUser.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            first_name: formData.first_name,
+            last_name: formData.last_name,
+            email: formData.email,
+            is_active: formData.is_active,
+          }),
+        }
+      );
 
       if (!updateResponse.ok) {
         throw new Error("Failed to update user");
       }
 
+      console.log({
+        user_id: editingUser.id,
+        coupon_id: formData.coupon_id,
+        badgeId: formData.badge_id,
+      });
+
       // Allot badge if selected
       if (formData.badge_id) {
-        const badgeResponse = await axios.post("http://localhost:5000/alot_badge", {
-          user_id: editingUser.id,
-          badge_id: parseInt(formData.badge_id)
-        });
+        const badgeResponse = await axios.post(
+          "http://localhost:5000/alot_badge",
+          {
+            user_id: editingUser.id,
+            badge_id: Number(formData.badge_id),
+          }
+        );
         if (badgeResponse.status !== 201) {
           throw new Error("Failed to allot badge");
         }
@@ -131,10 +143,13 @@ function User() {
 
       // Allot coupon if selected
       if (formData.coupon_id) {
-        const couponResponse = await axios.post("http://localhost:5000/alot_coupons", {
-          user_id: editingUser.id,
-          coupon_id: parseInt(formData.coupon_id)
-        });
+        const couponResponse = await axios.post(
+          "http://localhost:5000/alot_coupons",
+          {
+            user_id: editingUser.id,
+            coupon_id: Number(formData.coupon_id),
+          }
+        );
         if (couponResponse.status !== 201) {
           throw new Error("Failed to allot coupon");
         }
@@ -148,25 +163,25 @@ function User() {
     }
   };
 
-  const handleAllotBadge = async (userId) => {
-    try {
-      if (!selectedBadge) {
-        alert("Please select a badge to allot");
-        return;
-      }
-      const response = await axios.post("http://localhost:5000/alot_badge", {
-        user_id: userId,
-        badge_id: parseInt(selectedBadge)
-      });
-      if (response.status === 201) {
-        alert("Badge allotted successfully!");
-        // Refresh user list to show new badge
-        window.location.reload();
-      }
-    } catch (err) {
-      alert(err.response?.data?.error || "Failed to allot badge");
-    }
-  };
+  // const handleAllotBadge = async (userId) => {
+  //   try {
+  //     if (!selectedBadge) {
+  //       alert("Please select a badge to allot");
+  //       return;
+  //     }
+  //     const response = await axios.post("http://localhost:5000/alot_badge", {
+  //       user_id: userId,
+  //       badge_id: parseInt(selectedBadge),
+  //     });
+  //     if (response.status === 201) {
+  //       alert("Badge allotted successfully!");
+  //       // Refresh user list to show new badge
+  //       window.location.reload();
+  //     }
+  //   } catch (err) {
+  //     alert(err.response?.data?.error || "Failed to allot badge");
+  //   }
+  // };
 
   const handleAllotCoupon = async (userId) => {
     try {
@@ -176,7 +191,7 @@ function User() {
       }
       const response = await axios.post("http://localhost:5000/alot_coupons", {
         user_id: userId,
-        coupon_id: parseInt(selectedCoupon)
+        coupon_id: parseInt(selectedCoupon),
       });
       if (response.status === 201) {
         alert("Coupon allotted successfully!");
@@ -192,11 +207,17 @@ function User() {
     <>
       <Helmet>
         <title>Users | Admin Dashboard</title>
-        <meta name="description" content="Manage therapists on the Eunoia platform" />
+        <meta
+          name="description"
+          content="Manage therapists on the Eunoia platform"
+        />
       </Helmet>
 
       <DashboardShell>
-        <DashboardHeader heading="Users" text="Manage and monitor user accounts." />
+        <DashboardHeader
+          heading="Users"
+          text="Manage and monitor user accounts."
+        />
         <Card>
           <CardHeader>
             <CardTitle>Users</CardTitle>
@@ -229,12 +250,18 @@ function User() {
                         <TableCell>{user.treated}</TableCell>
                         <TableCell>{user.coupons}</TableCell>
                         <TableCell>{user.joinDate}</TableCell>
-                        <TableCell>{user.status ? "Active" : "Inactive"}</TableCell>
+                        <TableCell>
+                          {user.status ? "Active" : "Inactive"}
+                        </TableCell>
                         <TableCell>
                           <div className="flex flex-wrap gap-1">
                             {user.badges.map((badge, index) => (
-                              <span key={index} className="text-sm text-gray-600">
-                                {index > 0 ? ", " : ""}{badge}
+                              <span
+                                key={index}
+                                className="text-sm text-gray-600"
+                              >
+                                {index > 0 ? ", " : ""}
+                                {badge}
                               </span>
                             ))}
                           </div>
@@ -312,7 +339,8 @@ function User() {
                         <option value="">Select Coupon to Allot</option>
                         {availableCoupons.map((coupon) => (
                           <option key={coupon.id} value={coupon.id}>
-                            {coupon.partner_name} ({coupon.total_coupons} available)
+                            {coupon.partner_name} ({coupon.total_coupons}{" "}
+                            available)
                           </option>
                         ))}
                       </select>

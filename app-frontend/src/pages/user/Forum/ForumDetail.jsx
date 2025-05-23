@@ -80,9 +80,9 @@ const ForumDetail = () => {
           on {new Date(forum.created_at).toLocaleDateString()} at{" "}
           {new Date(forum.created_at).toLocaleTimeString()}
         </p>
-        <p className="mt-6 text-lg font-normal text-gray-700 leading-relaxed">
+        {/* <p className="mt-6 text-lg font-normal text-gray-700 leading-relaxed">
           {forumQuestion.text}
-        </p>
+        </p> */}
       </div>
 
       {/* Replies Section */}

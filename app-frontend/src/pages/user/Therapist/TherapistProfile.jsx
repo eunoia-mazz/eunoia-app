@@ -30,6 +30,24 @@ export default function TherapistProfile() {
       });
   }, [id]);
 
+  const handleClick = () => {
+    const recipient = "teams.eunoia.ai@gmail.com";
+    const subject = `Book Session for ${therapist.name}`;
+    const mailtoLink = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(
+      recipient
+    )}&su=${encodeURIComponent(subject)}`;
+
+    window.open(mailtoLink, "_blank");
+  };
+  const handleWAClick = () => {
+    const phoneNumber = "923228696218";
+    const message = "Hey! I found you from my app 🚀";
+    const url = `https://web.whatsapp.com/send?phone=${phoneNumber}&text=${encodeURIComponent(
+      message
+    )}`;
+    window.open(url, "_blank");
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-50">
@@ -89,11 +107,17 @@ export default function TherapistProfile() {
                   </div>
                 </div>
                 <div className="mt-4 md:mt-0 flex space-x-3">
-                  <button className="flex items-center justify-center px-4 py-2 border border-blue-500 rounded-md shadow-sm text-sm font-medium text-blue-600 bg-white hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                  <button
+                    onClick={handleWAClick}
+                    className="flex items-center justify-center px-4 py-2 border border-blue-500 rounded-md shadow-sm text-sm font-medium text-blue-600 bg-white hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+                  >
                     <ChatBubbleLeftRightIcon className="h-5 w-5 mr-2" />
                     Message
                   </button>
-                  <button className="flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                  <button
+                    onClick={handleClick}
+                    className="flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+                  >
                     <EnvelopeIcon className="h-5 w-5 mr-2" />
                     Email
                   </button>
